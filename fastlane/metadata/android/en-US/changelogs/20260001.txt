@@ -1,0 +1,8 @@
+Daily You v2.26.0 has arrived! Visualize:
+
+• Added more options to customize the mood over time chart
+• Updated the mood chart visuals
+• Simplified template management
+• Condensed calendar controls
+• Fixed locale issues
+• Updated translations
