@@ -81,5 +81,6 @@
     "settingsCalendarSystem": "कैलेंडर प्रकार",
     "calendarSystemGregorian": "ग्रेगोरियन",
     "calendarSystemJalali": "जलाली",
-    "settingsUseSystemAccentColor": "सिस्टम का निजी रंग उपयोग करें"
+    "settingsUseSystemAccentColor": "सिस्टम का निजी रंग उपयोग करें",
+    "actionTakePhoto": "फोटो लें"
 }
