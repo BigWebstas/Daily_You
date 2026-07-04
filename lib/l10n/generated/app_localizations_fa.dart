@@ -36,13 +36,13 @@ class AppLocalizationsFa extends AppLocalizations {
   String get jumpToLogTitle => 'Jump to log';
 
   @override
-  String get flashbacksTitle => 'فلش بک ها';
+  String get flashbacksTitle => 'فلش بک';
 
   @override
   String get settingsFlashbacksExcludeBadDays => 'مستثنی کردن روزهای بد';
 
   @override
-  String get flaskbacksEmpty => 'هنوز هیچ فلش بکی وجود ندارد…';
+  String get flaskbacksEmpty => 'هیچ فلش بکی وجود ندارد…';
 
   @override
   String get flashbackGoodDay => 'یک روز خوب';
@@ -90,7 +90,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get pageGalleryTitle => 'گالری';
 
   @override
-  String get searchLogsHint => 'جستوجوی گزارش ها…';
+  String get searchLogsHint => 'تاریخچه جستجوها…';
 
   @override
   String logCount(num count) {
@@ -126,7 +126,7 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get noLogs => 'هیچ گزارشی وجود ندارد…';
+  String get noLogs => 'تاریخچه ای وجود ندارد…';
 
   @override
   String get sortDateTitle => 'تاریخ';
@@ -239,10 +239,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get titleHint => 'عنوان…';
 
   @override
-  String get deleteLogTitle => 'حذف گزارش';
+  String get deleteLogTitle => 'حذف تاریخچه';
 
   @override
-  String get deleteLogDescription => 'ایا میخواهید این گزارش را حذف کنید؟';
+  String get deleteLogDescription => 'ایا میخواهید این تاریچه را پاک کنید؟';
 
   @override
   String get deletePhotoTitle => 'حذف عکس';
@@ -257,7 +257,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get settingsAppearanceTitle => 'ظاهر';
 
   @override
-  String get settingsTheme => 'تم';
+  String get settingsTheme => '‏تم';
 
   @override
   String get themeSystem => 'سیستم';
@@ -272,7 +272,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get themeAmoled => 'امولد';
 
   @override
-  String get settingsFirstDayOfWeek => 'اولین روز هفته';
+  String get settingsFirstDayOfWeek => 'روز اول هفته';
 
   @override
   String get settingsCalendarSystem => 'سیستم تقویم';

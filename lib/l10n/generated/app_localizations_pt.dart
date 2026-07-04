@@ -18,13 +18,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dailyReminderDescription => 'Faça o seu registo diário…';
 
   @override
-  String get actionTakePhoto => 'Take photo';
+  String get actionTakePhoto => 'Tire uma foto';
 
   @override
-  String get actionToday => 'Today';
+  String get actionToday => 'Hoje';
 
   @override
-  String get actionOtherDay => 'Other day';
+  String get actionOtherDay => 'Outro dia';
 
   @override
   String get pageHomeTitle => 'Início';

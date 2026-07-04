@@ -19,13 +19,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Non dimenticare di tener traccia della tua giornata…';
 
   @override
-  String get actionTakePhoto => 'Take photo';
+  String get actionTakePhoto => 'Scatta foto';
 
   @override
-  String get actionToday => 'Today';
+  String get actionToday => 'Oggi';
 
   @override
-  String get actionOtherDay => 'Other day';
+  String get actionOtherDay => 'Altro giorno';
 
   @override
   String get pageHomeTitle => 'Home';
@@ -85,7 +85,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get flashbackOnThisDay => 'On This Day';
+  String get flashbackOnThisDay => 'Accade Oggi';
 
   @override
   String get pageGalleryTitle => 'Galleria';
@@ -109,8 +109,8 @@ class AppLocalizationsIt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count days',
-      one: '$count day',
+      other: '$count giorni',
+      one: '$count giorno',
     );
     return '$_temp0';
   }
@@ -168,7 +168,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String chartOverTimeTitle(Object tag) {
-    return '$tag Over Time';
+    return '$tag nel tempo';
   }
 
   @override
@@ -281,7 +281,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsCalendarSystem => 'Calendar System';
 
   @override
-  String get calendarSystemGregorian => 'Gregorian';
+  String get calendarSystemGregorian => 'Gregoriano';
 
   @override
   String get calendarSystemJalali => 'Jalali';
@@ -317,10 +317,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Nascondi le immagini nella galleria';
 
   @override
-  String get settingsHideImages => 'Hide Images';
+  String get settingsHideImages => 'Nascondi immagini';
 
   @override
-  String get pageCalendarTitle => 'Calendar';
+  String get pageCalendarTitle => 'Calendario';
 
   @override
   String get viewLayoutList => 'Elenco';
@@ -343,7 +343,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsDailyReminderTitle => 'Promemoria Giornaliero';
 
   @override
-  String get settingsOnThisDayDescription => 'Revisit past memories';
+  String get settingsOnThisDayDescription => 'Rivisita ricordi passati';
 
   @override
   String get settingsDailyReminderDescription =>
@@ -391,7 +391,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noTemplatesDescription => 'Nessun modello ancora creato…';
 
   @override
-  String get templateVariableTime => 'Time';
+  String get templateVariableTime => 'Orario';
 
   @override
   String get templateDefaultTimestampTitle => 'Timestamp';
@@ -402,17 +402,18 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get templateDefaultSummaryTitle => 'Day Summary';
+  String get templateDefaultSummaryTitle => 'Riassunto Giornata';
 
   @override
-  String get templateDefaultSummaryBody => '### Summary\n- \n\n### Quote\n> ';
+  String get templateDefaultSummaryBody =>
+      '### Riepilogo\n- \n\n### Citazione\n> ';
 
   @override
-  String get templateDefaultReflectionTitle => 'Reflection';
+  String get templateDefaultReflectionTitle => 'Riflessione';
 
   @override
   String get templateDefaultReflectionBody =>
-      '### What did you enjoy about today?\n- \n\n### What are you thankful for?\n- \n\n### What are you looking forward to?\n- ';
+      '### Che cosa ho apprezzato di oggi?\n- \n### Per cosa sono grato?\n- \n### Cosa mi aspetto di fare prossimamente?\n- ';
 
   @override
   String get settingsStorageTitle => 'Memoria';

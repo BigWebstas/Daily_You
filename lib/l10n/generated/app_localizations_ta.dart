@@ -18,13 +18,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String get dailyReminderDescription => 'உங்கள் தினசரி பதிவை மேற்கொள்ளுங்கள்…';
 
   @override
-  String get actionTakePhoto => 'Take photo';
+  String get actionTakePhoto => 'புகைப்படம் எடு';
 
   @override
-  String get actionToday => 'Today';
+  String get actionToday => 'இன்று';
 
   @override
-  String get actionOtherDay => 'Other day';
+  String get actionOtherDay => 'மற்ற நாள்';
 
   @override
   String get pageHomeTitle => 'முகப்பு';
@@ -55,8 +55,8 @@ class AppLocalizationsTa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Weeks Ago',
-      one: '$count Week Ago',
+      other: '$count வாரங்களுக்கு முன்பு',
+      one: '$count வாரம் முன்பு',
     );
     return '$_temp0';
   }
@@ -66,8 +66,8 @@ class AppLocalizationsTa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Months Ago',
-      one: '$count Month Ago',
+      other: '$count மாதங்களுக்கு முன்பு',
+      one: '$count Month ago',
     );
     return '$_temp0';
   }
@@ -77,27 +77,27 @@ class AppLocalizationsTa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Years Ago',
-      one: '$count Year Ago',
+      other: '$count ஆண்டுகளுக்கு முன்பு',
+      one: '$count வருடம் முன்பு',
     );
     return '$_temp0';
   }
 
   @override
-  String get flashbackOnThisDay => 'On This Day';
+  String get flashbackOnThisDay => 'இந்த நாளில்';
 
   @override
-  String get pageGalleryTitle => 'Gallery';
+  String get pageGalleryTitle => 'தொகுப்பு';
 
   @override
-  String get searchLogsHint => 'Search Logs…';
+  String get searchLogsHint => 'தேடல் பதிவுகள்…';
 
   @override
   String logCount(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count logs',
+      other: '$count பதிவுகள்',
       one: '$count log',
     );
     return '$_temp0';
@@ -108,8 +108,8 @@ class AppLocalizationsTa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count days',
-      one: '$count day',
+      other: '$count நாட்கள்',
+      one: '$count நாள்',
     );
     return '$_temp0';
   }
@@ -119,55 +119,55 @@ class AppLocalizationsTa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count words',
+      other: '$count சொற்கள்',
       one: '$count word',
     );
     return '$_temp0';
   }
 
   @override
-  String get noLogs => 'No Logs…';
+  String get noLogs => 'பதிவுகள் இல்லை…';
 
   @override
-  String get sortDateTitle => 'Date';
+  String get sortDateTitle => 'திகதி';
 
   @override
-  String get sortOrderAscendingTitle => 'Ascending';
+  String get sortOrderAscendingTitle => 'ஏறுதல்';
 
   @override
-  String get sortOrderDescendingTitle => 'Descending';
+  String get sortOrderDescendingTitle => 'இறங்கு';
 
   @override
-  String get pageStatisticsTitle => 'Statistics';
+  String get pageStatisticsTitle => 'புள்ளிவிவரங்கள்';
 
   @override
-  String get statisticsNotEnoughData => 'Not enough data…';
+  String get statisticsNotEnoughData => 'போதுமான தரவு இல்லை…';
 
   @override
-  String get statisticsRangeOneMonth => '1 Month';
+  String get statisticsRangeOneMonth => '1 மாதம்';
 
   @override
-  String get statisticsRangeSixMonths => '6 Months';
+  String get statisticsRangeSixMonths => '6 மாதங்கள்';
 
   @override
-  String get statisticsRangeOneYear => '1 Year';
+  String get statisticsRangeOneYear => '1 வருடம்';
 
   @override
-  String get statisticsRangeAllTime => 'All Time';
+  String get statisticsRangeAllTime => 'எல்லா நேரமும்';
 
   @override
   String chartSummaryTitle(Object tag) {
-    return '$tag Summary';
+    return '$tag சுருக்கம்';
   }
 
   @override
   String chartByDayTitle(Object tag) {
-    return '$tag By Day';
+    return '$tag நாள் வாரியாக';
   }
 
   @override
   String chartOverTimeTitle(Object tag) {
-    return '$tag Over Time';
+    return '$tag காலப்போக்கில்';
   }
 
   @override
@@ -213,182 +213,188 @@ class AppLocalizationsTa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Days Since a Bad Day $count',
+      other: 'ஒரு மோசமான நாளிலிருந்து நாட்கள் $count',
     );
     return '$_temp0';
   }
 
   @override
   String get errorExternalStorageAccessTitle =>
-      'Can\'t Access External Storage';
+      'வெளிப்புற சேமிப்பகத்தை அணுக முடியவில்லை';
 
   @override
   String get errorExternalStorageAccessDescription =>
-      'If you are using network storage make sure the service is online and you have network access.\n\nOtherwise, the app may have lost permissions for the external folder. Go to settings, and reselect the external folder to grant access.\n\nWarning, changes will not be synced until you restore access to the external storage location!';
+      'நீங்கள் பிணையம் சேமிப்பகத்தைப் பயன்படுத்துகிறீர்கள் என்றால், பணி ஆன்லைனில் இருப்பதையும் உங்களுக்கு பிணையம் அணுகல் இருப்பதையும் உறுதிப்படுத்திக் கொள்ளுங்கள். \n\nஇல்லையெனில், ஆப்ச் வெளிப்புற கோப்புறைக்கான அனுமதிகளை இழந்திருக்கலாம். அமைப்புகளுக்குச் சென்று, அணுகலை வழங்க வெளிப்புற கோப்புறையை மீண்டும் தேர்ந்தெடுக்கவும். \n\nஎச்சரிக்கை, வெளிப்புற சேமிப்பக இருப்பிடத்திற்கான அணுகலை மீட்டெடுக்கும் வரை மாற்றங்கள் ஒத்திசைக்கப்படாது!';
 
   @override
   String get errorExternalStorageAccessContinue =>
-      'Continue With Local Database';
+      'உள்ளக தரவுத்தளத்துடன் தொடரவும்';
 
   @override
-  String get lastModified => 'Modified';
+  String get lastModified => 'மாற்றியமைக்கப்பட்ட';
 
   @override
-  String get writeSomethingHint => 'Write something…';
+  String get writeSomethingHint => 'ஏதாவது எழுது…';
 
   @override
-  String get titleHint => 'Title…';
+  String get titleHint => 'தலைப்பு…';
 
   @override
-  String get deleteLogTitle => 'Delete Log';
+  String get deleteLogTitle => 'பதிவை நீக்கு';
 
   @override
-  String get deleteLogDescription => 'Do you want to delete this log?';
+  String get deleteLogDescription => 'இந்தப் பதிவை நீக்க வேண்டுமா?';
 
   @override
-  String get deletePhotoTitle => 'Delete Photo';
+  String get deletePhotoTitle => 'புகைப்படத்தை நீக்கு';
 
   @override
-  String get deletePhotoDescription => 'Do you want to delete this photo?';
+  String get deletePhotoDescription => 'இந்தப் படத்தை நீக்க வேண்டுமா?';
 
   @override
-  String get pageSettingsTitle => 'Settings';
+  String get pageSettingsTitle => 'அமைப்புகள்';
 
   @override
-  String get settingsAppearanceTitle => 'Appearance';
+  String get settingsAppearanceTitle => 'தோற்றம்';
 
   @override
-  String get settingsTheme => 'Theme';
+  String get settingsTheme => 'கருப்பொருள்';
 
   @override
-  String get themeSystem => 'System';
+  String get themeSystem => 'மண்டலம்';
 
   @override
-  String get themeLight => 'Light';
+  String get themeLight => 'ஒளி';
 
   @override
-  String get themeDark => 'Dark';
+  String get themeDark => 'இருள்';
 
   @override
   String get themeAmoled => 'AMOLED';
 
   @override
-  String get settingsFirstDayOfWeek => 'First Day Of Week';
+  String get settingsFirstDayOfWeek => 'வாரத்தின் முதல் நாள்';
 
   @override
-  String get settingsCalendarSystem => 'Calendar System';
+  String get settingsCalendarSystem => 'காலண்டர் அமைப்பு';
 
   @override
-  String get calendarSystemGregorian => 'Gregorian';
+  String get calendarSystemGregorian => 'கிரிகோரியன்';
 
   @override
-  String get calendarSystemJalali => 'Jalali';
+  String get calendarSystemJalali => 'சலாலி';
 
   @override
-  String get settingsUseSystemAccentColor => 'Use System Accent Color';
+  String get settingsUseSystemAccentColor =>
+      'கணினி உச்சரிப்பு நிறத்தைப் பயன்படுத்தவும்';
 
   @override
-  String get settingsCustomAccentColor => 'Custom Accent Color';
+  String get settingsCustomAccentColor => 'தனிப்பயன் உச்சரிப்பு நிறம்';
 
   @override
   String get settingsShowMarkdownToolbar => 'Show Markdown Toolbar';
 
   @override
-  String get settingsShowFlashbacks => 'Show Flashbacks';
+  String get settingsShowFlashbacks => 'ஃப்ளாச்பேக்குகளைக் காட்டு';
 
   @override
-  String get settingsChangeMoodIcons => 'Change Mood Icons';
+  String get settingsChangeMoodIcons => 'மூட் ஐகான்களை மாற்றவும்';
 
   @override
-  String get moodIconPrompt => 'Enter an icon';
+  String get moodIconPrompt => 'ஐகானை உள்ளிடவும்';
 
   @override
   String get settingsFlashbacksViewLayout => 'Flashbacks View Layout';
 
   @override
-  String get settingsGalleryViewLayout => 'Gallery View Layout';
+  String get settingsGalleryViewLayout => 'கேலரி காட்சி தளவமைப்பு';
 
   @override
-  String get settingsHideImagesInGallery => 'Hide Images In Gallery';
+  String get settingsHideImagesInGallery => 'கேலரியில் படங்களை மறை';
 
   @override
-  String get settingsHideImages => 'Hide Images';
+  String get settingsHideImages => 'படங்களை மறை';
 
   @override
-  String get pageCalendarTitle => 'Calendar';
+  String get pageCalendarTitle => 'நாள்காட்டி';
 
   @override
-  String get viewLayoutList => 'List';
+  String get viewLayoutList => 'பட்டியல்';
 
   @override
-  String get viewLayoutGrid => 'Grid';
+  String get viewLayoutGrid => 'வலைவாய்';
 
   @override
-  String get settingsNotificationsTitle => 'Notifications';
+  String get settingsNotificationsTitle => 'அறிவிப்புகள்';
 
   @override
   String get settingsDailyReminderOnboarding =>
-      'Enable daily reminders to keep yourself consistent!';
+      'உங்களை சீராக வைத்திருக்க நாள்தோறும் நினைவூட்டல்களை இயக்கவும்!';
 
   @override
   String get settingsNotificationsPermissionsPrompt =>
-      'The \'schedule alarms\' permission will be requested to send the reminder at a random moment or at your preferred time.';
+      'சீரற்ற தருணத்தில் அல்லது நீங்கள் விரும்பும் நேரத்தில் நினைவூட்டலை அனுப்ப \'அட்டவணை அலாரங்கள்\' இசைவு கோரப்படும்.';
 
   @override
-  String get settingsDailyReminderTitle => 'Daily Reminder';
+  String get settingsDailyReminderTitle => 'நாள்தோறும் நினைவூட்டல்';
 
   @override
-  String get settingsOnThisDayDescription => 'Revisit past memories';
+  String get settingsOnThisDayDescription =>
+      'கடந்த கால நினைவுகளை மீண்டும் பார்க்கவும்';
 
   @override
-  String get settingsDailyReminderDescription => 'A gentle reminder each day';
+  String get settingsDailyReminderDescription =>
+      'ஒவ்வொரு நாளும் ஒரு மென்மையான நினைவூட்டல்';
 
   @override
-  String get settingsReminderTime => 'Reminder Time';
+  String get settingsReminderTime => 'நினைவூட்டல் நேரம்';
 
   @override
-  String get settingsFixedReminderTimeTitle => 'Fixed Reminder Time';
+  String get settingsFixedReminderTimeTitle => 'நிலையான நினைவூட்டல் நேரம்';
 
   @override
   String get settingsFixedReminderTimeDescription =>
-      'Pick a fixed time for the reminder';
+      'நினைவூட்டலுக்கு ஒரு குறிப்பிட்ட நேரத்தைத் தேர்ந்தெடுக்கவும்';
 
   @override
-  String get settingsAlwaysSendReminderTitle => 'Always Send Reminder';
+  String get settingsAlwaysSendReminderTitle =>
+      'எப்போதும் நினைவூட்டலை அனுப்பவும்';
 
   @override
   String get settingsAlwaysSendReminderDescription =>
-      'Send reminder even if a log was already started';
+      'பதிவு ஏற்கனவே தொடங்கப்பட்டிருந்தாலும் நினைவூட்டலை அனுப்பவும்';
 
   @override
-  String get settingsCustomizeNotificationTitle => 'Customize Notifications';
+  String get settingsCustomizeNotificationTitle =>
+      'அறிவிப்புகளைத் தனிப்பயனாக்கு';
 
   @override
-  String get settingsTemplatesTitle => 'Templates';
+  String get settingsTemplatesTitle => 'வார்ப்புருக்கள்';
 
   @override
-  String get settingsDefaultTemplate => 'Default Template';
+  String get settingsDefaultTemplate => 'இயல்புநிலை டெம்ப்ளேட்';
 
   @override
-  String get manageTemplates => 'Manage Templates';
+  String get manageTemplates => 'டெம்ப்ளேட்களை நிர்வகிக்கவும்';
 
   @override
-  String get addTemplate => 'Add a Template';
+  String get addTemplate => 'ஒரு டெம்ப்ளேட்டைச் சேர்க்கவும்';
 
   @override
   String get newTemplate => 'New Template';
 
   @override
-  String get noTemplateTitle => 'None';
+  String get noTemplateTitle => 'எதுவுமில்லை';
 
   @override
-  String get noTemplatesDescription => 'No templates created yet…';
+  String get noTemplatesDescription =>
+      'இதுவரை டெம்ப்ளேட்கள் எதுவும் உருவாக்கப்படவில்லை…';
 
   @override
-  String get templateVariableTime => 'Time';
+  String get templateVariableTime => 'நேரம்';
 
   @override
-  String get templateDefaultTimestampTitle => 'Timestamp';
+  String get templateDefaultTimestampTitle => 'நேர முத்திரை';
 
   @override
   String templateDefaultTimestampBody(Object date, Object time) {
@@ -396,104 +402,107 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String get templateDefaultSummaryTitle => 'Day Summary';
+  String get templateDefaultSummaryTitle => 'நாள் சுருக்கம்';
 
   @override
-  String get templateDefaultSummaryBody => '### Summary\n- \n\n### Quote\n> ';
+  String get templateDefaultSummaryBody =>
+      '### சுருக்கம் \n- \n\n### மேற்கோள் \n> ';
 
   @override
-  String get templateDefaultReflectionTitle => 'Reflection';
+  String get templateDefaultReflectionTitle => 'பிரதிபலிப்பு';
 
   @override
   String get templateDefaultReflectionBody =>
-      '### What did you enjoy about today?\n- \n\n### What are you thankful for?\n- \n\n### What are you looking forward to?\n- ';
+      '### இன்று நீங்கள் எதைப் பற்றி ரசித்தீர்கள்? \n- \n\n### நீங்கள் எதற்கு நன்றி கூறுகிறீர்கள்? \n- \n\n### நீங்கள் என்ன எதிர்பார்க்கிறீர்கள்? \n- ';
 
   @override
-  String get settingsStorageTitle => 'Storage';
+  String get settingsStorageTitle => 'சேமிப்பு';
 
   @override
-  String get settingsImageQuality => 'Image Quality';
+  String get settingsImageQuality => 'படத்தின் தகுதி';
 
   @override
-  String get imageQualityHigh => 'High';
+  String get imageQualityHigh => 'உயர்';
 
   @override
-  String get imageQualityMedium => 'Medium';
+  String get imageQualityMedium => 'சராசரி';
 
   @override
-  String get imageQualityLow => 'Low';
+  String get imageQualityLow => 'குறைந்த';
 
   @override
-  String get imageQualityNoCompression => 'No Compression';
+  String get imageQualityNoCompression => 'சுருக்கம் இல்லை';
 
   @override
-  String get settingsLogFolder => 'Log Folder';
+  String get settingsLogFolder => 'பதிவு கோப்புறை';
 
   @override
-  String get settingsImageFolder => 'Image Folder';
+  String get settingsImageFolder => 'படக் கோப்புறை';
 
   @override
-  String get warningTitle => 'Warning';
+  String get warningTitle => 'எச்சரிக்கை';
 
   @override
   String get logFolderWarningDescription =>
-      'If the selected folder already contains a \'daily_you.db\' file, it will be used to overwrite your existing logs!';
+      'தேர்ந்தெடுக்கப்பட்ட கோப்புறையில் ஏற்கனவே \'daily_you.db\' கோப்பு இருந்தால், அது ஏற்கனவே உள்ள உங்கள் பதிவுகளை மேலெழுதப் பயன்படுத்தப்படும்!';
 
   @override
-  String get errorTitle => 'Error';
+  String get errorTitle => 'பிழை';
 
   @override
-  String get logFolderErrorDescription => 'Failed to change log folder!';
+  String get logFolderErrorDescription => 'பதிவு கோப்புறையை மாற்ற முடியவில்லை!';
 
   @override
-  String get imageFolderErrorDescription => 'Failed to change image folder!';
+  String get imageFolderErrorDescription => 'பட கோப்புறையை மாற்ற முடியவில்லை!';
 
   @override
-  String get backupErrorDescription => 'Failed to create backup!';
+  String get backupErrorDescription => 'காப்புப்பிரதியை உருவாக்குவதில் தோல்வி!';
 
   @override
-  String get restoreErrorDescription => 'Failed to restore backup!';
+  String get restoreErrorDescription =>
+      'காப்புப்பிரதியை மீட்டெடுப்பதில் தோல்வி!';
 
   @override
-  String get settingsBackupRestoreTitle => 'Backup & Restore';
+  String get settingsBackupRestoreTitle => 'காப்புப்பிரதி & மீட்டமை';
 
   @override
-  String get settingsBackup => 'Backup';
+  String get settingsBackup => 'காப்புப்பிரதி';
 
   @override
-  String get settingsRestore => 'Restore';
+  String get settingsRestore => 'மீட்டமை';
 
   @override
   String get settingsRestorePromptDescription =>
-      'Restoring a backup will overwrite your existing data!';
+      'காப்புப்பிரதியை மீட்டெடுப்பது ஏற்கனவே உள்ள உங்கள் தரவை மேலெழுதும்!';
 
   @override
   String tranferStatus(Object percent) {
-    return 'Transferring… $percent%';
+    return 'மாற்றுகிறது… $percent%';
   }
 
   @override
   String creatingBackupStatus(Object percent) {
-    return 'Creating Backup… $percent%';
+    return 'காப்புப்பிரதியை உருவாக்குகிறது… $percent%';
   }
 
   @override
   String restoringBackupStatus(Object percent) {
-    return 'Restoring Backup… $percent%';
+    return 'காப்புப்பிரதியை மீட்டெடுக்கிறது… $percent%';
   }
 
   @override
-  String get cleanUpStatus => 'Cleaning Up…';
+  String get cleanUpStatus => 'தூய்மை செய்கிறது…';
 
   @override
   String get settingsExport => 'Export';
 
   @override
-  String get settingsExportToAnotherFormat => 'Export To Another Format';
+  String get settingsExportToAnotherFormat =>
+      'மற்றொரு வடிவத்திற்கு ஏற்றுமதி செய்யவும்';
 
   @override
   String get settingsExportFormatDescription =>
-      'This should not be used as a backup!';
+      'இதை காப்புப்பிரதியாகப் பயன்படுத்தக் கூடாது!';
 
   @override
   String get exportLogs => 'Export Logs';
@@ -505,14 +514,15 @@ class AppLocalizationsTa extends AppLocalizations {
   String get settingsImport => 'Import';
 
   @override
-  String get settingsImportFromAnotherApp => 'Import From Another App';
+  String get settingsImportFromAnotherApp =>
+      'மற்றொரு பயன்பாட்டிலிருந்து இறக்குமதி செய்யவும்';
 
   @override
   String get settingsTranslateCallToAction =>
-      'Everyone should have access to a journal!';
+      'ஒவ்வொருவரும் ஒரு பத்திரிகையை அணுக வேண்டும்!';
 
   @override
-  String get settingsHelpTranslate => 'Help Translate';
+  String get settingsHelpTranslate => 'மொழிபெயர்க்க உதவுங்கள்';
 
   @override
   String get importLogs => 'Import Logs';
@@ -521,11 +531,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String get importImages => 'Import Images';
 
   @override
-  String get logFormatTitle => 'Choose Format';
+  String get logFormatTitle => 'வடிவமைப்பைத் தேர்ந்தெடுக்கவும்';
 
   @override
   String get logFormatDescription =>
-      'Another app\'s format may not support all features. Please report any issues since third party formats may change at any time. This will not impact existing logs!';
+      'மற்றொரு ஆப்சின் வடிவம் அனைத்து அம்சங்களையும் ஆதரிக்காமல் இருக்கலாம். மூன்றாம் தரப்பு வடிவங்கள் எந்த நேரத்திலும் மாறக்கூடும் என்பதால், ஏதேனும் சிக்கல்களைப் புகாரளிக்கவும். இது ஏற்கனவே உள்ள பதிவுகளை பாதிக்காது!';
 
   @override
   String get formatDailyYouJson => 'Daily You (JSON)';
@@ -552,92 +562,95 @@ class AppLocalizationsTa extends AppLocalizations {
   String get formatPixels => 'Pixels';
 
   @override
-  String get formatMarkdown => 'Markdown';
+  String get formatMarkdown => 'மார்க் பேரூர்';
 
   @override
-  String get settingsDeleteAllLogsTitle => 'Delete All Logs';
+  String get settingsDeleteAllLogsTitle => 'அனைத்து பதிவுகளையும் நீக்கு';
 
   @override
   String get settingsDeleteAllLogsDescription =>
-      'Do you want to delete all of your logs?';
+      'Do you want பெறுநர் நீக்கு அனைத்தும் of your logs?';
 
   @override
   String settingsDeleteAllLogsPrompt(Object prompt) {
-    return 'Enter \'$prompt\' to confirm. This cannot be undone!';
+    return 'உறுதிப்படுத்த \'$prompt\' ஐ உள்ளிடவும். இதை செயல்தவிர்க்க முடியாது!';
   }
 
   @override
-  String get settingsLanguageTitle => 'Language';
+  String get settingsLanguageTitle => 'மொழி';
 
   @override
-  String get settingsAppLanguageTitle => 'App Language';
+  String get settingsAppLanguageTitle => 'பயன்பாட்டு மொழி';
 
   @override
-  String get settingsOverrideAppLanguageTitle => 'Override App Language';
+  String get settingsOverrideAppLanguageTitle =>
+      'பயன்பாட்டு மொழியை மேலெழுதவும்';
 
   @override
-  String get settingsSecurityTitle => 'Security';
+  String get settingsSecurityTitle => 'பாதுகாப்பு';
 
   @override
-  String get settingsSecurityRequirePassword => 'Require Password';
+  String get settingsSecurityRequirePassword => 'கடவுச்சொல் தேவை';
 
   @override
-  String get settingsSecurityEnterPassword => 'Enter Password';
+  String get settingsSecurityEnterPassword => 'கடவுச்சொல்லை உள்ளிடவும்';
 
   @override
-  String get settingsSecuritySetPassword => 'Set Password';
+  String get settingsSecuritySetPassword => 'கடவுச்சொல்லை அமைக்கவும்';
 
   @override
-  String get settingsSecurityChangePassword => 'Change Password';
+  String get settingsSecurityChangePassword => 'கடவுச்சொல்லை மாற்றவும்';
 
   @override
-  String get settingsSecurityPassword => 'Password';
+  String get settingsSecurityPassword => 'கடவுச்சொல்';
 
   @override
-  String get settingsSecurityConfirmPassword => 'Confirm Password';
+  String get settingsSecurityConfirmPassword =>
+      'கடவுச்சொல்லை உறுதிப்படுத்தவும்';
 
   @override
-  String get settingsSecurityOldPassword => 'Old Password';
+  String get settingsSecurityOldPassword => 'பழைய கடவுச்சொல்';
 
   @override
-  String get settingsSecurityIncorrectPassword => 'Incorrect Password';
+  String get settingsSecurityIncorrectPassword => 'தவறான கடவுச்சொல்';
 
   @override
-  String get settingsSecurityPasswordsDoNotMatch => 'Passwords do not match';
+  String get settingsSecurityPasswordsDoNotMatch =>
+      'கடவுச்சொற்கள் பொருந்தவில்லை';
 
   @override
-  String get requiredPrompt => 'Required';
+  String get requiredPrompt => 'தேவை';
 
   @override
-  String get settingsSecurityBiometricUnlock => 'Biometric Unlock';
+  String get settingsSecurityBiometricUnlock => 'பயோமெட்ரிக் திறத்தல்';
 
   @override
-  String get unlockAppPrompt => 'Unlock the app';
+  String get unlockAppPrompt => 'பயன்பாட்டைத் திறக்கவும்';
 
   @override
-  String get settingsAboutTitle => 'About';
+  String get settingsAboutTitle => 'பற்றி';
 
   @override
-  String get settingsVersion => 'Version';
+  String get settingsVersion => 'பதிப்பு';
 
   @override
-  String get settingsLicense => 'License';
+  String get settingsLicense => 'உரிமம்';
 
   @override
-  String get licenseGPLv3 => 'GPL-3.0';
+  String get licenseGPLv3 => 'சிபிஎல்-3.0';
 
   @override
-  String get settingsSourceCode => 'Source Code';
+  String get settingsSourceCode => 'மூலக் குறியீடு';
 
   @override
-  String get settingsMadeWithLove => 'Made with ❤️';
+  String get settingsMadeWithLove => '❤️ கொண்டு உருவாக்கப்பட்டது';
 
   @override
-  String get settingsConsiderSupporting => 'consider supporting';
+  String get settingsConsiderSupporting => 'ஆதரிப்பதை கருத்தில் கொள்ளுங்கள்';
 
   @override
-  String get imagesTitle => 'Images';
+  String get imagesTitle => 'படங்கள்';
 
   @override
-  String get tagMoodTitle => 'Mood';
+  String get tagMoodTitle => 'மனநிலை';
 }

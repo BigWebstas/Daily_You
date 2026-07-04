@@ -18,10 +18,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get dailyReminderDescription => 'अपना आज का दिन दर्ज करें…';
 
   @override
-  String get actionTakePhoto => 'Take photo';
+  String get actionTakePhoto => 'फोटो लें';
 
   @override
-  String get actionToday => 'Today';
+  String get actionToday => 'आज';
 
   @override
   String get actionOtherDay => 'Other day';
@@ -84,7 +84,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get flashbackOnThisDay => 'On This Day';
+  String get flashbackOnThisDay => 'आज के दिन';
 
   @override
   String get pageGalleryTitle => 'गैलरी';
@@ -132,10 +132,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sortDateTitle => 'दिनांक';
 
   @override
-  String get sortOrderAscendingTitle => 'Ascending';
+  String get sortOrderAscendingTitle => 'बढ़ते हुए क्रम में';
 
   @override
-  String get sortOrderDescendingTitle => 'Descending';
+  String get sortOrderDescendingTitle => 'घटते हुए क्रम में';
 
   @override
   String get pageStatisticsTitle => 'आंकड़े';
@@ -220,7 +220,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get errorExternalStorageAccessTitle =>
-      'Can\'t Access External Storage';
+      'बाहरी स्टोरेज एक्सेस नहीं कर सकते';
 
   @override
   String get errorExternalStorageAccessDescription =>
@@ -255,7 +255,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get pageSettingsTitle => 'सैटिंग्स';
 
   @override
-  String get settingsAppearanceTitle => 'Appearance';
+  String get settingsAppearanceTitle => 'दिखने में';
 
   @override
   String get settingsTheme => 'थीम';
@@ -270,22 +270,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String get themeDark => 'डार्क';
 
   @override
-  String get themeAmoled => 'AMOLED';
+  String get themeAmoled => 'एमोलेड';
 
   @override
   String get settingsFirstDayOfWeek => 'सप्ताह का पहला दिन';
 
   @override
-  String get settingsCalendarSystem => 'Calendar System';
+  String get settingsCalendarSystem => 'कैलेंडर प्रकार';
 
   @override
-  String get calendarSystemGregorian => 'Gregorian';
+  String get calendarSystemGregorian => 'ग्रेगोरियन';
 
   @override
-  String get calendarSystemJalali => 'Jalali';
+  String get calendarSystemJalali => 'जलाली';
 
   @override
-  String get settingsUseSystemAccentColor => 'Use System Accent Color';
+  String get settingsUseSystemAccentColor => 'सिस्टम का निजी रंग उपयोग करें';
 
   @override
   String get settingsCustomAccentColor => 'Custom Accent Color';
