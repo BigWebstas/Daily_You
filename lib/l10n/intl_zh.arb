@@ -161,5 +161,7 @@
     "settingsCalendarSystem": "历法系统",
     "calendarSystemGregorian": "公历",
     "calendarSystemJalali": "波斯历",
-    "imagesTitle": "图像"
+    "imagesTitle": "图像",
+    "jumpToMonthTitle": "",
+    "jumpToLogTitle": ""
 }
