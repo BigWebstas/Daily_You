@@ -162,6 +162,12 @@
     "calendarSystemGregorian": "公历",
     "calendarSystemJalali": "波斯历",
     "imagesTitle": "图像",
-    "jumpToMonthTitle": "",
-    "jumpToLogTitle": ""
+    "jumpToMonthTitle": "跳至月份",
+    "jumpToLogTitle": "跳至记录",
+    "chartSmoothingLabel": "平滑",
+    "chartGroupingYear": "年",
+    "chartGroupingMonth": "月",
+    "chartGroupingWeek": "周",
+    "chartGroupingDay": "天",
+    "chartGroupingLabel": "群组"
 }
