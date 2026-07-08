@@ -149,5 +149,14 @@
     "streakSinceBadDay": "{count, plural, other{Praėjo dienų nuo paskutinės blogos dienos: {count}}}",
     "settingsCalendarSystem": "Kalendoriaus sistema",
     "calendarSystemGregorian": "Grigaliaus",
-    "calendarSystemJalali": "Jalali"
+    "calendarSystemJalali": "Jalali",
+    "jumpToMonthTitle": "Peršokti į mėnesį",
+    "jumpToLogTitle": "Peršokti į žurnalo įrašą",
+    "chartGroupingLabel": "Grupuoti pagal",
+    "chartGroupingDay": "Diena",
+    "chartGroupingWeek": "Savaitė",
+    "chartGroupingMonth": "Mėnesis",
+    "chartGroupingYear": "Metai",
+    "chartSmoothingLabel": "Glodinimas",
+    "imagesTitle": "Paveikslai"
 }
