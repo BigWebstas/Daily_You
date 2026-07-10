@@ -50,11 +50,7 @@ class _StatsPageState extends State<StatsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Center(
-      child: SingleChildScrollView(
-        child: buildEntries(context),
-      ),
-    );
+    return buildEntries(context);
   }
 
   Widget buildEntries(BuildContext context) {
@@ -66,84 +62,95 @@ class _StatsPageState extends State<StatsPage>
     final logCount = entriesProvider.entries.length;
     final entryDayCount = entriesProvider.getEntryDayCount();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2.0),
-          child: Wrap(
-            children: [
-              StreakCard(
-                title:
-                    AppLocalizations.of(context)!.streakCurrent(currentStreak),
-                isVisible: currentStreak > 0,
-                icon: Icons.bolt,
-              ),
-              StreakCard(
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
+            child: Wrap(
+              children: [
+                StreakCard(
                   title: AppLocalizations.of(context)!
-                      .streakLongest(longestStreak),
-                  isVisible: longestStreak > currentStreak,
-                  icon: Icons.history_rounded),
-              StreakCard(
+                      .streakCurrent(currentStreak),
+                  isVisible: currentStreak > 0,
+                  icon: Icons.bolt,
+                ),
+                StreakCard(
+                    title: AppLocalizations.of(context)!
+                        .streakLongest(longestStreak),
+                    isVisible: longestStreak > currentStreak,
+                    icon: Icons.history_rounded),
+                StreakCard(
+                    title: AppLocalizations.of(context)!
+                        .streakSinceBadDay(daysSinceBadDay ?? 0),
+                    isVisible: daysSinceBadDay != null && daysSinceBadDay > 3,
+                    icon: Icons.timeline_rounded),
+                StreakCard(
+                  title: AppLocalizations.of(context)!.logCount(logCount),
+                  isVisible: logCount > 0,
+                  icon: Icons.description_outlined,
+                ),
+                StreakCard(
+                  title:
+                      AppLocalizations.of(context)!.dayCount(entryDayCount),
+                  isVisible:
+                      (entryDayCount > 0) && (entryDayCount != logCount),
+                  icon: Icons.today_rounded,
+                ),
+                StreakCard(
                   title: AppLocalizations.of(context)!
-                      .streakSinceBadDay(daysSinceBadDay ?? 0),
-                  isVisible: daysSinceBadDay != null && daysSinceBadDay > 3,
-                  icon: Icons.timeline_rounded),
-              StreakCard(
-                title: AppLocalizations.of(context)!.logCount(logCount),
-                isVisible: logCount > 0,
-                icon: Icons.description_outlined,
-              ),
-              StreakCard(
-                title: AppLocalizations.of(context)!.dayCount(entryDayCount),
-                isVisible: (entryDayCount > 0) && (entryDayCount != logCount),
-                icon: Icons.today_rounded,
-              ),
-              StreakCard(
-                title: AppLocalizations.of(context)!
-                    .wordCount(entriesProvider.wordCount),
-                isVisible: entriesProvider.wordCount > 100,
-                icon: Icons.sort_rounded,
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: StatsRangeSelector(
-              statsRange: statsRange,
-              onSelectionChanged: (newSelection) {
-                setState(() {
-                  statsRange = newSelection;
-                });
-                ConfigProvider.instance.set(
-                    ConfigKey.statsRange, _rangeToString[newSelection]);
-              },
+                      .wordCount(entriesProvider.wordCount),
+                  isVisible: entriesProvider.wordCount > 100,
+                  icon: Icons.sort_rounded,
+                ),
+              ],
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2.0),
-          child: MoodOverTimeChart(
-            entries: entriesInRange.where((e) => e.mood != null).toList(),
-            hasData: getMoodTotals(entriesInRange).values.any((v) => v > 0),
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: _RangeSelectorDelegate(
+            statsRange: statsRange,
+            onSelectionChanged: (newSelection) {
+              setState(() {
+                statsRange = newSelection;
+              });
+              ConfigProvider.instance
+                  .set(ConfigKey.statsRange, _rangeToString[newSelection]);
+            },
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2.0),
-          child: MoodSummaryChart(
-            moodCounts: getMoodTotals(entriesInRange),
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: MoodOverTimeChart(
+                  entries:
+                      entriesInRange.where((e) => e.mood != null).toList(),
+                  hasData:
+                      getMoodTotals(entriesInRange).values.any((v) => v > 0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: MoodSummaryChart(
+                  moodCounts: getMoodTotals(entriesInRange),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: MoodByDayChart(
+                  averageMood: getMoodsByDay(entriesInRange),
+                  hasData:
+                      getMoodTotals(entriesInRange).values.any((v) => v > 0),
+                ),
+              ),
+              const SizedBox(height: 8.0),
+            ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2.0),
-          child: MoodByDayChart(
-            averageMood: getMoodsByDay(entriesInRange),
-            hasData: getMoodTotals(entriesInRange).values.any((v) => v > 0),
-          ),
-        ),
-        SizedBox(height: 8.0),
       ],
     );
   }
@@ -209,4 +216,43 @@ class _StatsPageState extends State<StatsPage>
 
     return averageMoodsByDay;
   }
+}
+
+class _RangeSelectorDelegate extends SliverPersistentHeaderDelegate {
+  final StatsRange statsRange;
+  final ValueChanged<StatsRange> onSelectionChanged;
+
+  const _RangeSelectorDelegate({
+    required this.statsRange,
+    required this.onSelectionChanged,
+  });
+
+  static const double _height = 56.0;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: StatsRangeSelector(
+            statsRange: statsRange,
+            onSelectionChanged: onSelectionChanged,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => _height;
+
+  @override
+  double get minExtent => _height;
+
+  @override
+  bool shouldRebuild(covariant _RangeSelectorDelegate oldDelegate) =>
+      oldDelegate.statsRange != statsRange;
 }
