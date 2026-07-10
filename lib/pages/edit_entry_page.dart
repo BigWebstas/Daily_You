@@ -214,27 +214,29 @@ class _AddEditEntryPageState extends State<AddEditEntryPage>
               body: Column(
                 children: [
                   Expanded(
-                    child: ListView(
-                      children: [
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 800),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  if (_currentImages.isNotEmpty)
-                                    EntryImageEditableList(
-                                        images: _currentImages,
-                                        onImagesChanged: (images) async {
-                                          _currentImages = images;
-                                          await _saveEntry();
-                                        }),
-                                  StatefulBuilder(
-                                    builder: (context, setState) => Card.filled(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 800),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    if (_currentImages.isNotEmpty)
+                                      EntryImageEditableList(
+                                          images: _currentImages,
+                                          onImagesChanged: (images) async {
+                                            _currentImages = images;
+                                            await _saveEntry();
+                                          }),
+                                    StatefulBuilder(
+                                      builder: (context, setState) => Card.filled(
                                       color: theme.colorScheme.surfaceContainer,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -352,20 +354,54 @@ class _AddEditEntryPageState extends State<AddEditEntryPage>
                                       ),
                                     ),
                                   ),
-                                  StatefulBuilder(
-                                      builder: (context, setState) =>
-                                          EntryTextEditor(
-                                            text: text,
-                                            focusNode: _focusNode,
-                                            textEditingController:
-                                                _textEditingController,
-                                            undoHistoryController:
-                                                _undoController,
-                                            onExpand: _openFullScreenEditor,
-                                          )),
-                                  const SizedBox(height: 16),
                                 ],
                               ),
+                            ),
+                          ),
+                        ),
+                      ),
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () => _focusNode.requestFocus(),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Flexible(
+                                  child: ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                        maxWidth: 800),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          Expanded(
+                                            child: StatefulBuilder(
+                                              builder: (context, setState) =>
+                                                  EntryTextEditor(
+                                                    text: text,
+                                                    focusNode: _focusNode,
+                                                    textEditingController:
+                                                        _textEditingController,
+                                                    undoHistoryController:
+                                                        _undoController,
+                                                    onExpand:
+                                                        _openFullScreenEditor,
+                                                  ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

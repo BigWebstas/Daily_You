@@ -77,8 +77,8 @@ class _EntryTextEditorState extends State<EntryTextEditor> {
       undoController: widget.undoHistoryController,
       focusNode: widget.focusNode,
       scrollController: _scrollController,
-      minLines: 5,
       maxLines: null,
+      expands: true,
       selectionWidthStyle: BoxWidthStyle.tight,
       spellCheckConfiguration: SpellCheckConfiguration(
           spellCheckService: DefaultSpellCheckService()),
