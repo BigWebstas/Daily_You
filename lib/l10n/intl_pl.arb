@@ -146,5 +146,11 @@
     "settingsOnThisDayDescription": "Przeglądaj poprzednie wspomnienia",
     "templateVariableTime": "Czas",
     "templateDefaultSummaryTitle": "Podsumowanie dnia",
-    "templateDefaultReflectionTitle": "Refleksja"
+    "templateDefaultReflectionTitle": "Refleksja",
+    "dayCount": "{count, plural, one{{count} dzień} other{{count} dni}}",
+    "chartGroupingMonth": "Miesiąc",
+    "chartGroupingYear": "Rok",
+    "calendarSystemGregorian": "Gregoriański",
+    "templateDefaultTimestampBody": "{date} - {time}:",
+    "imagesTitle": "Zdjęcia"
 }
