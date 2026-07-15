@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">Daily You</h1>
 <h2 align="center">Every day is worth remembering…</h2>
-
+<h2 align="center">Fork of Demizo's Daily You with compiled Windows Portable and Linux AppImage Binaries</h2>
 Capture the moments that matter. **Daily You** helps you log your thoughts, track your mood, and keep a diary of meaningful moments, every day. Whether you're journaling, reflecting, or just noting what made you smile, **Daily You** gives you a private space that's truly your own.
 
 Join a community that believes **your journal should be yours**, not a product.
