@@ -1,0 +1,5 @@
+Daily You v2.26.2 has arrived! Visualize:
+
+• Improved fullscreen image viewer
+• Minor UI improvements
+• Updated translations
