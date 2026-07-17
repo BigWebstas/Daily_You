@@ -19,6 +19,8 @@ export PUB_CACHE=$(pwd)/.pub-cache
 flutter pub get
 sed -i -e 's/-Wl,/-Wl,--build-id=none,/' $PUB_CACHE/hosted/pub.dev/jni-*/src/CMakeLists.txt
 
+flutter clean
+
 flutter build apk \
   --flavor independent \
   --release \
