@@ -161,5 +161,13 @@
     "settingsCalendarSystem": "历法系统",
     "calendarSystemGregorian": "公历",
     "calendarSystemJalali": "波斯历",
-    "imagesTitle": "图像"
+    "imagesTitle": "图像",
+    "jumpToMonthTitle": "月迹跳转",
+    "jumpToLogTitle": "日迹直达",
+    "chartSmoothingLabel": "平滑",
+    "chartGroupingYear": "年",
+    "chartGroupingMonth": "月",
+    "chartGroupingWeek": "周",
+    "chartGroupingDay": "天",
+    "chartGroupingLabel": "群组"
 }
