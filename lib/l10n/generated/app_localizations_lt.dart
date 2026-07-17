@@ -30,10 +30,10 @@ class AppLocalizationsLt extends AppLocalizations {
   String get pageHomeTitle => 'Pradžia';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => 'Peršokti į mėnesį';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'Peršokti į žurnalo įrašą';
 
   @override
   String get flashbacksTitle => 'Žvilgsniai į praeitį';
@@ -183,22 +183,22 @@ class AppLocalizationsLt extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => 'Grupuoti pagal';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => 'Diena';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => 'Savaitė';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => 'Mėnesis';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => 'Metai';
 
   @override
-  String get chartSmoothingLabel => 'Smoothing';
+  String get chartSmoothingLabel => 'Glodinimas';
 
   @override
   String streakCurrent(num count) {
@@ -654,7 +654,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get settingsConsiderSupporting => 'apsvarstykite galimybę paremti';
 
   @override
-  String get imagesTitle => 'Images';
+  String get imagesTitle => 'Paveikslai';
 
   @override
   String get tagMoodTitle => 'Nuotaika';

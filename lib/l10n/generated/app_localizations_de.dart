@@ -30,10 +30,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pageHomeTitle => 'Start';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => 'Springe zu Monat';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'Wechsle zum Log';
 
   @override
   String get flashbacksTitle => 'Rückblicke';
@@ -171,19 +171,19 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => 'Gruppieren nach';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => 'Tag';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => 'Woche';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => 'Monat';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => 'Jahr';
 
   @override
   String get chartSmoothingLabel => 'Smoothing';
@@ -276,10 +276,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsFirstDayOfWeek => 'Erster Tag der Woche';
 
   @override
-  String get settingsCalendarSystem => 'Calendar System';
+  String get settingsCalendarSystem => 'Kalendersystem';
 
   @override
-  String get calendarSystemGregorian => 'Gregorian';
+  String get calendarSystemGregorian => 'Gregorianisch';
 
   @override
   String get calendarSystemJalali => 'Jalali';
@@ -643,7 +643,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsConsiderSupporting => 'unterstützen';
 
   @override
-  String get imagesTitle => 'Images';
+  String get imagesTitle => 'Bilder';
 
   @override
   String get tagMoodTitle => 'Stimmung';
