@@ -156,5 +156,17 @@
     "chartOverTimeTitle": "{tag} a lo largo del tiempo",
     "settingsOnThisDayDescription": "Revive recuerdos del pasado",
     "templateVariableTime": "Tiempo",
-    "templateDefaultTimestampBody": "{date} - {time}:"
+    "templateDefaultTimestampBody": "{date} - {time}:",
+    "jumpToMonthTitle": "Ir a mes",
+    "jumpToLogTitle": "Ir al registro",
+    "chartGroupingLabel": "Agrupar por",
+    "chartGroupingDay": "Día",
+    "chartGroupingWeek": "Semana",
+    "chartGroupingMonth": "Mes",
+    "chartGroupingYear": "Año",
+    "settingsCalendarSystem": "Calendario del Sistema",
+    "calendarSystemGregorian": "Gregoriano",
+    "calendarSystemJalali": "Jalalí",
+    "templateDefaultReflectionBody": "### ¿Qué te gustó hoy?\n- \n\n### ¿Por qué estás agradecido/a?\n- \n\n### ¿Qué estás esperando?\n- ",
+    "imagesTitle": "Imágenes"
 }
