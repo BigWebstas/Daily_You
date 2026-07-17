@@ -157,5 +157,16 @@
     "dayCount": "{count, plural, one{{count} Tag} other{{count} Tage}}",
     "settingsHideImages": "Bilder verbergen",
     "pageCalendarTitle": "Kalender",
-    "chartOverTimeTitle": "{tag} Über die Zeit"
+    "chartOverTimeTitle": "{tag} Über die Zeit",
+    "jumpToMonthTitle": "Springe zu Monat",
+    "jumpToLogTitle": "Wechsle zum Log",
+    "chartGroupingLabel": "Gruppieren nach",
+    "chartGroupingDay": "Tag",
+    "chartGroupingWeek": "Woche",
+    "chartGroupingMonth": "Monat",
+    "chartGroupingYear": "Jahr",
+    "settingsCalendarSystem": "Kalendersystem",
+    "calendarSystemGregorian": "Gregorianisch",
+    "calendarSystemJalali": "Jalali",
+    "imagesTitle": "Bilder"
 }
