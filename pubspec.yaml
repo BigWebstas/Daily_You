@@ -1,7 +1,7 @@
 name: daily_you
 description: Every day is worth remembering...
 publish_to: 'none'
-version: 2.26.0+2026000
+version: 2.26.2+2026002
 
 environment:
   sdk: '>=3.0.0'
@@ -43,7 +43,6 @@ dependencies:
   saf_util: ^2.1.0
   archive: ^4.0.7
   mime: ^2.0.0
-  extended_image: ^10.0.1
   app_settings: ^7.0.0
   image: ^4.5.4
   flutter_cache_manager: ^3.4.1

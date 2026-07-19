@@ -30,10 +30,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pageHomeTitle => '主页';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => '月迹跳转';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => '日迹直达';
 
   @override
   String get flashbacksTitle => '往昔重现';
@@ -171,22 +171,22 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => '群组';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => '天';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => '周';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => '月';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => '年';
 
   @override
-  String get chartSmoothingLabel => 'Smoothing';
+  String get chartSmoothingLabel => '平滑';
 
   @override
   String streakCurrent(num count) {
@@ -658,6 +658,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get pageHomeTitle => '主頁';
 
   @override
+  String get jumpToMonthTitle => '跳至月份';
+
+  @override
+  String get jumpToLogTitle => '跳至紀錄';
+
+  @override
   String get flashbacksTitle => '往日重現';
 
   @override
@@ -791,6 +797,24 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String chartOverTimeTitle(Object tag) {
     return '$tag 隨著時間的變化';
   }
+
+  @override
+  String get chartGroupingLabel => '群組';
+
+  @override
+  String get chartGroupingDay => '天';
+
+  @override
+  String get chartGroupingWeek => '週';
+
+  @override
+  String get chartGroupingMonth => '月';
+
+  @override
+  String get chartGroupingYear => '年';
+
+  @override
+  String get chartSmoothingLabel => '平滑';
 
   @override
   String streakCurrent(num count) {

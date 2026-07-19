@@ -30,10 +30,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pageHomeTitle => 'Inicio';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => 'Ir a mes';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'Ir al registro';
 
   @override
   String get flashbacksTitle => 'Recuerdos';
@@ -171,19 +171,19 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => 'Agrupar por';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => 'Día';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => 'Semana';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => 'Mes';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => 'Año';
 
   @override
   String get chartSmoothingLabel => 'Smoothing';
@@ -276,13 +276,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsFirstDayOfWeek => 'Primer Día de la Semana';
 
   @override
-  String get settingsCalendarSystem => 'Calendar System';
+  String get settingsCalendarSystem => 'Calendario del Sistema';
 
   @override
-  String get calendarSystemGregorian => 'Gregorian';
+  String get calendarSystemGregorian => 'Gregoriano';
 
   @override
-  String get calendarSystemJalali => 'Jalali';
+  String get calendarSystemJalali => 'Jalalí';
 
   @override
   String get settingsUseSystemAccentColor => 'Usar Color de Acento del Sistema';
@@ -408,7 +408,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get templateDefaultReflectionBody =>
-      '### What did you enjoy about today?\n- \n\n### What are you thankful for?\n- \n\n### What are you looking forward to?\n- ';
+      '### ¿Qué te gustó hoy?\n- \n\n### ¿Por qué estás agradecido/a?\n- \n\n### ¿Qué estás esperando?\n- ';
 
   @override
   String get settingsStorageTitle => 'Almacenamiento';
@@ -642,7 +642,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsConsiderSupporting => 'Considera en apoyar';
 
   @override
-  String get imagesTitle => 'Images';
+  String get imagesTitle => 'Imágenes';
 
   @override
   String get tagMoodTitle => 'Ánimo';

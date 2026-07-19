@@ -27,13 +27,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get actionOtherDay => 'Inny dzień';
 
   @override
-  String get pageHomeTitle => 'Strona domowa';
+  String get pageHomeTitle => 'Strona główna';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => 'Wybierz miesiąc';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'Wybierz wpis';
 
   @override
   String get flashbacksTitle => 'Wspomnienia';
@@ -97,8 +97,8 @@ class AppLocalizationsPl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ilość wpisów',
-      one: '$count log',
+      other: '$count wpisy',
+      one: '$count wpis',
     );
     return '$_temp0';
   }
@@ -108,8 +108,8 @@ class AppLocalizationsPl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count days',
-      one: '$count day',
+      other: '$count dni',
+      one: '$count dzień',
     );
     return '$_temp0';
   }
@@ -120,7 +120,7 @@ class AppLocalizationsPl extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count słowa',
-      one: '$count word',
+      one: '$count słowo',
     );
     return '$_temp0';
   }
@@ -171,19 +171,19 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => 'Grupuj według';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => 'Dni';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => 'Tygodni';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => 'Miesięcy';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => 'Lat';
 
   @override
   String get chartSmoothingLabel => 'Smoothing';
@@ -276,10 +276,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settingsFirstDayOfWeek => 'Pierwszy dzień tygodnia';
 
   @override
-  String get settingsCalendarSystem => 'Calendar System';
+  String get settingsCalendarSystem => 'Typ kalendarza';
 
   @override
-  String get calendarSystemGregorian => 'Gregorian';
+  String get calendarSystemGregorian => 'Gregoriański';
 
   @override
   String get calendarSystemJalali => 'Jalali';
@@ -642,7 +642,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settingsConsiderSupporting => 'rozważ wsparcie';
 
   @override
-  String get imagesTitle => 'Images';
+  String get imagesTitle => 'Zdjęcia';
 
   @override
   String get tagMoodTitle => 'Nastrój';
