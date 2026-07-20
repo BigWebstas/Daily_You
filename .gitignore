@@ -55,3 +55,6 @@ appimage-build
 # direnv
 .direnv/
 android/app/.cxx/
+
+# Windows installer output
+/installer/output/
