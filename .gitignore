@@ -47,6 +47,7 @@ app.*.map.json
 AppDir
 appimage-build
 *.AppImage*
+.tools/
 
 # FVM Version Cache
 .fvm/
