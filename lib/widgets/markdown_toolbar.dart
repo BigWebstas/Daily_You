@@ -1,4 +1,5 @@
 import 'package:daily_you/config_provider.dart';
+import 'package:daily_you/widgets/template_select_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -190,10 +191,10 @@ class _MarkdownToolbarState extends State<MarkdownToolbar> {
         (Icons.text_fields_rounded, _showHeaderDialog),
         (Icons.format_bold_rounded, () => _wrapSelection('**')),
         (Icons.format_italic_rounded, () => _wrapSelection('_')),
-        (Icons.format_strikethrough_rounded, () => _wrapSelection('~~')),
         (Icons.format_list_bulleted_rounded, () => _insertLinePrefix('-')),
-        (Icons.link_rounded, () => _wrapSelection('[', ']()')),
         (Icons.format_quote_rounded, () => _insertLinePrefix('>')),
+        (Icons.link_rounded, () => _wrapSelection('[', ']()')),
+        (Icons.format_strikethrough_rounded, () => _wrapSelection('~~')),
       ];
 
   List<_ToolbarEntry> _buildEntries(
@@ -208,7 +209,23 @@ class _MarkdownToolbarState extends State<MarkdownToolbar> {
       ));
     }
 
+    // Template insert
+    entries.add(_ToolbarEntry(
+      width: _buttonWidth,
+      isDivider: false,
+      build: (ctx, closePopup) => IconButton(
+        padding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        icon: const Icon(Icons.note_add_rounded, size: 24),
+        onPressed: () {
+          closePopup?.call();
+          showTemplateSelectPopup(ctx, widget.controller);
+        },
+      ),
+    ));
+
     // Markdown controls
+    if (entries.isNotEmpty) addDivider();
     for (final (icon, action) in _formatButtonSpecs()) {
       entries.add(_ToolbarEntry(
         width: _buttonWidth,

@@ -304,6 +304,12 @@ abstract class AppLocalizations {
   /// **'No Logs…'**
   String get noLogs;
 
+  /// No description provided for @noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No Results…'**
+  String get noResults;
+
   /// No description provided for @sortDateTitle.
   ///
   /// In en, this message translates to:
@@ -424,6 +430,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, other{Longest Streak {count}}}'**
   String streakLongest(num count);
 
+  /// No description provided for @streakGreatDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, other{Great Days {count}}}'**
+  String streakGreatDays(num count);
+
   /// No description provided for @streakSinceBadDay.
   ///
   /// In en, this message translates to:
@@ -447,6 +459,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue With Local Database'**
   String get errorExternalStorageAccessContinue;
+
+  /// No description provided for @databaseMigrationErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t Move Your Data'**
+  String get databaseMigrationErrorTitle;
+
+  /// No description provided for @databaseMigrationErrorDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your entries are safe but couldn\'t be moved to the app\'s storage.\n\nTry again, and report the issue if it keeps happening.'**
+  String get databaseMigrationErrorDescription;
+
+  /// No description provided for @databaseMigrationErrorRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get databaseMigrationErrorRetry;
+
+  /// No description provided for @errorReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Issue'**
+  String get errorReport;
 
   /// No description provided for @lastModified.
   ///
@@ -790,6 +826,318 @@ abstract class AppLocalizations {
   /// **'### What did you enjoy about today?\n- \n\n### What are you thankful for?\n- \n\n### What are you looking forward to?\n- '**
   String get templateDefaultReflectionBody;
 
+  /// No description provided for @settingsTagsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get settingsTagsTitle;
+
+  /// No description provided for @manageTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Tags'**
+  String get manageTags;
+
+  /// No description provided for @tagTypeLabelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get tagTypeLabelTitle;
+
+  /// No description provided for @tagTypeTrackerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracker'**
+  String get tagTypeTrackerTitle;
+
+  /// No description provided for @nameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameHint;
+
+  /// No description provided for @tagColorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get tagColorLabel;
+
+  /// No description provided for @iconPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Icon'**
+  String get iconPickerTitle;
+
+  /// No description provided for @iconPickerIconsTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Icons'**
+  String get iconPickerIconsTab;
+
+  /// No description provided for @iconPickerCustomTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get iconPickerCustomTab;
+
+  /// No description provided for @iconPickerSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search icons…'**
+  String get iconPickerSearchHint;
+
+  /// No description provided for @colorPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Color'**
+  String get colorPickerTitle;
+
+  /// No description provided for @colorPickerPaletteTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Colors'**
+  String get colorPickerPaletteTab;
+
+  /// No description provided for @iconGroupMoodPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood & People'**
+  String get iconGroupMoodPeople;
+
+  /// No description provided for @iconGroupHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get iconGroupHealth;
+
+  /// No description provided for @iconGroupWorkFinance.
+  ///
+  /// In en, this message translates to:
+  /// **'Work & Finance'**
+  String get iconGroupWorkFinance;
+
+  /// No description provided for @iconGroupHabitsGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Habits & Goals'**
+  String get iconGroupHabitsGoals;
+
+  /// No description provided for @iconGroupNature.
+  ///
+  /// In en, this message translates to:
+  /// **'Nature'**
+  String get iconGroupNature;
+
+  /// No description provided for @iconGroupFoodDrink.
+  ///
+  /// In en, this message translates to:
+  /// **'Food & Drink'**
+  String get iconGroupFoodDrink;
+
+  /// No description provided for @iconGroupTravel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get iconGroupTravel;
+
+  /// No description provided for @iconGroupSymbols.
+  ///
+  /// In en, this message translates to:
+  /// **'Symbols'**
+  String get iconGroupSymbols;
+
+  /// No description provided for @tagCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get tagCategoryLabel;
+
+  /// No description provided for @tagCategoryUncategorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncategorized'**
+  String get tagCategoryUncategorized;
+
+  /// No description provided for @newCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Category'**
+  String get newCategoryTitle;
+
+  /// No description provided for @deleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteTitle;
+
+  /// No description provided for @deleteTagMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?{count, plural, =0{} =1{ It is used in 1 log.} other{ It is used in {count} logs.}}'**
+  String deleteTagMessage(num count, Object name);
+
+  /// No description provided for @deleteCategoryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?{count, plural, =0{} =1{ Its 1 tag will also be deleted.} other{ Its {count} tags will also be deleted.}}'**
+  String deleteCategoryMessage(num count, Object name);
+
+  /// No description provided for @filterTagsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filterTagsTitle;
+
+  /// No description provided for @tagFilterModeAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any Tag'**
+  String get tagFilterModeAny;
+
+  /// No description provided for @tagFilterModeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All Tags'**
+  String get tagFilterModeAll;
+
+  /// No description provided for @clearAllFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clearAllFilters;
+
+  /// No description provided for @noTagsFilterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No Tags'**
+  String get noTagsFilterLabel;
+
+  /// No description provided for @addTagsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Tags'**
+  String get addTagsTitle;
+
+  /// No description provided for @addTagsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tags…'**
+  String get addTagsSearchHint;
+
+  /// No description provided for @tagPickerSortManualLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual order'**
+  String get tagPickerSortManualLabel;
+
+  /// No description provided for @tagPickerSortUsageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by usage'**
+  String get tagPickerSortUsageLabel;
+
+  /// No description provided for @tagFavoriteName.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite'**
+  String get tagFavoriteName;
+
+  /// No description provided for @tagEnergyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy'**
+  String get tagEnergyName;
+
+  /// No description provided for @tagCategoryActivitiesName.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities'**
+  String get tagCategoryActivitiesName;
+
+  /// No description provided for @tagExerciseName.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get tagExerciseName;
+
+  /// No description provided for @tagSocializingName.
+  ///
+  /// In en, this message translates to:
+  /// **'Socializing'**
+  String get tagSocializingName;
+
+  /// No description provided for @tagHobbyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Hobby'**
+  String get tagHobbyName;
+
+  /// No description provided for @tagEntertainmentName.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get tagEntertainmentName;
+
+  /// No description provided for @tagDiningName.
+  ///
+  /// In en, this message translates to:
+  /// **'Dining'**
+  String get tagDiningName;
+
+  /// No description provided for @tagChoresName.
+  ///
+  /// In en, this message translates to:
+  /// **'Chores'**
+  String get tagChoresName;
+
+  /// No description provided for @tagCategoryEmotionsName.
+  ///
+  /// In en, this message translates to:
+  /// **'Emotions'**
+  String get tagCategoryEmotionsName;
+
+  /// No description provided for @tagExcitedName.
+  ///
+  /// In en, this message translates to:
+  /// **'Excited'**
+  String get tagExcitedName;
+
+  /// No description provided for @tagGratefulName.
+  ///
+  /// In en, this message translates to:
+  /// **'Grateful'**
+  String get tagGratefulName;
+
+  /// No description provided for @tagCalmName.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm'**
+  String get tagCalmName;
+
+  /// No description provided for @tagTiredName.
+  ///
+  /// In en, this message translates to:
+  /// **'Tired'**
+  String get tagTiredName;
+
+  /// No description provided for @tagAnxiousName.
+  ///
+  /// In en, this message translates to:
+  /// **'Anxious'**
+  String get tagAnxiousName;
+
+  /// No description provided for @tagAnnoyedName.
+  ///
+  /// In en, this message translates to:
+  /// **'Annoyed'**
+  String get tagAnnoyedName;
+
+  /// No description provided for @welcomeLogBodyText.
+  ///
+  /// In en, this message translates to:
+  /// **'## Welcome to Daily You\n\n> Every day is worth remembering, capture it!\n\n**Daily You** is free, [open source](https://github.com/Demizo/Daily_You), and community supported. Built around the belief that your diary should be yours, not a product:\n\n- No ads\n- No locked features\n- No tracking or data collection\n\nWhether you\'re journaling, reflecting, or just noting what made you smile, **Daily You** gives you a private space that\'s _truly your own_.'**
+  String get welcomeLogBodyText;
+
   /// No description provided for @settingsStorageTitle.
   ///
   /// In en, this message translates to:
@@ -927,6 +1275,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cleaning Up…'**
   String get cleanUpStatus;
+
+  /// No description provided for @migratingImagesStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Migrating photos… {current}/{total}'**
+  String migratingImagesStatus(Object current, Object total);
 
   /// No description provided for @settingsExport.
   ///
@@ -1227,6 +1581,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mood'**
   String get tagMoodTitle;
+
+  /// No description provided for @calendarTagDisplayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag'**
+  String get calendarTagDisplayLabel;
+
+  /// No description provided for @selectTagTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Tag'**
+  String get selectTagTitle;
+
+  /// No description provided for @labelPresentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get labelPresentLabel;
+
+  /// No description provided for @labelAbsentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Absent'**
+  String get labelAbsentLabel;
+
+  /// No description provided for @labelCoverageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage'**
+  String get labelCoverageLabel;
+
+  /// No description provided for @chartDistributionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{tag} Distribution'**
+  String chartDistributionTitle(Object tag);
 }
 
 class _AppLocalizationsDelegate

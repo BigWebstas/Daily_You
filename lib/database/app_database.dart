@@ -2,14 +2,22 @@ import 'dart:io';
 
 import 'package:daily_you/config_provider.dart';
 import 'package:daily_you/database/image_storage.dart';
+import 'package:daily_you/l10n/generated/app_localizations.dart';
 import 'package:daily_you/utils/file_layer.dart';
+import 'package:daily_you/utils/generated/tag_icon_registry.dart';
 import 'package:daily_you/models/entry.dart';
 import 'package:daily_you/models/image.dart';
+import 'package:daily_you/models/tag.dart';
+import 'package:daily_you/models/tag_category.dart';
 import 'package:daily_you/models/template.dart';
 import 'package:daily_you/providers/entries_provider.dart';
 import 'package:daily_you/providers/entry_images_provider.dart';
+import 'package:daily_you/providers/tags_provider.dart';
 import 'package:daily_you/providers/templates_provider.dart';
 import 'package:easy_debounce/easy_debounce.dart';
+import 'package:flutter/widgets.dart';
+import 'package:logging/logging.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -18,14 +26,38 @@ class AppDatabase {
   static final AppDatabase instance = AppDatabase._init();
   AppDatabase._init();
 
+  final Logger _logger = Logger('AppDatabase');
+
+  /// True when a migration from external storage was attempted on the last
+  /// [init] but failed.
+  bool migrationFailed = false;
+
   static Database? _database;
   Database? get database => _database;
 
   String? _internalPath;
 
-  Future<bool> init({bool forceWithoutSync = false}) async {
+  Future<bool> init(
+      {bool forceWithoutSync = false, bool allowMigration = true}) async {
     _internalPath = await getInternalPath();
+    migrationFailed = false;
     bool success = true;
+
+    if (Platform.isAndroid && allowMigration) {
+      final migrated = await _migrateDbFromExternalStorage();
+      if (!migrated && !forceWithoutSync) {
+        // Migration was attempted but failed
+        migrationFailed = true;
+        return false;
+      }
+    }
+
+    // Migration is foreground-only. A background task (allowMigration: false)
+    // must never create a fresh database before the user has migrated their
+    // data, so bail if there is nothing to open yet.
+    if (!allowMigration && !await File(_internalPath!).exists()) {
+      return false;
+    }
 
     if (usingExternalLocation() && !forceWithoutSync) {
       if (await hasExternalLocationPermission()) {
@@ -39,13 +71,49 @@ class AppDatabase {
     return success;
   }
 
+  /// Returns whether it is safe to open the internal database. False means a
+  /// migration was needed but failed, so the caller must not create a fresh
+  /// database over the still-intact external copy.
+  Future<bool> _migrateDbFromExternalStorage() async {
+    if (await File(_internalPath!).exists()) return true;
+
+    final oldDir = await getExternalStorageDirectory();
+    if (oldDir == null) return true;
+    final oldPath = join(oldDir.path, 'daily_you.db');
+    if (!await File(oldPath).exists()) return true;
+
+    _logger.info('Database migration started: $oldPath -> $_internalPath');
+    try {
+      await File(oldPath).copy(_internalPath!);
+      if (await _validateSqliteDatabase(_internalPath!)) {
+        await File(oldPath).delete();
+        _logger.info('Database migration finished successfully');
+        return true;
+      }
+      // Integrity check failed: discard the bad copy and keep the external
+      // original so the migration can be retried instead of proceeding.
+      await File(_internalPath!).delete();
+      _logger.severe(
+          'Database migration failed: integrity check failed, kept original external database');
+      return false;
+    } catch (error, stackTrace) {
+      // Remove any partial copy so the migration is retried on relaunch.
+      if (await File(_internalPath!).exists()) {
+        await File(_internalPath!).delete();
+      }
+      _logger.severe('Database migration failed', error, stackTrace);
+      return false;
+    }
+  }
+
   Future<void> open() async {
     _database = await openDatabase(_internalPath!,
-        version: 3, onCreate: _createDatabase, onUpgrade: _onUpgrade);
+        version: 4, onCreate: _createDatabase, onUpgrade: _onUpgrade);
 
     await EntriesProvider.instance.load();
     await EntryImagesProvider.instance.load();
     await TemplatesProvider.instance.load();
+    await TagsProvider.instance.load();
   }
 
   Future<void> close() async {
@@ -71,15 +139,8 @@ class AppDatabase {
   }
 
   Future<String> getInternalPath() async {
-    Directory basePath;
-    if (Platform.isAndroid) {
-      basePath = (await getExternalStorageDirectory())!;
-    } else {
-      basePath = await getApplicationSupportDirectory();
-      if (!basePath.existsSync()) {
-        basePath.createSync(recursive: true);
-      }
-    }
+    final basePath = await getApplicationSupportDirectory();
+    if (!basePath.existsSync()) basePath.createSync(recursive: true);
     return join(basePath.path, 'daily_you.db');
   }
 
@@ -268,6 +329,121 @@ CREATE TABLE $imagesTable (
     FOREIGN KEY (${EntryImageFields.entryId}) REFERENCES $entriesTable (id)
 )
 ''');
+
+    await _createTagTables(db);
+    await TagsProvider.instance.createDefaultTags();
+
+    await _createWelcomeEntry();
+  }
+
+  Future<void> _createWelcomeEntry() async {
+    final deviceLocale = WidgetsBinding.instance.platformDispatcher.locale;
+    Locale locale;
+    if (AppLocalizations.delegate.isSupported(deviceLocale)) {
+      locale = deviceLocale;
+    } else {
+      final langOnly = Locale(deviceLocale.languageCode);
+      locale = AppLocalizations.delegate.isSupported(langOnly)
+          ? langOnly
+          : const Locale('en');
+    }
+    final l10n = await AppLocalizations.delegate.load(locale);
+    final now = DateTime.now();
+
+    final welcomeEntry = await EntriesProvider.instance.add(
+      Entry(
+        text: l10n.welcomeLogBodyText,
+        mood: 1,
+        timeCreate: now,
+        timeModified: now,
+      ),
+      skipUpdate: true,
+    );
+
+    final imageBytes =
+        await rootBundle.load('assets/daily_you_First_Steps.webp');
+    final imageName = await ImageStorage.instance.create(
+      'daily_you_First_Steps.webp',
+      imageBytes.buffer.asUint8List(),
+      currTime: now,
+    );
+    if (imageName != null) {
+      await EntryImagesProvider.instance.add(
+        EntryImage(
+          entryId: welcomeEntry.id,
+          imgPath: imageName,
+          imgRank: 0,
+          timeCreate: now,
+        ),
+        skipUpdate: true,
+      );
+    }
+
+    final favoriteTag = TagsProvider.instance.tags
+        .where((tag) => tag.icon == TagIconKey.favorite)
+        .firstOrNull;
+    if (favoriteTag != null) {
+      await TagsProvider.instance.addEntryTag(EntryTag(
+        entryId: welcomeEntry.id!,
+        tagId: favoriteTag.id!,
+        timeCreate: now,
+      ));
+    }
+
+    final energyTag = TagsProvider.instance.tags
+        .where((tag) => tag.icon == TagIconKey.batteryChargingFull)
+        .firstOrNull;
+    if (energyTag != null) {
+      await TagsProvider.instance.addEntryTag(EntryTag(
+        entryId: welcomeEntry.id!,
+        tagId: energyTag.id!,
+        value: '10',
+        timeCreate: now,
+      ));
+    }
+  }
+
+  Future<void> _createTagTables(Database db) async {
+    await db.execute('''
+CREATE TABLE $tagCategoriesTable (
+    ${TagCategoryFields.id} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ${TagCategoryFields.icon} TEXT,
+    ${TagCategoryFields.iconType} INTEGER NOT NULL DEFAULT 0,
+    ${TagCategoryFields.name} TEXT NOT NULL,
+    ${TagCategoryFields.color} INTEGER,
+    ${TagCategoryFields.sortOrder} INTEGER NOT NULL DEFAULT 0,
+    ${TagCategoryFields.timeCreate} DATETIME NOT NULL DEFAULT (DATETIME('now')),
+    ${TagCategoryFields.timeModified} DATETIME NOT NULL DEFAULT (DATETIME('now'))
+)
+''');
+
+    await db.execute('''
+CREATE TABLE $tagsTable (
+    ${TagFields.id} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ${TagFields.categoryId} INTEGER,
+    ${TagFields.icon} TEXT,
+    ${TagFields.iconType} INTEGER NOT NULL DEFAULT 0,
+    ${TagFields.name} TEXT NOT NULL,
+    ${TagFields.tagType} INTEGER NOT NULL,
+    ${TagFields.color} INTEGER,
+    ${TagFields.sortOrder} INTEGER NOT NULL DEFAULT 0,
+    ${TagFields.timeCreate} DATETIME NOT NULL DEFAULT (DATETIME('now')),
+    ${TagFields.timeModified} DATETIME NOT NULL DEFAULT (DATETIME('now')),
+    FOREIGN KEY (${TagFields.categoryId}) REFERENCES $tagCategoriesTable (id)
+)
+''');
+
+    await db.execute('''
+CREATE TABLE $entryTagsTable (
+    ${EntryTagFields.id} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ${EntryTagFields.entryId} INTEGER NOT NULL,
+    ${EntryTagFields.tagId} INTEGER NOT NULL,
+    ${EntryTagFields.value} TEXT,
+    ${EntryTagFields.timeCreate} DATETIME NOT NULL DEFAULT (DATETIME('now')),
+    FOREIGN KEY (${EntryTagFields.entryId}) REFERENCES $entriesTable (id),
+    FOREIGN KEY (${EntryTagFields.tagId}) REFERENCES $tagsTable (id)
+)
+''');
   }
 
   void _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -334,6 +510,10 @@ FROM old_entries;
 DROP TABLE old_entries;
     ''');
       });
+    }
+    if (oldVersion <= 3) {
+      await _createTagTables(db);
+      await TagsProvider.instance.createDefaultTags();
     }
   }
 }

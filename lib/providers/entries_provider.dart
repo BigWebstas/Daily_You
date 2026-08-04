@@ -5,13 +5,14 @@ import 'package:daily_you/database/entry_dao.dart';
 import 'package:daily_you/models/entry.dart';
 import 'package:daily_you/notification_manager.dart';
 import 'package:daily_you/providers/entry_images_provider.dart';
+import 'package:daily_you/providers/tags_provider.dart';
 import 'package:daily_you/providers/templates_provider.dart';
 import 'package:daily_you/time_manager.dart';
 import 'package:daily_you/widgets/stat_range_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:word_count/word_count.dart';
 
-enum OrderBy { date, mood }
+enum OrderBy { date, mood, tracker }
 
 enum SortOrder { ascending, descending }
 
@@ -20,7 +21,7 @@ class EntriesProvider with ChangeNotifier {
 
   EntriesProvider._init();
 
-  List<Entry> entries = List.empty();
+  List<Entry> entries = List.empty(growable: true);
 
   Map<DateTime, List<Entry>> _entriesByDay = {};
 
@@ -52,6 +53,14 @@ class EntriesProvider with ChangeNotifier {
     if (_orderBy == newOrderBy) return;
     _orderBy = newOrderBy;
     _calculateFilteredEntries();
+    notifyListeners();
+  }
+
+  int? _trackerSortTagId;
+  int? get trackerSortTagId => _trackerSortTagId;
+  set trackerSortTagId(int? id) {
+    if (_trackerSortTagId == id) return;
+    _trackerSortTagId = id;
     notifyListeners();
   }
 
@@ -160,6 +169,7 @@ class EntriesProvider with ChangeNotifier {
       for (final image in images) {
         await EntryImagesProvider.instance.remove(image);
       }
+      await TagsProvider.instance.removeAllEntryTagsForEntry(entry.id!);
       processedEntries += 1;
       // The provider's remove function is not used to avoid editing the entries
       // list while iterating over it.

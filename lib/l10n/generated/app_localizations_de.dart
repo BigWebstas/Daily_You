@@ -129,6 +129,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noLogs => 'Keine Einträge vorhanden …';
 
   @override
+  String get noResults => 'Keine Ergebnisse…';
+
+  @override
   String get sortDateTitle => 'Datum';
 
   @override
@@ -186,7 +189,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chartGroupingYear => 'Jahr';
 
   @override
-  String get chartSmoothingLabel => 'Smoothing';
+  String get chartSmoothingLabel => 'Glättung';
 
   @override
   String streakCurrent(num count) {
@@ -204,6 +207,16 @@ class AppLocalizationsDe extends AppLocalizations {
       count,
       locale: localeName,
       other: 'Längste Serie $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String streakGreatDays(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Great Days $count',
     );
     return '$_temp0';
   }
@@ -229,6 +242,19 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get errorExternalStorageAccessContinue =>
       'Weiter mit lokaler Datenbank';
+
+  @override
+  String get databaseMigrationErrorTitle => 'Konnte Daten nicht verschieben';
+
+  @override
+  String get databaseMigrationErrorDescription =>
+      'Deine Einträge sind sicher, konnten aber nicht in den Appspeicher verschoben werden.\n\nVersuche es erneut und melde das Problem, sofern es weiterhin auftritt.';
+
+  @override
+  String get databaseMigrationErrorRetry => 'Erneut versuchen';
+
+  @override
+  String get errorReport => 'Problem melden';
 
   @override
   String get lastModified => 'Geändert';
@@ -412,6 +438,181 @@ class AppLocalizationsDe extends AppLocalizations {
       '### Was hat dir heute spaß gemachty?\n- \n\n### Wofür bist du heute Dankbar?\n- \n\n### Worauf Freist du dich?\n- ';
 
   @override
+  String get settingsTagsTitle => 'Schlagwörter';
+
+  @override
+  String get manageTags => 'Schlagwörter verwalten';
+
+  @override
+  String get tagTypeLabelTitle => 'Beschriftung';
+
+  @override
+  String get tagTypeTrackerTitle => 'Tracker';
+
+  @override
+  String get nameHint => 'Name';
+
+  @override
+  String get tagColorLabel => 'Farbe';
+
+  @override
+  String get iconPickerTitle => 'Symbol wählen';
+
+  @override
+  String get iconPickerIconsTab => 'Symbole';
+
+  @override
+  String get iconPickerCustomTab => 'Benutzerdefiniert';
+
+  @override
+  String get iconPickerSearchHint => 'Symbole suchen…';
+
+  @override
+  String get colorPickerTitle => 'Farbe auswählen';
+
+  @override
+  String get colorPickerPaletteTab => 'Farben';
+
+  @override
+  String get iconGroupMoodPeople => 'Stimmung & Personen';
+
+  @override
+  String get iconGroupHealth => 'Gesundheit';
+
+  @override
+  String get iconGroupWorkFinance => 'Arbeit & Finanzen';
+
+  @override
+  String get iconGroupHabitsGoals => 'Gewohnheiten & Ziele';
+
+  @override
+  String get iconGroupNature => 'Natur';
+
+  @override
+  String get iconGroupFoodDrink => 'Essen & Trinken';
+
+  @override
+  String get iconGroupTravel => 'Reisen';
+
+  @override
+  String get iconGroupSymbols => 'Symbole';
+
+  @override
+  String get tagCategoryLabel => 'Kategorie';
+
+  @override
+  String get tagCategoryUncategorized => 'Nicht kategorisiert';
+
+  @override
+  String get newCategoryTitle => 'Neue Kategorie';
+
+  @override
+  String get deleteTitle => 'Löschen';
+
+  @override
+  String deleteTagMessage(num count, Object name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: ' Es wird in $count Einträgen verwendet.',
+      one: ' Es wird in 1 Eintrag verwendet.',
+      zero: '',
+    );
+    return '„$name“ löschen?$_temp0';
+  }
+
+  @override
+  String deleteCategoryMessage(num count, Object name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: ' Ihre $count Schlagwörter werden auch gelöscht.',
+      one: ' Ihr 1 Schlagwort wird auch gelöscht.',
+      zero: '',
+    );
+    return '„$name“ löschen?$_temp0';
+  }
+
+  @override
+  String get filterTagsTitle => 'Filter';
+
+  @override
+  String get tagFilterModeAny => 'Beliebiges Schlagwort';
+
+  @override
+  String get tagFilterModeAll => 'Alle Schlagwörter';
+
+  @override
+  String get clearAllFilters => 'Alle leeren';
+
+  @override
+  String get noTagsFilterLabel => 'Keine Schlagwörter';
+
+  @override
+  String get addTagsTitle => 'Schlagwörter hinzufügen';
+
+  @override
+  String get addTagsSearchHint => 'Schlagwörter suchen…';
+
+  @override
+  String get tagPickerSortManualLabel => 'Manuelle Reihenfolge';
+
+  @override
+  String get tagPickerSortUsageLabel => 'Sortiere nach Nutzung';
+
+  @override
+  String get tagFavoriteName => 'Favorit';
+
+  @override
+  String get tagEnergyName => 'Energie';
+
+  @override
+  String get tagCategoryActivitiesName => 'Aktivitäten';
+
+  @override
+  String get tagExerciseName => 'Übungen';
+
+  @override
+  String get tagSocializingName => 'Gemeinschaft';
+
+  @override
+  String get tagHobbyName => 'Hobby';
+
+  @override
+  String get tagEntertainmentName => 'Unterhaltung';
+
+  @override
+  String get tagDiningName => 'Essen gehen';
+
+  @override
+  String get tagChoresName => 'Hausarbeiten';
+
+  @override
+  String get tagCategoryEmotionsName => 'Emotionen';
+
+  @override
+  String get tagExcitedName => 'Aufgeregt';
+
+  @override
+  String get tagGratefulName => 'Dankbar';
+
+  @override
+  String get tagCalmName => 'Ruhig';
+
+  @override
+  String get tagTiredName => 'Müde';
+
+  @override
+  String get tagAnxiousName => 'Ängstlich';
+
+  @override
+  String get tagAnnoyedName => 'Genervt';
+
+  @override
+  String get welcomeLogBodyText =>
+      '## Willkommen bei Daily You\n\n> Jeder Tag ist es wert, in Erinnerung zu bleiben – halte ihn fest!\n\n**Daily You** ist kostenlos, [Open Source](https://github.com/Demizo/Daily_You) und wird von der Community unterstützt. Die App basiert auf der Überzeugung, dass dein Tagebuch dir gehören und kein Produkt sein sollte:\n\n- Keine Werbung\n- Keine gesperrten Funktionen\n- Kein Tracking und keine Datenerfassung\n\nEgal, ob du Tagebuch schreibst, nachdenkst oder einfach nur festhältst, was dich zum Lächeln gebracht hat: **Daily You** bietet dir einen privaten Raum, der _wirklich ganz dir gehört_.';
+
+  @override
   String get settingsStorageTitle => 'Speicher';
 
   @override
@@ -490,6 +691,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get cleanUpStatus => 'Aufräumen…';
+
+  @override
+  String migratingImagesStatus(Object current, Object total) {
+    return 'Übertrage Fotos… $current/$total';
+  }
 
   @override
   String get settingsExport => 'Exportieren';
@@ -647,4 +853,24 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tagMoodTitle => 'Stimmung';
+
+  @override
+  String get calendarTagDisplayLabel => 'Schlagwort';
+
+  @override
+  String get selectTagTitle => 'Schlagwort wählen';
+
+  @override
+  String get labelPresentLabel => 'Anwesend';
+
+  @override
+  String get labelAbsentLabel => 'Abwesend';
+
+  @override
+  String get labelCoverageLabel => 'Abdeckung';
+
+  @override
+  String chartDistributionTitle(Object tag) {
+    return '$tag-Verteilung';
+  }
 }

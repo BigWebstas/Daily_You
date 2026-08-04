@@ -129,6 +129,9 @@ class AppLocalizationsDa extends AppLocalizations {
   String get noLogs => 'Ingen logs…';
 
   @override
+  String get noResults => 'No Results…';
+
+  @override
   String get sortDateTitle => 'Dato';
 
   @override
@@ -209,6 +212,16 @@ class AppLocalizationsDa extends AppLocalizations {
   }
 
   @override
+  String streakGreatDays(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Great Days $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String streakSinceBadDay(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -227,6 +240,19 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get errorExternalStorageAccessContinue => 'Fortsæt med lokal database';
+
+  @override
+  String get databaseMigrationErrorTitle => 'Couldn\'t Move Your Data';
+
+  @override
+  String get databaseMigrationErrorDescription =>
+      'Your entries are safe but couldn\'t be moved to the app\'s storage.\n\nTry again, and report the issue if it keeps happening.';
+
+  @override
+  String get databaseMigrationErrorRetry => 'Retry';
+
+  @override
+  String get errorReport => 'Report Issue';
 
   @override
   String get lastModified => 'Ændret';
@@ -408,6 +434,181 @@ class AppLocalizationsDa extends AppLocalizations {
       '### What did you enjoy about today?\n- \n\n### What are you thankful for?\n- \n\n### What are you looking forward to?\n- ';
 
   @override
+  String get settingsTagsTitle => 'Tags';
+
+  @override
+  String get manageTags => 'Manage Tags';
+
+  @override
+  String get tagTypeLabelTitle => 'Label';
+
+  @override
+  String get tagTypeTrackerTitle => 'Tracker';
+
+  @override
+  String get nameHint => 'Name';
+
+  @override
+  String get tagColorLabel => 'Color';
+
+  @override
+  String get iconPickerTitle => 'Choose Icon';
+
+  @override
+  String get iconPickerIconsTab => 'Icons';
+
+  @override
+  String get iconPickerCustomTab => 'Custom';
+
+  @override
+  String get iconPickerSearchHint => 'Search icons…';
+
+  @override
+  String get colorPickerTitle => 'Choose Color';
+
+  @override
+  String get colorPickerPaletteTab => 'Colors';
+
+  @override
+  String get iconGroupMoodPeople => 'Mood & People';
+
+  @override
+  String get iconGroupHealth => 'Health';
+
+  @override
+  String get iconGroupWorkFinance => 'Work & Finance';
+
+  @override
+  String get iconGroupHabitsGoals => 'Habits & Goals';
+
+  @override
+  String get iconGroupNature => 'Nature';
+
+  @override
+  String get iconGroupFoodDrink => 'Food & Drink';
+
+  @override
+  String get iconGroupTravel => 'Travel';
+
+  @override
+  String get iconGroupSymbols => 'Symbols';
+
+  @override
+  String get tagCategoryLabel => 'Category';
+
+  @override
+  String get tagCategoryUncategorized => 'Uncategorized';
+
+  @override
+  String get newCategoryTitle => 'New Category';
+
+  @override
+  String get deleteTitle => 'Delete';
+
+  @override
+  String deleteTagMessage(num count, Object name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: ' It is used in $count logs.',
+      one: ' It is used in 1 log.',
+      zero: '',
+    );
+    return 'Delete \"$name\"?$_temp0';
+  }
+
+  @override
+  String deleteCategoryMessage(num count, Object name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: ' Its $count tags will also be deleted.',
+      one: ' Its 1 tag will also be deleted.',
+      zero: '',
+    );
+    return 'Delete \"$name\"?$_temp0';
+  }
+
+  @override
+  String get filterTagsTitle => 'Filter';
+
+  @override
+  String get tagFilterModeAny => 'Any Tag';
+
+  @override
+  String get tagFilterModeAll => 'All Tags';
+
+  @override
+  String get clearAllFilters => 'Clear All';
+
+  @override
+  String get noTagsFilterLabel => 'No Tags';
+
+  @override
+  String get addTagsTitle => 'Add Tags';
+
+  @override
+  String get addTagsSearchHint => 'Search tags…';
+
+  @override
+  String get tagPickerSortManualLabel => 'Manual order';
+
+  @override
+  String get tagPickerSortUsageLabel => 'Sort by usage';
+
+  @override
+  String get tagFavoriteName => 'Favorite';
+
+  @override
+  String get tagEnergyName => 'Energy';
+
+  @override
+  String get tagCategoryActivitiesName => 'Activities';
+
+  @override
+  String get tagExerciseName => 'Exercise';
+
+  @override
+  String get tagSocializingName => 'Socializing';
+
+  @override
+  String get tagHobbyName => 'Hobby';
+
+  @override
+  String get tagEntertainmentName => 'Entertainment';
+
+  @override
+  String get tagDiningName => 'Dining';
+
+  @override
+  String get tagChoresName => 'Chores';
+
+  @override
+  String get tagCategoryEmotionsName => 'Emotions';
+
+  @override
+  String get tagExcitedName => 'Excited';
+
+  @override
+  String get tagGratefulName => 'Grateful';
+
+  @override
+  String get tagCalmName => 'Calm';
+
+  @override
+  String get tagTiredName => 'Tired';
+
+  @override
+  String get tagAnxiousName => 'Anxious';
+
+  @override
+  String get tagAnnoyedName => 'Annoyed';
+
+  @override
+  String get welcomeLogBodyText =>
+      '## Welcome to Daily You\n\n> Every day is worth remembering, capture it!\n\n**Daily You** is free, [open source](https://github.com/Demizo/Daily_You), and community supported. Built around the belief that your diary should be yours, not a product:\n\n- No ads\n- No locked features\n- No tracking or data collection\n\nWhether you\'re journaling, reflecting, or just noting what made you smile, **Daily You** gives you a private space that\'s _truly your own_.';
+
+  @override
   String get settingsStorageTitle => 'Lager';
 
   @override
@@ -483,6 +684,11 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get cleanUpStatus => 'Rydder op…';
+
+  @override
+  String migratingImagesStatus(Object current, Object total) {
+    return 'Migrating photos… $current/$total';
+  }
 
   @override
   String get settingsExport => 'Eksportér';
@@ -639,4 +845,24 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get tagMoodTitle => 'Humør';
+
+  @override
+  String get calendarTagDisplayLabel => 'Tag';
+
+  @override
+  String get selectTagTitle => 'Select Tag';
+
+  @override
+  String get labelPresentLabel => 'Present';
+
+  @override
+  String get labelAbsentLabel => 'Absent';
+
+  @override
+  String get labelCoverageLabel => 'Coverage';
+
+  @override
+  String chartDistributionTitle(Object tag) {
+    return '$tag Distribution';
+  }
 }
