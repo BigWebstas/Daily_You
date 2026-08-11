@@ -1,0 +1,56 @@
+name: Windows Installer
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Override version (defaults to pubspec.yaml)"
+        required: false
+        type: string
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [[ -n "${{ inputs.version }}" ]]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION=$(grep -m1 '^version:' pubspec.yaml | sed -E 's/^version: ([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter pub get
+
+      - run: flutter build windows --release
+
+      - name: Build installer
+        shell: bash
+        run: |
+          iscc "/DMyAppVersion=${{ steps.version.outputs.version }}" windows/installer/daily_you.iss
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DailyYou-${{ steps.version.outputs.version }}-windows-installer
+          path: build/windows/installer/*.exe
+
+      - name: Attach installer to release
+        if: github.event_name == 'release'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" build/windows/installer/*.exe --clobber
