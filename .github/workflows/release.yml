@@ -100,8 +100,32 @@ jobs:
           name: DailyYou-${{ needs.version.outputs.version }}-linux-x86_64-AppImage
           path: "*.AppImage"
 
+  build-macos:
+    needs: version
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter pub get
+
+      - run: flutter build macos --release
+
+      - name: Zip app bundle
+        run: |
+          cd build/macos/Build/Products/Release
+          zip -r "DailyYou-${{ needs.version.outputs.version }}-macos.zip" daily_you.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-macos
+          path: build/macos/Build/Products/Release/DailyYou-${{ needs.version.outputs.version }}-macos.zip
+
   release:
-    needs: [version, build-windows, build-linux]
+    needs: [version, build-windows, build-linux, build-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
