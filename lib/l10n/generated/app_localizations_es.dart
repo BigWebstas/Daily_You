@@ -129,7 +129,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noLogs => 'No hay registros…';
 
   @override
-  String get noResults => 'No Results…';
+  String get noResults => 'Sin resultados…';
 
   @override
   String get sortDateTitle => 'Fecha';
@@ -489,6 +489,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get iconGroupFoodDrink => 'Food & Drink';
+
+  @override
+  String get iconGroupHome => 'Home';
 
   @override
   String get iconGroupTravel => 'Travel';
