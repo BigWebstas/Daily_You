@@ -1,0 +1,112 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Override version (defaults to pubspec.yaml)"
+        required: false
+        type: string
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [[ -n "${{ inputs.version }}" ]]; then
+            VERSION="${{ inputs.version }}"
+          elif [[ "${{ github.ref_type }}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION=$(grep -m1 '^version:' pubspec.yaml | sed -E 's/^version: ([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+  build-windows:
+    needs: version
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter pub get
+
+      - run: flutter build windows --release
+
+      - name: Build installer
+        shell: bash
+        run: |
+          iscc "/DMyAppVersion=${{ needs.version.outputs.version }}" windows/installer/daily_you.iss
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-windows-installer
+          path: build/windows/installer/*.exe
+
+  build-linux:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install Flutter Linux build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+
+      - run: flutter pub get
+
+      - run: flutter build linux --release
+
+      - name: Install appimage-builder
+        run: |
+          sudo apt-get install -y python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace
+          sudo pip3 install appimage-builder
+
+      - name: Build AppImage
+        run: appimage-builder --recipe AppImageBuilder.yml --skip-test
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-linux-x86_64-AppImage
+          path: "*.AppImage"
+
+  release:
+    needs: [version, build-windows, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create release and upload assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ needs.version.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            --title "${{ needs.version.outputs.tag }}" \
+            --generate-notes \
+            artifacts/*/*
