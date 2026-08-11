@@ -59,7 +59,7 @@ jobs:
         run: flutter build windows --release
 
       - name: Build installer
-        shell: bash
+        shell: pwsh
         run: |
           iscc "/DMyAppVersion=${{ needs.version.outputs.version }}" windows/installer/daily_you.iss
 
