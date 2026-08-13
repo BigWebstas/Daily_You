@@ -46,10 +46,9 @@ jobs:
         run: flutter build windows --release
 
       - name: Zip portable build
-        shell: bash
+        shell: pwsh
         run: |
-          cd build/windows/x64/runner/Release
-          zip -r "DailyYou-${{ steps.version.outputs.version }}-windows-x64-portable.zip" .
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "build/windows/x64/runner/Release/DailyYou-${{ steps.version.outputs.version }}-windows-x64-portable.zip"
 
       - uses: actions/upload-artifact@v4
         with:
