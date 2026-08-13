@@ -68,6 +68,17 @@ jobs:
           name: DailyYou-${{ needs.version.outputs.version }}-windows-installer
           path: build/windows/installer/*.exe
 
+      - name: Zip portable build
+        shell: bash
+        run: |
+          cd build/windows/x64/runner/Release
+          zip -r "DailyYou-${{ needs.version.outputs.version }}-windows-x64-portable.zip" .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-windows-x64-portable
+          path: build/windows/x64/runner/Release/*.zip
+
   build-linux:
     needs: version
     runs-on: ubuntu-latest
