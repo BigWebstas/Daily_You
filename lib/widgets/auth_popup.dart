@@ -39,20 +39,50 @@ class _AuthPopupState extends State<AuthPopup> {
   String? _error;
   bool _showPassword = false;
   bool _biometricsPrompted = false;
+  bool _isPin = false;
+  bool _passwordFocusRequested = false;
+  Animation<double>? _routeAnimation;
 
   @override
   void initState() {
     super.initState();
-    // Auto-focus password field in unlock mode
-    if (widget.mode == AuthPopupMode.unlock && !widget.showBiometrics) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _passwordFocusNode.requestFocus();
-      });
+    if (widget.mode == AuthPopupMode.unlock) {
+      _isPin = ConfigProvider.instance.get(ConfigKey.passwordIsPin) ?? false;
     }
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Request keyboard focus after dialog animation completes
+    if (widget.mode == AuthPopupMode.unlock && !widget.showBiometrics) {
+      final animation = ModalRoute.of(context)?.animation;
+      if (animation != _routeAnimation) {
+        _routeAnimation?.removeStatusListener(_handleRouteAnimationStatus);
+        _routeAnimation = animation;
+        _routeAnimation?.addStatusListener(_handleRouteAnimationStatus);
+        if (_routeAnimation == null || _routeAnimation!.isCompleted) {
+          _requestPasswordFocus();
+        }
+      }
+    }
+  }
+
+  void _handleRouteAnimationStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      _requestPasswordFocus();
+    }
+  }
+
+  void _requestPasswordFocus() {
+    if (_passwordFocusRequested) return;
+    _passwordFocusRequested = true;
+    _passwordFocusNode.requestFocus();
+  }
+
+  @override
   void dispose() {
+    _routeAnimation?.removeStatusListener(_handleRouteAnimationStatus);
     _oldController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
@@ -64,9 +94,13 @@ class _AuthPopupState extends State<AuthPopup> {
     return sha256.convert(utf8.encode(password)).toString();
   }
 
+  bool _isNumericOnly(String value) => RegExp(r'^\d+$').hasMatch(value);
+
   Future<void> savePassword(String password) async {
     await ConfigProvider.instance
         .set(ConfigKey.passwordHash, await _hashPassword(password));
+    await ConfigProvider.instance
+        .set(ConfigKey.passwordIsPin, _isNumericOnly(password));
   }
 
   Future<bool> validatePassword(String password) async {
@@ -205,6 +239,9 @@ class _AuthPopupState extends State<AuthPopup> {
                   focusNode: _passwordFocusNode,
                   obscureText: !_showPassword,
                   autocorrect: false,
+                  keyboardType: widget.mode == AuthPopupMode.unlock && _isPin
+                      ? TextInputType.number
+                      : TextInputType.text,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)),

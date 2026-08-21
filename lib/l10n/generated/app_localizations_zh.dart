@@ -97,8 +97,8 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count 条回忆',
-      one: '$count 条回忆',
+      other: '日迹 $count',
+      one: '日迹 $count',
     );
     return '$_temp0';
   }
@@ -108,8 +108,8 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count 天',
-      one: '$count 天',
+      other: '天数 $count',
+      one: '天数 $count',
     );
     return '$_temp0';
   }
@@ -119,8 +119,8 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count 个字',
-      one: '$count 个字',
+      other: '字数 $count',
+      one: '字数 $count',
     );
     return '$_temp0';
   }
@@ -196,7 +196,7 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '已连续记录 $count 天',
+      other: '连续记录天数 $count',
     );
     return '$_temp0';
   }
@@ -206,7 +206,7 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '最长连续记录 $count 天',
+      other: '最长连续记录天数 $count',
     );
     return '$_temp0';
   }
@@ -226,7 +226,7 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '好心情维持了 $count 天',
+      other: '好心情维持天数 $count',
     );
     return '$_temp0';
   }
@@ -483,7 +483,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get iconGroupFoodDrink => '餐饮';
 
   @override
-  String get iconGroupHome => 'Home';
+  String get iconGroupHome => '家居';
 
   @override
   String get iconGroupTravel => '旅行';
@@ -495,10 +495,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tagCategoryLabel => '分类';
 
   @override
+  String get tagLabel => 'Tag';
+
+  @override
   String get tagCategoryUncategorized => '未分类';
 
   @override
   String get newCategoryTitle => '新分类';
+
+  @override
+  String get shareButtonLabel => 'Share';
+
+  @override
+  String get importErrorDescription => 'Failed to import file!';
+
+  @override
+  String get exportErrorDescription => 'Failed to export file!';
 
   @override
   String get deleteTitle => '删除';
@@ -525,6 +537,11 @@ class AppLocalizationsZh extends AppLocalizations {
       zero: '',
     );
     return '删除「$name」？$_temp0';
+  }
+
+  @override
+  String deleteTemplateMessage(Object name) {
+    return 'Delete \"$name\"?';
   }
 
   @override
