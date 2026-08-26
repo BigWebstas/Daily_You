@@ -185,7 +185,7 @@
     "iconPickerSearchHint": "搜索图标…",
     "colorPickerTitle": "选择颜色",
     "colorPickerPaletteTab": "颜色",
-    "iconGroupHabitsGoals": "习惯&目标",
+    "iconGroupHabitsGoals": "习惯与目标",
     "iconGroupNature": "自然",
     "iconGroupTravel": "旅行",
     "tagCategoryLabel": "分类",
@@ -200,7 +200,7 @@
     "addTagsTitle": "添加标签",
     "addTagsSearchHint": "搜索标签…",
     "iconGroupFoodDrink": "餐饮",
-    "iconGroupWorkFinance": "工作&金融",
+    "iconGroupWorkFinance": "工作与金融",
     "iconGroupHealth": "健康",
     "tagExerciseName": "锻炼",
     "tagSocializingName": "社交",
@@ -235,5 +235,10 @@
     "labelAbsentLabel": "未设定",
     "labelCoverageLabel": "覆盖率",
     "chartDistributionTitle": "{tag} 分布",
-    "iconGroupHome": "家居"
+    "iconGroupHome": "家居",
+    "exportErrorDescription": "文件导出失败！",
+    "importErrorDescription": "文件导入失败！",
+    "deleteTemplateMessage": "删除「{name}」？",
+    "tagLabel": "标签",
+    "shareButtonLabel": "分享"
 }

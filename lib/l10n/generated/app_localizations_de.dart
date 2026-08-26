@@ -504,7 +504,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tagCategoryLabel => 'Kategorie';
 
   @override
-  String get tagLabel => 'Tag';
+  String get tagLabel => 'Schlagwort';
 
   @override
   String get tagCategoryUncategorized => 'Nicht kategorisiert';
@@ -513,13 +513,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get newCategoryTitle => 'Neue Kategorie';
 
   @override
-  String get shareButtonLabel => 'Share';
+  String get shareButtonLabel => 'Teilen';
 
   @override
-  String get importErrorDescription => 'Failed to import file!';
+  String get importErrorDescription => 'Konnte Datei nicht importieren!';
 
   @override
-  String get exportErrorDescription => 'Failed to export file!';
+  String get exportErrorDescription => 'Konnte Datei nicht exportieren!';
 
   @override
   String get deleteTitle => 'Löschen';
@@ -550,7 +550,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String deleteTemplateMessage(Object name) {
-    return 'Delete \"$name\"?';
+    return 'Lösche „$name“?';
   }
 
   @override

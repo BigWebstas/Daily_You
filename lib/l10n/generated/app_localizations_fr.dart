@@ -508,7 +508,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tagCategoryLabel => 'Catégorie';
 
   @override
-  String get tagLabel => 'Tag';
+  String get tagLabel => 'Étiquette';
 
   @override
   String get tagCategoryUncategorized => 'Sans catégorie';
@@ -517,13 +517,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get newCategoryTitle => 'Nouvelle catégorie';
 
   @override
-  String get shareButtonLabel => 'Share';
+  String get shareButtonLabel => 'Partager';
 
   @override
-  String get importErrorDescription => 'Failed to import file!';
+  String get importErrorDescription => 'Échec de l\'import du fichier !';
 
   @override
-  String get exportErrorDescription => 'Failed to export file!';
+  String get exportErrorDescription => 'Échec de l\'export du fichier !';
 
   @override
   String get deleteTitle => 'Supprimer';
@@ -546,7 +546,7 @@ class AppLocalizationsFr extends AppLocalizations {
       count,
       locale: localeName,
       other: ' Les $count étiquettes seront aussi supprimées.',
-      one: ' Son étiquette  sera aussi supprimée.',
+      one: ' Son étiquette sera aussi supprimée.',
       zero: '',
     );
     return 'Supprimer « $name » ?$_temp0';
@@ -554,7 +554,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String deleteTemplateMessage(Object name) {
-    return 'Delete \"$name\"?';
+    return 'Supprimer « $name » ?';
   }
 
   @override

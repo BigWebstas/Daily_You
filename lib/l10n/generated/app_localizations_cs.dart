@@ -30,10 +30,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pageHomeTitle => 'Hlavní stránka';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => 'Skočit na měsíc';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'Skočit na záznam';
 
   @override
   String get flashbacksTitle => 'Vzpomínky';
@@ -123,7 +123,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noLogs => 'Žádné záznamy…';
 
   @override
-  String get noResults => 'No Results…';
+  String get noResults => 'Žádné výsledky…';
 
   @override
   String get sortDateTitle => 'Datum';
@@ -168,22 +168,22 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => 'Seskupit podle';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => 'Dne';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => 'Týdne';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => 'Měsíce';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => 'Roku';
 
   @override
-  String get chartSmoothingLabel => 'Smoothing';
+  String get chartSmoothingLabel => 'Zahlazování';
 
   @override
   String streakCurrent(num count) {
@@ -210,7 +210,7 @@ class AppLocalizationsCs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Great Days $count',
+      other: 'Dobrých dnů $count',
     );
     return '$_temp0';
   }
@@ -238,17 +238,17 @@ class AppLocalizationsCs extends AppLocalizations {
       'Pokračovat s lokální databází';
 
   @override
-  String get databaseMigrationErrorTitle => 'Couldn\'t Move Your Data';
+  String get databaseMigrationErrorTitle => 'Nepodařilo se přesunout vaše data';
 
   @override
   String get databaseMigrationErrorDescription =>
-      'Your entries are safe but couldn\'t be moved to the app\'s storage.\n\nTry again, and report the issue if it keeps happening.';
+      'Vaše záznamy jsou v bezpečí, ale nepodařilo se je přesunout do úložiště aplikace.\n\nZkuste to znovu, v případě opakovaného problému nahlašte chybu.';
 
   @override
-  String get databaseMigrationErrorRetry => 'Retry';
+  String get databaseMigrationErrorRetry => 'Zkusit znovu';
 
   @override
-  String get errorReport => 'Report Issue';
+  String get errorReport => 'Nahlásit chybu';
 
   @override
   String get lastModified => 'Upraveno';
@@ -296,13 +296,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settingsFirstDayOfWeek => 'První den v týdnu';
 
   @override
-  String get settingsCalendarSystem => 'Calendar System';
+  String get settingsCalendarSystem => 'Kalendářní systém';
 
   @override
-  String get calendarSystemGregorian => 'Gregorian';
+  String get calendarSystemGregorian => 'Gregoriánský';
 
   @override
-  String get calendarSystemJalali => 'Jalali';
+  String get calendarSystemJalali => 'Solární kalendář Hidžry';
 
   @override
   String get settingsUseSystemAccentColor => 'Použít barvu systému';
@@ -429,102 +429,103 @@ class AppLocalizationsCs extends AppLocalizations {
       '### Co jsem si dnes užil?\n- \n\n### Za co jsem rád?\n- \n\n### Na co se těším?\n- ';
 
   @override
-  String get settingsTagsTitle => 'Tags';
+  String get settingsTagsTitle => 'Štítky';
 
   @override
-  String get manageTags => 'Manage Tags';
+  String get manageTags => 'Spravovat štítky';
 
   @override
-  String get tagTypeLabelTitle => 'Label';
+  String get tagTypeLabelTitle => 'Značka';
 
   @override
-  String get tagTypeTrackerTitle => 'Tracker';
+  String get tagTypeTrackerTitle => 'Počítadlo';
 
   @override
-  String get nameHint => 'Name';
+  String get nameHint => 'Název';
 
   @override
-  String get tagColorLabel => 'Color';
+  String get tagColorLabel => 'Barva';
 
   @override
-  String get iconPickerTitle => 'Choose Icon';
+  String get iconPickerTitle => 'Vyberte ikonu';
 
   @override
-  String get iconPickerIconsTab => 'Icons';
+  String get iconPickerIconsTab => 'Ikony';
 
   @override
-  String get iconPickerCustomTab => 'Custom';
+  String get iconPickerCustomTab => 'Vlastní';
 
   @override
-  String get iconPickerSearchHint => 'Search icons…';
+  String get iconPickerSearchHint => 'Vyhledat ikony…';
 
   @override
-  String get colorPickerTitle => 'Choose Color';
+  String get colorPickerTitle => 'Vyberte barvu';
 
   @override
-  String get colorPickerPaletteTab => 'Colors';
+  String get colorPickerPaletteTab => 'Barvy';
 
   @override
-  String get iconGroupMoodPeople => 'Mood & People';
+  String get iconGroupMoodPeople => 'Pocity a lidé';
 
   @override
-  String get iconGroupHealth => 'Health';
+  String get iconGroupHealth => 'Zdraví';
 
   @override
-  String get iconGroupWorkFinance => 'Work & Finance';
+  String get iconGroupWorkFinance => 'Práce a peníze';
 
   @override
-  String get iconGroupHabitsGoals => 'Habits & Goals';
+  String get iconGroupHabitsGoals => 'Zvyky a cíle';
 
   @override
-  String get iconGroupNature => 'Nature';
+  String get iconGroupNature => 'Příroda';
 
   @override
-  String get iconGroupFoodDrink => 'Food & Drink';
+  String get iconGroupFoodDrink => 'Jídlo a pití';
 
   @override
-  String get iconGroupHome => 'Home';
+  String get iconGroupHome => 'Dům';
 
   @override
-  String get iconGroupTravel => 'Travel';
+  String get iconGroupTravel => 'Cestování';
 
   @override
-  String get iconGroupSymbols => 'Symbols';
+  String get iconGroupSymbols => 'Symboly';
 
   @override
-  String get tagCategoryLabel => 'Category';
+  String get tagCategoryLabel => 'Kategorie';
 
   @override
-  String get tagLabel => 'Tag';
+  String get tagLabel => 'Štítek';
 
   @override
-  String get tagCategoryUncategorized => 'Uncategorized';
+  String get tagCategoryUncategorized => 'Nekategorizované';
 
   @override
-  String get newCategoryTitle => 'New Category';
+  String get newCategoryTitle => 'Nová kategorie';
 
   @override
-  String get shareButtonLabel => 'Share';
+  String get shareButtonLabel => 'Sdílet';
 
   @override
-  String get importErrorDescription => 'Failed to import file!';
+  String get importErrorDescription => 'Nepodařilo se importovat soubor!';
 
   @override
-  String get exportErrorDescription => 'Failed to export file!';
+  String get exportErrorDescription => 'Nepodařilo se exportovat soubor!';
 
   @override
-  String get deleteTitle => 'Delete';
+  String get deleteTitle => 'Smazat';
 
   @override
   String deleteTagMessage(num count, Object name) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: ' It is used in $count logs.',
-      one: ' It is used in 1 log.',
+      other: ' Využívá se to v $count záznamech.',
+      few: ' Využívá se to ve $count záznamech.',
+      one: ' Využívá se to v 1 záznamu.',
       zero: '',
     );
-    return 'Delete \"$name\"?$_temp0';
+    return 'Smazat \"$name\"?$_temp0';
   }
 
   @override
@@ -532,96 +533,97 @@ class AppLocalizationsCs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: ' Its $count tags will also be deleted.',
-      one: ' Its 1 tag will also be deleted.',
+      other: ' $count tagů budou smazaný. ',
+      few: ' $count tagy budou smazaný. ',
+      one: ' 1 tag bude smazaný. ',
       zero: '',
     );
-    return 'Delete \"$name\"?$_temp0';
+    return 'Smazat \"$name\"?$_temp0';
   }
 
   @override
   String deleteTemplateMessage(Object name) {
-    return 'Delete \"$name\"?';
+    return 'Smazat „$name“?';
   }
 
   @override
-  String get filterTagsTitle => 'Filter';
+  String get filterTagsTitle => 'Filtr';
 
   @override
-  String get tagFilterModeAny => 'Any Tag';
+  String get tagFilterModeAny => 'Jakýkoliv štítek';
 
   @override
-  String get tagFilterModeAll => 'All Tags';
+  String get tagFilterModeAll => 'Všechny štítky';
 
   @override
-  String get clearAllFilters => 'Clear All';
+  String get clearAllFilters => 'Smazat vše';
 
   @override
-  String get noTagsFilterLabel => 'No Tags';
+  String get noTagsFilterLabel => 'Žádné štítky';
 
   @override
-  String get addTagsTitle => 'Add Tags';
+  String get addTagsTitle => 'Přidat štítky';
 
   @override
-  String get addTagsSearchHint => 'Search tags…';
+  String get addTagsSearchHint => 'Hledat štítky…';
 
   @override
-  String get tagPickerSortManualLabel => 'Manual order';
+  String get tagPickerSortManualLabel => 'Manuální řazení';
 
   @override
-  String get tagPickerSortUsageLabel => 'Sort by usage';
+  String get tagPickerSortUsageLabel => 'Řadit podle využití';
 
   @override
-  String get tagFavoriteName => 'Favorite';
+  String get tagFavoriteName => 'Oblíbené';
 
   @override
-  String get tagEnergyName => 'Energy';
+  String get tagEnergyName => 'Energie';
 
   @override
-  String get tagCategoryActivitiesName => 'Activities';
+  String get tagCategoryActivitiesName => 'Aktivity';
 
   @override
-  String get tagExerciseName => 'Exercise';
+  String get tagExerciseName => 'Pohyb';
 
   @override
-  String get tagSocializingName => 'Socializing';
+  String get tagSocializingName => 'Socializace';
 
   @override
-  String get tagHobbyName => 'Hobby';
+  String get tagHobbyName => 'Koníček';
 
   @override
-  String get tagEntertainmentName => 'Entertainment';
+  String get tagEntertainmentName => 'Zábava';
 
   @override
-  String get tagDiningName => 'Dining';
+  String get tagDiningName => 'Jezení';
 
   @override
-  String get tagChoresName => 'Chores';
+  String get tagChoresName => 'Povinnosti';
 
   @override
-  String get tagCategoryEmotionsName => 'Emotions';
+  String get tagCategoryEmotionsName => 'Emoce';
 
   @override
-  String get tagExcitedName => 'Excited';
+  String get tagExcitedName => 'Nadšený';
 
   @override
-  String get tagGratefulName => 'Grateful';
+  String get tagGratefulName => 'Vděčný';
 
   @override
-  String get tagCalmName => 'Calm';
+  String get tagCalmName => 'Klidný';
 
   @override
-  String get tagTiredName => 'Tired';
+  String get tagTiredName => 'Unavený';
 
   @override
-  String get tagAnxiousName => 'Anxious';
+  String get tagAnxiousName => 'Úzkostlivý';
 
   @override
-  String get tagAnnoyedName => 'Annoyed';
+  String get tagAnnoyedName => 'Naštvaný';
 
   @override
   String get welcomeLogBodyText =>
-      '## Welcome to Daily You\n\n> Every day is worth remembering, capture it!\n\n**Daily You** is free, [open source](https://github.com/Demizo/Daily_You), and community supported. Built around the belief that your diary should be yours, not a product:\n\n- No ads\n- No locked features\n- No tracking or data collection\n\nWhether you\'re journaling, reflecting, or just noting what made you smile, **Daily You** gives you a private space that\'s _truly your own_.';
+      '## Vítejte v Daily You\n\n> Každý den si má cenu pamatovat, zapište si jej!\n\n**Daily You** je zdarma, [open source](https://github.com/Demizo/Daily_You), a podporovaný komunitou. Založenona myšlence, že deník by měl být soukromí a ne produkt:\n\n- Bez reklam\n- Žádný paywall\n- Žádné sledování a sběr dat\n\nAťuz si zapisujete každý den, vaše nápady, nebo co vás třeba rozesmálo, **Daily You** vám dává soukromí prostor, který _plně vlastníte_.';
 
   @override
   String get settingsStorageTitle => 'Uložiště';
@@ -704,7 +706,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String migratingImagesStatus(Object current, Object total) {
-    return 'Migrating photos… $current/$total';
+    return 'Migruju fotky… $current/$total';
   }
 
   @override
@@ -858,28 +860,28 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settingsConsiderSupporting => 'zvažte podporu';
 
   @override
-  String get imagesTitle => 'Images';
+  String get imagesTitle => 'Obrázky';
 
   @override
   String get tagMoodTitle => 'Nálada';
 
   @override
-  String get calendarTagDisplayLabel => 'Tag';
+  String get calendarTagDisplayLabel => 'Štítek';
 
   @override
-  String get selectTagTitle => 'Select Tag';
+  String get selectTagTitle => 'Vybrat štítek';
 
   @override
-  String get labelPresentLabel => 'Present';
+  String get labelPresentLabel => 'Přítomný';
 
   @override
-  String get labelAbsentLabel => 'Absent';
+  String get labelAbsentLabel => 'Nepřítomný';
 
   @override
-  String get labelCoverageLabel => 'Coverage';
+  String get labelCoverageLabel => 'Pokrytí';
 
   @override
   String chartDistributionTitle(Object tag) {
-    return '$tag Distribution';
+    return 'Distribuce $tag';
   }
 }

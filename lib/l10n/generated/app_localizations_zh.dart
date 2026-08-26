@@ -471,10 +471,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get iconGroupHealth => '健康';
 
   @override
-  String get iconGroupWorkFinance => '工作&金融';
+  String get iconGroupWorkFinance => '工作与金融';
 
   @override
-  String get iconGroupHabitsGoals => '习惯&目标';
+  String get iconGroupHabitsGoals => '习惯与目标';
 
   @override
   String get iconGroupNature => '自然';
@@ -495,7 +495,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tagCategoryLabel => '分类';
 
   @override
-  String get tagLabel => 'Tag';
+  String get tagLabel => '标签';
 
   @override
   String get tagCategoryUncategorized => '未分类';
@@ -504,13 +504,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newCategoryTitle => '新分类';
 
   @override
-  String get shareButtonLabel => 'Share';
+  String get shareButtonLabel => '分享';
 
   @override
-  String get importErrorDescription => 'Failed to import file!';
+  String get importErrorDescription => '文件导入失败！';
 
   @override
-  String get exportErrorDescription => 'Failed to export file!';
+  String get exportErrorDescription => '文件导出失败！';
 
   @override
   String get deleteTitle => '删除';
@@ -541,7 +541,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String deleteTemplateMessage(Object name) {
-    return 'Delete \"$name\"?';
+    return '删除「$name」？';
   }
 
   @override
@@ -1370,10 +1370,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get tagCategoryLabel => '分類';
 
   @override
+  String get tagLabel => '標籤';
+
+  @override
   String get tagCategoryUncategorized => '未分類';
 
   @override
   String get newCategoryTitle => '新分類';
+
+  @override
+  String get shareButtonLabel => '分享';
+
+  @override
+  String get importErrorDescription => '檔案匯入失敗！';
+
+  @override
+  String get exportErrorDescription => '檔案匯出失敗！';
 
   @override
   String get deleteTitle => '刪除';
@@ -1400,6 +1412,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
       zero: '',
     );
     return '刪除「$name」？$_temp0';
+  }
+
+  @override
+  String deleteTemplateMessage(Object name) {
+    return '刪除「$name」？';
   }
 
   @override

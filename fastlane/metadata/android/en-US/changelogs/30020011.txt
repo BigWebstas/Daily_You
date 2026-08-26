@@ -1,0 +1,6 @@
+Daily You v3.2.1 has arrived! In this patch:
+
+• Use the number pad for numeric pins (only applies to new passwords)
+• Fixed keyboard not opening automatically on the unlock screen
+• The calendar will now show the latest image from any logs on a day
+• Updated translations

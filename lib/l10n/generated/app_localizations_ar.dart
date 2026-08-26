@@ -133,7 +133,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noLogs => 'لا توجد سجلات…';
 
   @override
-  String get noResults => 'No Results…';
+  String get noResults => 'لا يوجد نتأج';
 
   @override
   String get sortDateTitle => 'التاريخ';
@@ -178,22 +178,22 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => 'تجميع حسب';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => 'اليوم';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => 'الأسبوع';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => 'الشهر';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => 'السنة';
 
   @override
-  String get chartSmoothingLabel => 'Smoothing';
+  String get chartSmoothingLabel => 'التنعيم';
 
   @override
   String streakCurrent(num count) {
@@ -220,7 +220,7 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Great Days $count',
+      other: 'أيام عظيمة $count',
     );
     return '$_temp0';
   }
@@ -249,17 +249,17 @@ class AppLocalizationsAr extends AppLocalizations {
       'متابعة مع قاعدة البيانات المحلية';
 
   @override
-  String get databaseMigrationErrorTitle => 'Couldn\'t Move Your Data';
+  String get databaseMigrationErrorTitle => 'تعذر نقل بياناتك';
 
   @override
   String get databaseMigrationErrorDescription =>
-      'Your entries are safe but couldn\'t be moved to the app\'s storage.\n\nTry again, and report the issue if it keeps happening.';
+      'بياناتك آمنة، لكن لم يتمكن التطبيق من نقلها إلى مساحة التخزين الخاصة به.\n\nحاول مرة أخرى، وأبلغ عن المشكلة إذا استمرت في الحدوث.';
 
   @override
-  String get databaseMigrationErrorRetry => 'Retry';
+  String get databaseMigrationErrorRetry => 'عيد';
 
   @override
-  String get errorReport => 'Report Issue';
+  String get errorReport => 'إبلغ عن مشكلة';
 
   @override
   String get lastModified => 'معدّل';
@@ -440,46 +440,46 @@ class AppLocalizationsAr extends AppLocalizations {
       '### ما الذي استمتعت به اليوم؟\n- \n\n### ما الذي تشعر بالامتنان تجاهه؟\n- \n\n### ما الذي تتطلع إليه؟\n- ';
 
   @override
-  String get settingsTagsTitle => 'Tags';
+  String get settingsTagsTitle => 'العلامات';
 
   @override
-  String get manageTags => 'Manage Tags';
+  String get manageTags => 'إدارة العلامات';
 
   @override
-  String get tagTypeLabelTitle => 'Label';
+  String get tagTypeLabelTitle => 'التسمية';
 
   @override
-  String get tagTypeTrackerTitle => 'Tracker';
+  String get tagTypeTrackerTitle => 'أداة التتبع';
 
   @override
-  String get nameHint => 'Name';
+  String get nameHint => 'أسم';
 
   @override
-  String get tagColorLabel => 'Color';
+  String get tagColorLabel => 'لون';
 
   @override
-  String get iconPickerTitle => 'Choose Icon';
+  String get iconPickerTitle => 'اختار الرمز';
 
   @override
-  String get iconPickerIconsTab => 'Icons';
+  String get iconPickerIconsTab => 'الرموز';
 
   @override
-  String get iconPickerCustomTab => 'Custom';
+  String get iconPickerCustomTab => 'مخصص';
 
   @override
-  String get iconPickerSearchHint => 'Search icons…';
+  String get iconPickerSearchHint => 'ابحث الرموز…';
 
   @override
-  String get colorPickerTitle => 'Choose Color';
+  String get colorPickerTitle => 'اختار اللون';
 
   @override
-  String get colorPickerPaletteTab => 'Colors';
+  String get colorPickerPaletteTab => 'الوان';
 
   @override
-  String get iconGroupMoodPeople => 'Mood & People';
+  String get iconGroupMoodPeople => 'المزاج والناس';
 
   @override
-  String get iconGroupHealth => 'Health';
+  String get iconGroupHealth => 'الصحة';
 
   @override
   String get iconGroupWorkFinance => 'Work & Finance';

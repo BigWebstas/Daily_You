@@ -12,14 +12,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appTitle => 'Daily You';
 
   @override
-  String get dailyReminderTitle => 'Scrivi sul Tuo Diario!';
+  String get dailyReminderTitle => 'Scrivi sul diario';
 
   @override
-  String get dailyReminderDescription =>
-      'Non dimenticare di tener traccia della tua giornata…';
+  String get dailyReminderDescription => 'Tieni traccia della tua giornata…';
 
   @override
-  String get actionTakePhoto => 'Scatta foto';
+  String get actionTakePhoto => 'Scatta una foto';
 
   @override
   String get actionToday => 'Oggi';
@@ -31,10 +30,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pageHomeTitle => 'Home';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => 'Vai al mese';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'Vai al giorno';
 
   @override
   String get flashbacksTitle => 'Ricordi';
@@ -49,15 +48,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get flashbackGoodDay => 'Una bella giornata';
 
   @override
-  String get flashbackRandomDay => 'Una giornata a caso';
+  String get flashbackRandomDay => 'Una giornata casuale';
 
   @override
   String flashbackWeek(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Settimane Fa',
-      one: '$count Settimana Fa',
+      other: '$count settimane fa',
+      one: '$count settimana fa',
     );
     return '$_temp0';
   }
@@ -67,8 +66,8 @@ class AppLocalizationsIt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Mesi Fa',
-      one: '$count Mese Fa',
+      other: '$count mesi fa',
+      one: '$count mese fa',
     );
     return '$_temp0';
   }
@@ -78,20 +77,20 @@ class AppLocalizationsIt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count Anni Fa',
-      one: '$count Anno Fa',
+      other: '$count anni fa',
+      one: '$count anno fa',
     );
     return '$_temp0';
   }
 
   @override
-  String get flashbackOnThisDay => 'Accade Oggi';
+  String get flashbackOnThisDay => 'Accade oggi';
 
   @override
   String get pageGalleryTitle => 'Galleria';
 
   @override
-  String get searchLogsHint => 'Cerca annotazioni…';
+  String get searchLogsHint => 'Cerca entrate del diario…';
 
   @override
   String logCount(num count) {
@@ -130,16 +129,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noLogs => 'Nessuna annotazione…';
 
   @override
-  String get noResults => 'No Results…';
+  String get noResults => 'Nessun risultato…';
 
   @override
   String get sortDateTitle => 'Data';
 
   @override
-  String get sortOrderAscendingTitle => 'Ascendente';
+  String get sortOrderAscendingTitle => 'Crescente';
 
   @override
-  String get sortOrderDescendingTitle => 'Discendente';
+  String get sortOrderDescendingTitle => 'Decrescente';
 
   @override
   String get pageStatisticsTitle => 'Statistiche';
@@ -148,16 +147,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get statisticsNotEnoughData => 'Dati insufficienti…';
 
   @override
-  String get statisticsRangeOneMonth => '1 Mese';
+  String get statisticsRangeOneMonth => 'Un mese';
 
   @override
-  String get statisticsRangeSixMonths => '6 Mesi';
+  String get statisticsRangeSixMonths => '6 mesi';
 
   @override
-  String get statisticsRangeOneYear => '1 Anno';
+  String get statisticsRangeOneYear => 'Un anno';
 
   @override
-  String get statisticsRangeAllTime => 'Tutto';
+  String get statisticsRangeAllTime => 'Da sempre';
 
   @override
   String chartSummaryTitle(Object tag) {
@@ -175,29 +174,29 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => 'Raggruppa per';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => 'Giorno';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => 'Settimana';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => 'Mese';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => 'Anno';
 
   @override
-  String get chartSmoothingLabel => 'Smoothing';
+  String get chartSmoothingLabel => 'Smussamento delle curve';
 
   @override
   String streakCurrent(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Sequenza corrente $count',
+      other: '$count giorni di fila',
     );
     return '$_temp0';
   }
@@ -207,7 +206,7 @@ class AppLocalizationsIt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Sequenza più Lunga $count',
+      other: 'Record di giorni di fila: $count',
     );
     return '$_temp0';
   }
@@ -217,7 +216,7 @@ class AppLocalizationsIt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Great Days $count',
+      other: 'Giornate positive $count',
     );
     return '$_temp0';
   }
@@ -238,24 +237,24 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get errorExternalStorageAccessDescription =>
-      'Se utilizzi un archivio di rete, assicurati che il servizio sia online e che tu disponga di accesso alla rete.\n\nIn caso contrario, l\'app potrebbe aver perso le autorizzazioni per la cartella esterna. Vai alle impostazioni e riseleziona la cartella esterna per concedere l\'accesso.\n\nAttenzione, le modifiche non verranno sincronizzate finché non ripristinerai l\'accesso alla posizione di archiviazione esterna!';
+      'Se utilizzi un archivio di rete, assicurati che il servizio sia online e che tu disponga di accesso alla rete.\n\nIn caso contrario, l\'app potrebbe aver perso le autorizzazioni per la cartella esterna. Vai alle impostazioni e seleziona la cartella esterna, e concedi l\'accesso.\n\nAttenzione, le modifiche non verranno sincronizzate finché non ripristinerai l\'accesso all\'archivio esterno!';
 
   @override
   String get errorExternalStorageAccessContinue =>
-      'Prosegui con la base di dati locale';
+      'Prosegui con l\'archivio locale';
 
   @override
-  String get databaseMigrationErrorTitle => 'Couldn\'t Move Your Data';
+  String get databaseMigrationErrorTitle => 'Impossibile spostare i dati';
 
   @override
   String get databaseMigrationErrorDescription =>
-      'Your entries are safe but couldn\'t be moved to the app\'s storage.\n\nTry again, and report the issue if it keeps happening.';
+      'I tuoi ricordi sono al sicuro, ma non è stato possibile spostarli nell\'archivio dell\'app.\n\nRiprova. Dovesse continuare a succedere, crea una segnalazione.';
 
   @override
-  String get databaseMigrationErrorRetry => 'Retry';
+  String get databaseMigrationErrorRetry => 'Riprova';
 
   @override
-  String get errorReport => 'Report Issue';
+  String get errorReport => 'Segnala un problema';
 
   @override
   String get lastModified => 'Modificato';
@@ -267,11 +266,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get titleHint => 'Titolo…';
 
   @override
-  String get deleteLogTitle => 'Elimina l\'annotazione';
+  String get deleteLogTitle => 'Elimina l\'entrata del diario';
 
   @override
   String get deleteLogDescription =>
-      'Vuoi davvero eliminare questa annotazione?';
+      'Vuoi davvero eliminare questa entrata del diario?';
 
   @override
   String get deletePhotoTitle => 'Elimina la foto';
@@ -301,22 +300,23 @@ class AppLocalizationsIt extends AppLocalizations {
   String get themeAmoled => 'AMOLED';
 
   @override
-  String get settingsFirstDayOfWeek => 'Primo Giorno della Settimana';
+  String get settingsFirstDayOfWeek => 'Primo giorno della settimana';
 
   @override
-  String get settingsCalendarSystem => 'Calendar System';
+  String get settingsCalendarSystem => 'Formato del calendario';
 
   @override
   String get calendarSystemGregorian => 'Gregoriano';
 
   @override
-  String get calendarSystemJalali => 'Jalali';
+  String get calendarSystemJalali => 'Persiano';
 
   @override
-  String get settingsUseSystemAccentColor => 'Usa il colore di sistema';
+  String get settingsUseSystemAccentColor =>
+      'Usa il colore di accento del sistema';
 
   @override
-  String get settingsCustomAccentColor => 'Colore personalizzato';
+  String get settingsCustomAccentColor => 'Personalizza colore';
 
   @override
   String get settingsShowMarkdownToolbar =>
@@ -363,49 +363,51 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsNotificationsPermissionsPrompt =>
-      'Sarà richiesta l\'autorizzazione \'programma sveglie\' per poter inviare promemoria casuali o al momento da te preferito.';
+      'Sarà richiesta l\'autorizzazione \"imposta sveglie\" per poterti inviare i promemoria casuali o al tuo orario preferito.';
 
   @override
-  String get settingsDailyReminderTitle => 'Promemoria Giornaliero';
+  String get settingsDailyReminderTitle => 'Promemoria giornaliero';
 
   @override
-  String get settingsOnThisDayDescription => 'Rivisita ricordi passati';
+  String get settingsOnThisDayDescription => 'Riguarda i tuoi ricordi passati';
 
   @override
   String get settingsDailyReminderDescription =>
-      'Un gentile promemoria ogni giorno';
+      'Ricevi il promemoria giornaliero';
 
   @override
-  String get settingsReminderTime => 'Orario Promemoria';
+  String get settingsReminderTime => 'Orario del promemoria';
 
   @override
-  String get settingsFixedReminderTimeTitle => 'Orario Promemoria Fissato';
+  String get settingsFixedReminderTimeTitle =>
+      'Fissa un orario per il promemoria';
 
   @override
   String get settingsFixedReminderTimeDescription =>
-      'Scegli un orario fisso per il promemoria';
+      'Scegli un orario fisso per ricevere un promemoria';
 
   @override
-  String get settingsAlwaysSendReminderTitle => 'Invia sempre promemoria';
+  String get settingsAlwaysSendReminderTitle => 'Invia comunque un promemoria';
 
   @override
   String get settingsAlwaysSendReminderDescription =>
-      'Invia promemoria anche se è già stata creata un\'annotazione';
+      'Invia il promemoria giornaliero anche se hai già creato un ricordo manualmente';
 
   @override
-  String get settingsCustomizeNotificationTitle => 'Personalizza Notifiche';
+  String get settingsCustomizeNotificationTitle =>
+      'Personalizza le notifiche (impostazioni di sistema)';
 
   @override
-  String get settingsTemplatesTitle => 'Modelli';
+  String get settingsTemplatesTitle => 'Modelli fac-simile';
 
   @override
-  String get settingsDefaultTemplate => 'Modello Predefinito';
+  String get settingsDefaultTemplate => 'Modello predefinito';
 
   @override
-  String get manageTemplates => 'Gestisci Modelli';
+  String get manageTemplates => 'Gestisci i modelli';
 
   @override
-  String get addTemplate => 'Aggiungi un Modello';
+  String get addTemplate => 'Aggiungi un modello';
 
   @override
   String get newTemplate => 'Nuovo Modello';
@@ -420,124 +422,124 @@ class AppLocalizationsIt extends AppLocalizations {
   String get templateVariableTime => 'Orario';
 
   @override
-  String get templateDefaultTimestampTitle => 'Timestamp';
+  String get templateDefaultTimestampTitle => 'Data e ora';
 
   @override
   String templateDefaultTimestampBody(Object date, Object time) {
-    return '$date - $time:';
+    return '$date, $time:';
   }
 
   @override
-  String get templateDefaultSummaryTitle => 'Riassunto Giornata';
+  String get templateDefaultSummaryTitle => 'Resoconto di oggi';
 
   @override
   String get templateDefaultSummaryBody =>
-      '### Riepilogo\n- \n\n### Citazione\n> ';
+      '### Riassunto\n- \n\n### Citazioni\n> ';
 
   @override
-  String get templateDefaultReflectionTitle => 'Riflessione';
+  String get templateDefaultReflectionTitle => 'Riflessioni';
 
   @override
   String get templateDefaultReflectionBody =>
-      '### Che cosa ho apprezzato di oggi?\n- \n### Per cosa sono grato?\n- \n### Cosa mi aspetto di fare prossimamente?\n- ';
+      '### Cos\'hai fatto oggi di memorabile?\n- \n\n### Cos\'è successo di bello?\n- \n\n### Nuovi progetti per il futuro?\n- ';
 
   @override
-  String get settingsTagsTitle => 'Tags';
+  String get settingsTagsTitle => 'Etichette';
 
   @override
-  String get manageTags => 'Manage Tags';
+  String get manageTags => 'Gestisci le etichette';
 
   @override
-  String get tagTypeLabelTitle => 'Label';
+  String get tagTypeLabelTitle => 'Etichetta';
 
   @override
-  String get tagTypeTrackerTitle => 'Tracker';
+  String get tagTypeTrackerTitle => 'Quantità';
 
   @override
-  String get nameHint => 'Name';
+  String get nameHint => 'Nome';
 
   @override
-  String get tagColorLabel => 'Color';
+  String get tagColorLabel => 'Colore';
 
   @override
-  String get iconPickerTitle => 'Choose Icon';
+  String get iconPickerTitle => 'Scegli un\'icona';
 
   @override
-  String get iconPickerIconsTab => 'Icons';
+  String get iconPickerIconsTab => 'Icone';
 
   @override
-  String get iconPickerCustomTab => 'Custom';
+  String get iconPickerCustomTab => 'Personalizzato';
 
   @override
-  String get iconPickerSearchHint => 'Search icons…';
+  String get iconPickerSearchHint => 'Cerca icone…';
 
   @override
-  String get colorPickerTitle => 'Choose Color';
+  String get colorPickerTitle => 'Scegli un colore';
 
   @override
-  String get colorPickerPaletteTab => 'Colors';
+  String get colorPickerPaletteTab => 'Colori';
 
   @override
-  String get iconGroupMoodPeople => 'Mood & People';
+  String get iconGroupMoodPeople => 'Umori e persone';
 
   @override
-  String get iconGroupHealth => 'Health';
+  String get iconGroupHealth => 'Salute';
 
   @override
-  String get iconGroupWorkFinance => 'Work & Finance';
+  String get iconGroupWorkFinance => 'Lavoro e finanza';
 
   @override
-  String get iconGroupHabitsGoals => 'Habits & Goals';
+  String get iconGroupHabitsGoals => 'Abitudini e obiettivi';
 
   @override
-  String get iconGroupNature => 'Nature';
+  String get iconGroupNature => 'Ambiente';
 
   @override
-  String get iconGroupFoodDrink => 'Food & Drink';
+  String get iconGroupFoodDrink => 'Cibo e bevande';
 
   @override
-  String get iconGroupHome => 'Home';
+  String get iconGroupHome => 'Casa';
 
   @override
-  String get iconGroupTravel => 'Travel';
+  String get iconGroupTravel => 'Viaggio';
 
   @override
-  String get iconGroupSymbols => 'Symbols';
+  String get iconGroupSymbols => 'Simboli';
 
   @override
-  String get tagCategoryLabel => 'Category';
+  String get tagCategoryLabel => 'Categoria';
 
   @override
-  String get tagLabel => 'Tag';
+  String get tagLabel => 'Annotazione';
 
   @override
-  String get tagCategoryUncategorized => 'Uncategorized';
+  String get tagCategoryUncategorized => 'Senza categoria';
 
   @override
-  String get newCategoryTitle => 'New Category';
+  String get newCategoryTitle => 'Nuova categoria';
 
   @override
-  String get shareButtonLabel => 'Share';
+  String get shareButtonLabel => 'Condividi';
 
   @override
-  String get importErrorDescription => 'Failed to import file!';
+  String get importErrorDescription => 'Impossibile importare il file';
 
   @override
-  String get exportErrorDescription => 'Failed to export file!';
+  String get exportErrorDescription => 'Impossibile esportare il file!';
 
   @override
-  String get deleteTitle => 'Delete';
+  String get deleteTitle => 'Elimina';
 
   @override
   String deleteTagMessage(num count, Object name) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: ' It is used in $count logs.',
-      one: ' It is used in 1 log.',
+      other: ' È utilizzata in $count entrate del diario.',
+      one: ' È utilizzata in un\'entrata del diario.',
       zero: '',
     );
-    return 'Delete \"$name\"?$_temp0';
+    return 'Eliminare \"$name\"?$_temp0';
   }
 
   @override
@@ -545,102 +547,102 @@ class AppLocalizationsIt extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: ' Its $count tags will also be deleted.',
-      one: ' Its 1 tag will also be deleted.',
+      other: ' Anche le sue $count annotazioni (categorie) saranno eliminate.',
+      one: ' Verrà eliminata anche una sua annotazione (categoria).',
       zero: '',
     );
-    return 'Delete \"$name\"?$_temp0';
+    return 'Eliminare \"$name\"?$_temp0';
   }
 
   @override
   String deleteTemplateMessage(Object name) {
-    return 'Delete \"$name\"?';
+    return 'Eliminare \"$name\"?';
   }
 
   @override
-  String get filterTagsTitle => 'Filter';
+  String get filterTagsTitle => 'Filtro';
 
   @override
-  String get tagFilterModeAny => 'Any Tag';
+  String get tagFilterModeAny => 'Qualsiasi annotazione';
 
   @override
-  String get tagFilterModeAll => 'All Tags';
+  String get tagFilterModeAll => 'Tutte le annotazioni';
 
   @override
-  String get clearAllFilters => 'Clear All';
+  String get clearAllFilters => 'Resetta';
 
   @override
-  String get noTagsFilterLabel => 'No Tags';
+  String get noTagsFilterLabel => 'Senza annotazioni';
 
   @override
-  String get addTagsTitle => 'Add Tags';
+  String get addTagsTitle => 'Aggiungi annotazioni';
 
   @override
-  String get addTagsSearchHint => 'Search tags…';
+  String get addTagsSearchHint => 'Cerca annotazioni…';
 
   @override
-  String get tagPickerSortManualLabel => 'Manual order';
+  String get tagPickerSortManualLabel => 'Ordine predefinito';
 
   @override
-  String get tagPickerSortUsageLabel => 'Sort by usage';
+  String get tagPickerSortUsageLabel => 'Per frequenza di utilizzo';
 
   @override
-  String get tagFavoriteName => 'Favorite';
+  String get tagFavoriteName => 'Preferiti';
 
   @override
-  String get tagEnergyName => 'Energy';
+  String get tagEnergyName => 'Energia';
 
   @override
-  String get tagCategoryActivitiesName => 'Activities';
+  String get tagCategoryActivitiesName => 'Attività';
 
   @override
-  String get tagExerciseName => 'Exercise';
+  String get tagExerciseName => 'Esercizio';
 
   @override
-  String get tagSocializingName => 'Socializing';
+  String get tagSocializingName => 'Compagnia';
 
   @override
-  String get tagHobbyName => 'Hobby';
+  String get tagHobbyName => 'Passatempo';
 
   @override
-  String get tagEntertainmentName => 'Entertainment';
+  String get tagEntertainmentName => 'Cinema e teatro';
 
   @override
-  String get tagDiningName => 'Dining';
+  String get tagDiningName => 'Cibo';
 
   @override
-  String get tagChoresName => 'Chores';
+  String get tagChoresName => 'Faccende domestiche';
 
   @override
-  String get tagCategoryEmotionsName => 'Emotions';
+  String get tagCategoryEmotionsName => 'Stati d\'animo';
 
   @override
-  String get tagExcitedName => 'Excited';
+  String get tagExcitedName => 'Entusiasta';
 
   @override
-  String get tagGratefulName => 'Grateful';
+  String get tagGratefulName => 'Gratitudine';
 
   @override
-  String get tagCalmName => 'Calm';
+  String get tagCalmName => 'In pace';
 
   @override
-  String get tagTiredName => 'Tired';
+  String get tagTiredName => 'Stanchezza';
 
   @override
-  String get tagAnxiousName => 'Anxious';
+  String get tagAnxiousName => 'Ansia';
 
   @override
-  String get tagAnnoyedName => 'Annoyed';
+  String get tagAnnoyedName => 'Fastidio';
 
   @override
   String get welcomeLogBodyText =>
-      '## Welcome to Daily You\n\n> Every day is worth remembering, capture it!\n\n**Daily You** is free, [open source](https://github.com/Demizo/Daily_You), and community supported. Built around the belief that your diary should be yours, not a product:\n\n- No ads\n- No locked features\n- No tracking or data collection\n\nWhether you\'re journaling, reflecting, or just noting what made you smile, **Daily You** gives you a private space that\'s _truly your own_.';
+      '## Benvenuto in Daily You\n\n> Ogni giorno merita di essere ricordato, catturalo!\n\n**Daily You** è gratuito e [open source](https://github.com/Demizo/Daily_You) e supportato dagli utenti. Nasce dalla convinzione che il tuo diario debba appartenere solo a te e non essere un prodotto:\n\n- Nessuna pubblicità\n- Nessuna funzionalità a pagamento\n- Nessun tracciamento e nessun dato raccolto\n\nSe vuoi scrivere un diario, tenere nota delle tue giornate, o semplicemente annotare quello che ti ha fatto stare bene, **Daily You** ti offre uno spazio privato che è _davvero solo tuo_.';
 
   @override
-  String get settingsStorageTitle => 'Memoria';
+  String get settingsStorageTitle => 'Archiviazione';
 
   @override
-  String get settingsImageQuality => 'Qualità Immagine';
+  String get settingsImageQuality => 'Qualità delle immagini';
 
   @override
   String get imageQualityHigh => 'Alta';
@@ -652,27 +654,27 @@ class AppLocalizationsIt extends AppLocalizations {
   String get imageQualityLow => 'Bassa';
 
   @override
-  String get imageQualityNoCompression => 'Nessuna Compressione';
+  String get imageQualityNoCompression => 'Qualità originale';
 
   @override
-  String get settingsLogFolder => 'Cartella delle Annotazioni';
+  String get settingsLogFolder => 'Cartella delle entrate del diario';
 
   @override
-  String get settingsImageFolder => 'Cartella Immagini';
+  String get settingsImageFolder => 'Cartella delle immagini';
 
   @override
   String get warningTitle => 'Attenzione';
 
   @override
   String get logFolderWarningDescription =>
-      'Se la cartella selezionata contiene già un file \'daily_you.db\', questo verrà utilizzato per sovrascrivere le annotazioni esistenti!';
+      'Se la cartella selezionata contiene già un file \'daily_you.db\', verrà utilizzato per sovrascrivere le annotazioni esistenti!';
 
   @override
   String get errorTitle => 'Errore';
 
   @override
   String get logFolderErrorDescription =>
-      'Impossibile cambiare cartella delle annotazioni!';
+      'Impossibile cambiare cartella delle entrate del diario!';
 
   @override
   String get imageFolderErrorDescription =>
@@ -685,7 +687,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get restoreErrorDescription => 'Impossibile ripristinare il backup!';
 
   @override
-  String get settingsBackupRestoreTitle => 'Backup & Ripristino';
+  String get settingsBackupRestoreTitle => 'Backup e ripristino';
 
   @override
   String get settingsBackup => 'Backup';
@@ -704,27 +706,27 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String creatingBackupStatus(Object percent) {
-    return 'Creazione Backup… $percent%';
+    return 'Creazione del backup… $percent%';
   }
 
   @override
   String restoringBackupStatus(Object percent) {
-    return 'Ripristino Backup… $percent%';
+    return 'Ripristino dal backup… $percent%';
   }
 
   @override
-  String get cleanUpStatus => 'Pulizia…';
+  String get cleanUpStatus => 'Sto facendo pulizia…';
 
   @override
   String migratingImagesStatus(Object current, Object total) {
-    return 'Migrating photos… $current/$total';
+    return 'Spostando $current foto su $total';
   }
 
   @override
   String get settingsExport => 'Export';
 
   @override
-  String get settingsExportToAnotherFormat => 'Esporta in un Altro Formato';
+  String get settingsExportToAnotherFormat => 'Esporta in un altro formato';
 
   @override
   String get settingsExportFormatDescription =>
@@ -740,11 +742,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsImport => 'Import';
 
   @override
-  String get settingsImportFromAnotherApp => 'Importa da un\'altra App';
+  String get settingsImportFromAnotherApp => 'Importa da un\'altra app';
 
   @override
   String get settingsTranslateCallToAction =>
-      'Chiunque dovrebbe poter tenere un diario!';
+      'Tutti dovrebbero avere un diario!';
 
   @override
   String get settingsHelpTranslate => 'Aiuta a tradurre';
@@ -760,7 +762,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get logFormatDescription =>
-      'Il formato di un\'altra App potrebbe non supportare tutte le funzionalità. Riporta qualsiasi problema riscontri poiché i formati di terze parti possono cambiare in qualsiasi momento. Ciò non avrà impatto sulle note esistenti!';
+      'Il formato di un\'altra app potrebbe non supportare tutte le funzionalità. Riporta qualsiasi problema riscontri poiché i formati di terze parti possono cambiare in qualsiasi momento. Ciò non avrà impatto sulle note esistenti!';
 
   @override
   String get formatDailyYouJson => 'Daily You (JSON)';
@@ -790,11 +792,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get formatMarkdown => 'Markdown';
 
   @override
-  String get settingsDeleteAllLogsTitle => 'Cancella Tutte le Annotazioni';
+  String get settingsDeleteAllLogsTitle =>
+      'Cancella tutte le entrate del diario';
 
   @override
   String get settingsDeleteAllLogsDescription =>
-      'Vuoi davvero cancellare tutte le tue annotazioni?';
+      'Vuoi davvero cancellare tutte le tue entrate del diario?';
 
   @override
   String settingsDeleteAllLogsPrompt(Object prompt) {
@@ -805,50 +808,51 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsLanguageTitle => 'Lingua';
 
   @override
-  String get settingsAppLanguageTitle => 'Lingua dell\'App';
+  String get settingsAppLanguageTitle => 'Lingua dell\'app';
 
   @override
-  String get settingsOverrideAppLanguageTitle => 'Ridefinisci Lingua dell\'App';
+  String get settingsOverrideAppLanguageTitle =>
+      'Sovrascrivi la lingua dell\'app';
 
   @override
   String get settingsSecurityTitle => 'Sicurezza';
 
   @override
-  String get settingsSecurityRequirePassword => 'Richiedi Password';
+  String get settingsSecurityRequirePassword => 'Richiedi una password';
 
   @override
-  String get settingsSecurityEnterPassword => 'Inserisci Password';
+  String get settingsSecurityEnterPassword => 'Inserisci la password';
 
   @override
-  String get settingsSecuritySetPassword => 'Imposta Password';
+  String get settingsSecuritySetPassword => 'Imposta una password';
 
   @override
-  String get settingsSecurityChangePassword => 'Cambia Password';
+  String get settingsSecurityChangePassword => 'Cambia la password';
 
   @override
   String get settingsSecurityPassword => 'Password';
 
   @override
-  String get settingsSecurityConfirmPassword => 'Conferma Password';
+  String get settingsSecurityConfirmPassword => 'Conferma password';
 
   @override
-  String get settingsSecurityOldPassword => 'Vecchia Password';
+  String get settingsSecurityOldPassword => 'Vecchia password';
 
   @override
-  String get settingsSecurityIncorrectPassword => 'Password Errata';
+  String get settingsSecurityIncorrectPassword => 'Password errata';
 
   @override
   String get settingsSecurityPasswordsDoNotMatch =>
       'Le password non coincidono';
 
   @override
-  String get requiredPrompt => 'Obbligatorio';
+  String get requiredPrompt => 'Campo richiesto';
 
   @override
-  String get settingsSecurityBiometricUnlock => 'Sblocco Biometrico';
+  String get settingsSecurityBiometricUnlock => 'Sblocco biometrico';
 
   @override
-  String get unlockAppPrompt => 'Sblocca l\'App';
+  String get unlockAppPrompt => 'Sblocca l\'app';
 
   @override
   String get settingsAboutTitle => 'Informazioni';
@@ -863,38 +867,38 @@ class AppLocalizationsIt extends AppLocalizations {
   String get licenseGPLv3 => 'GPL-3.0';
 
   @override
-  String get settingsSourceCode => 'Codice Sorgente';
+  String get settingsSourceCode => 'Codice sorgente';
 
   @override
-  String get settingsMadeWithLove => 'Fatto con ❤️';
+  String get settingsMadeWithLove => 'Fatto con il ❤️';
 
   @override
   String get settingsConsiderSupporting =>
-      'Considera la possibilità di sostenere il progetto';
+      'considera la possibilità di sostenere il progetto';
 
   @override
-  String get imagesTitle => 'Images';
+  String get imagesTitle => 'Foto';
 
   @override
   String get tagMoodTitle => 'Stato d\'animo';
 
   @override
-  String get calendarTagDisplayLabel => 'Tag';
+  String get calendarTagDisplayLabel => 'Annotazione';
 
   @override
-  String get selectTagTitle => 'Select Tag';
+  String get selectTagTitle => 'Scegli un\'annotazione';
 
   @override
-  String get labelPresentLabel => 'Present';
+  String get labelPresentLabel => 'Presente';
 
   @override
-  String get labelAbsentLabel => 'Absent';
+  String get labelAbsentLabel => 'Assente';
 
   @override
-  String get labelCoverageLabel => 'Coverage';
+  String get labelCoverageLabel => 'Periodo';
 
   @override
   String chartDistributionTitle(Object tag) {
-    return '$tag Distribution';
+    return 'Distribuzione di $tag';
   }
 }
