@@ -10,7 +10,8 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Match release.yml: build on the oldest supported Ubuntu for glibc compat.
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -35,11 +36,27 @@ jobs:
 
       - name: Install appimage-builder
         run: |
-          sudo apt-get install -y python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace
+          sudo apt-get install -y python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace xvfb dbus-x11
           sudo pip3 install appimage-builder
 
       - name: Build AppImage
-        run: appimage-builder --recipe AppImageBuilder.yml --skip-test
+        run: linux/package_appimage.sh "${{ steps.version.outputs.version }}"
+
+      - name: Smoke-test the AppImage
+        run: |
+          APP="DailyYou-${{ steps.version.outputs.version }}-x86_64.AppImage"
+          # Launch headless and expect it to stay running (timeout kills it => 124).
+          # A missing library or a plugin crash exits fast with another code.
+          set +e
+          APPIMAGE_EXTRACT_AND_RUN=1 \
+            dbus-run-session -- xvfb-run -a timeout 20 "./$APP"
+          rc=$?
+          set -e
+          if [ "$rc" -ne 124 ] && [ "$rc" -ne 0 ]; then
+            echo "::error::$APP failed to launch (exit $rc)"
+            exit 1
+          fi
+          echo "$APP OK (exit $rc)"
 
       - uses: actions/upload-artifact@v4
         with:
