@@ -8,11 +8,17 @@ on:
         required: false
         type: string
   push:
+    branches:
+      - master
     tags:
       - "v*.*.*"
 
 permissions:
   contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   version:
@@ -20,12 +26,15 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       tag: ${{ steps.version.outputs.tag }}
+      release: ${{ steps.version.outputs.release }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Resolve version
         id: version
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [[ -n "${{ inputs.version }}" ]]; then
             VERSION="${{ inputs.version }}"
@@ -34,11 +43,26 @@ jobs:
           else
             VERSION=$(grep -m1 '^version:' pubspec.yaml | sed -E 's/^version: ([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
           fi
+          TAG="v$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+          # A manual run or a pushed tag always releases. A push to master
+          # releases only when pubspec.yaml names a version that has no release
+          # yet -- i.e. the version was just bumped.
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || "${{ github.ref_type }}" == "tag" ]]; then
+            RELEASE=true
+          elif gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            RELEASE=false
+            echo "::notice::$TAG already released; nothing to do."
+          else
+            RELEASE=true
+          fi
+          echo "release=$RELEASE" >> "$GITHUB_OUTPUT"
 
   build-windows:
     needs: version
+    if: needs.version.outputs.release == 'true'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -80,6 +104,7 @@ jobs:
 
   build-linux:
     needs: version
+    if: needs.version.outputs.release == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -112,8 +137,11 @@ jobs:
 
   release:
     needs: [version, build-windows, build-linux]
+    if: needs.version.outputs.release == 'true'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -121,9 +149,17 @@ jobs:
       - name: Create release and upload assets
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.version.outputs.tag }}
         run: |
-          gh release create "${{ needs.version.outputs.tag }}" \
-            --repo "${{ github.repository }}" \
-            --title "${{ needs.version.outputs.tag }}" \
-            --generate-notes \
-            artifacts/*/*
+          # Create the release (tagging HEAD if the tag does not exist yet).
+          # If it already exists -- a re-run, or a race -- just (re)upload assets.
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber artifacts/*/*
+          else
+            gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "$TAG" \
+              --generate-notes \
+              artifacts/*/*
+          fi
