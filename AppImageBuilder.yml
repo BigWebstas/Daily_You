@@ -11,7 +11,8 @@ AppDir:
     id: com.demizo.daily_you
     name: Daily You
     icon: logo
-    version: 3.3.0
+    # Injected by linux/package_appimage.sh (APP_VERSION env var).
+    version: '{{APP_VERSION}}'
     exec: daily_you
     exec_args: $@
   files:
