@@ -111,12 +111,13 @@ jobs:
           path: "*.AppImage"
 
       - name: Tar release bundle for Arch packaging
-        run: tar -czf bundle.tar.gz -C build/linux/x64/release bundle
+        run: |
+          tar -czf "DailyYou-${{ needs.version.outputs.version }}-linux-x86_64-bundle.tar.gz" -C build/linux/x64/release bundle
 
       - uses: actions/upload-artifact@v4
         with:
-          name: linux-bundle
-          path: bundle.tar.gz
+          name: DailyYou-${{ needs.version.outputs.version }}-linux-x86_64-bundle
+          path: DailyYou-${{ needs.version.outputs.version }}-linux-x86_64-bundle.tar.gz
 
   build-arch-pkg:
     needs: [version, build-linux]
@@ -131,7 +132,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: linux-bundle
+          name: DailyYou-${{ needs.version.outputs.version }}-linux-x86_64-bundle
           path: linux/arch
 
       - name: Build Arch package
