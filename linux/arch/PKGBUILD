@@ -1,0 +1,29 @@
+# Maintainer: BigWebstas
+#
+# Packages the prebuilt `flutter build linux --release` bundle for Arch.
+# Not source-built: `bundle.tar.gz` is produced by the release CI job before
+# makepkg runs (see .github/workflows/release.yml). CI rewrites pkgver below
+# to match the release tag.
+pkgname=daily-you-bin
+pkgver=3.4.0
+pkgrel=1
+pkgdesc="Every day is worth remembering... (mood tracking, journaling)"
+arch=('x86_64')
+url="https://github.com/BigWebstas/Daily_You"
+license=('GPL3')
+provides=('daily-you')
+conflicts=('daily-you')
+depends=('gtk3' 'sqlite')
+source=("bundle.tar.gz" "daily_you.desktop" "logo.svg")
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+package() {
+  install -d "$pkgdir/usr/lib/daily_you"
+  cp -r "$srcdir/bundle/"* "$pkgdir/usr/lib/daily_you/"
+
+  install -d "$pkgdir/usr/bin"
+  ln -s /usr/lib/daily_you/daily_you "$pkgdir/usr/bin/daily_you"
+
+  install -Dm644 "$srcdir/daily_you.desktop" "$pkgdir/usr/share/applications/daily_you.desktop"
+  install -Dm644 "$srcdir/logo.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/daily_you.svg"
+}

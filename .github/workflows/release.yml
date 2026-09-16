@@ -110,6 +110,44 @@ jobs:
           name: DailyYou-${{ needs.version.outputs.version }}-linux-x86_64-AppImage
           path: "*.AppImage"
 
+      - name: Tar release bundle for Arch packaging
+        run: tar -czf bundle.tar.gz -C build/linux/x64/release bundle
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-bundle
+          path: bundle.tar.gz
+
+  build-arch-pkg:
+    needs: [version, build-linux]
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install makepkg deps
+        run: |
+          pacman -Syu --noconfirm --needed base-devel gtk3 sqlite
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-bundle
+          path: linux/arch
+
+      - name: Build Arch package
+        run: |
+          cd linux/arch
+          cp ../../assets/logo.svg .
+          sed -i "s/^pkgver=.*/pkgver=${{ needs.version.outputs.version }}/" PKGBUILD
+          useradd -m builder
+          chown -R builder:builder .
+          su builder -c "makepkg --syncdeps --noconfirm"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-arch-pkg
+          path: linux/arch/*.pkg.tar.zst
+
   build-macos:
     needs: version
     runs-on: macos-latest
@@ -135,12 +173,13 @@ jobs:
           path: build/macos/Build/Products/Release/DailyYou-${{ needs.version.outputs.version }}-macos.zip
 
   release:
-    needs: [version, build-windows, build-linux, build-macos]
+    needs: [version, build-windows, build-linux, build-arch-pkg, build-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
+          pattern: DailyYou-*
 
       - name: Create release and upload assets
         env:
