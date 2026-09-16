@@ -47,6 +47,7 @@ app.*.map.json
 AppDir
 appimage-build
 *.AppImage*
+.tools/
 
 # FVM Version Cache
 .fvm/
@@ -55,5 +56,6 @@ appimage-build
 .direnv/
 android/app/.cxx/
 
-# Current changelog
-changelog.txt
+# Windows installer output
+/installer/output/
+CLAUDE.md
