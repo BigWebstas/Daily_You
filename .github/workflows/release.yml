@@ -81,6 +81,7 @@ jobs:
   build-choco:
     needs: [version, build-windows]
     runs-on: windows-latest
+    environment: Prod
     steps:
       - uses: actions/checkout@v4
 
