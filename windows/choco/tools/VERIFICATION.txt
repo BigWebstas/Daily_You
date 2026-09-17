@@ -1,0 +1,19 @@
+VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community
+in verifying that this package's contents are trustworthy.
+
+This package downloads the Windows installer directly from the project's
+GitHub Releases page, built by the project's own GitHub Actions workflow:
+https://github.com/BigWebstas/Daily_You/actions/workflows/release.yml
+
+The installer for this package version can be found at:
+https://github.com/BigWebstas/Daily_You/releases/download/v3.4.3/DailyYou-3.4.3-windows-x64-setup.exe
+
+To verify the checksum:
+1. Download the installer from the URL above.
+2. Get the checksum using one of the following methods:
+   - Using PowerShell's Get-FileHash cmdlet:
+       Get-FileHash path\to\DailyYou-3.4.3-windows-x64-setup.exe -Algorithm SHA256
+   - Using Chocolatey's checksum.exe:
+       checksum -t sha256 -f path\to\DailyYou-3.4.3-windows-x64-setup.exe
+3. Compare the result to the checksum64 value in tools\chocolateyinstall.ps1.

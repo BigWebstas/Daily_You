@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Chocolatey package metadata. Not source-built: chocolateyInstall.ps1
+  downloads the Inno Setup installer from a GitHub release. CI rewrites the
+  version below and the checksum in chocolateyInstall.ps1 to match the
+  release tag (see .github/workflows/release.yml).
+-->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>daily-you</id>
+    <version>3.4.3</version>
+    <title>Daily You</title>
+    <authors>BigWebstas</authors>
+    <projectUrl>https://github.com/BigWebstas/Daily_You</projectUrl>
+    <license type="expression">GPL-3.0-only</license>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/BigWebstas/Daily_You</projectSourceUrl>
+    <docsUrl>https://github.com/BigWebstas/Daily_You#readme</docsUrl>
+    <bugTrackerUrl>https://github.com/BigWebstas/Daily_You/issues</bugTrackerUrl>
+    <tags>daily-you journal journaling mood-tracker diary</tags>
+    <summary>Every day is worth remembering...</summary>
+    <description>
+      A journaling app for tracking your mood, daily logs, photo memories,
+      and Markdown notes.
+    </description>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
