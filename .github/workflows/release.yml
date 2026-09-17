@@ -78,6 +78,42 @@ jobs:
           name: DailyYou-${{ needs.version.outputs.version }}-windows-x64-portable
           path: build/windows/x64/runner/Release/*.zip
 
+  build-choco:
+    needs: [version, build-windows]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-windows-installer
+          path: windows/choco
+
+      - name: Point package at this release
+        shell: pwsh
+        run: |
+          $version = "${{ needs.version.outputs.version }}"
+          $installer = "windows/choco/DailyYou-$version-windows-x64-setup.exe"
+          $sha256 = (Get-FileHash $installer -Algorithm SHA256).Hash.ToLower()
+
+          $nuspec = "windows/choco/daily-you.nuspec"
+          (Get-Content $nuspec) -replace '<version>[\d.]+</version>', "<version>$version</version>" | Set-Content $nuspec
+
+          $installScript = "windows/choco/tools/chocolateyinstall.ps1"
+          (Get-Content $installScript) `
+            -replace 'releases/download/v[\d.]+/DailyYou-[\d.]+-windows-x64-setup\.exe', "releases/download/v$version/DailyYou-$version-windows-x64-setup.exe" `
+            -replace "checksum64\s*=\s*'.*'", "checksum64     = '$sha256'" |
+            Set-Content $installScript
+
+      - name: Build Chocolatey package
+        shell: pwsh
+        run: choco pack windows/choco/daily-you.nuspec --outputdirectory windows/choco
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-choco
+          path: windows/choco/*.nupkg
+
   build-linux:
     needs: version
     runs-on: ubuntu-latest
@@ -215,7 +251,7 @@ jobs:
           path: build/macos/Build/Products/Release/DailyYou-${{ needs.version.outputs.version }}-macos.zip
 
   release:
-    needs: [version, build-windows, build-linux, build-arch-pkg, build-flatpak, build-macos]
+    needs: [version, build-windows, build-choco, build-linux, build-arch-pkg, build-flatpak, build-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
