@@ -2,7 +2,8 @@
 <img width="200" src="https://github.com/Demizo/Daily_You/blob/master/assets/logo.svg" alt="Daily You Logo">
 </p>
 <h1 align="center">Daily You</h1>
-<h2 align="center">Every day is worth remembering…</h2><h2 align="center">Fork of Demizo's Daily You with Windows Installer Linux Appimage and MacOS Package</h2>
+<h2 align="center">Every day is worth remembering…</h2>
+<h2 align="center">Fork of Demizo's Daily You with Windows Installer Linux Appimage and MacOS Package</h2>
 <h3>Now on AUR (Archlinux), Flatpak (all Linux), and Chocolatey (Windows)</h3>
 Capture the moments that matter. **Daily You** helps you log your thoughts, track your mood, and keep a diary of meaningful moments, every day. Whether you're journaling, reflecting, or just noting what made you smile, **Daily You** gives you a private space that's truly your own.
 
