@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.bigwebstas.daily_you</id>
+  <name>Daily You</name>
+  <summary>Every day is worth remembering...</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <description>
+    <p>
+      A journaling app for tracking your mood, daily logs, photo memories,
+      and Markdown notes.
+    </p>
+  </description>
+  <launchable type="desktop-id">io.github.bigwebstas.daily_you.desktop</launchable>
+  <url type="homepage">https://github.com/BigWebstas/Daily_You</url>
+  <url type="bugtracker">https://github.com/BigWebstas/Daily_You/issues</url>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="3.4.3" date="2026-09-16" />
+  </releases>
+</component>

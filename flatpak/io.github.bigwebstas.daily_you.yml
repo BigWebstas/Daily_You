@@ -1,0 +1,44 @@
+# Packages the prebuilt `flutter build linux --release` bundle from a
+# GitHub release into a Flatpak. Not source-built: see linux/arch/PKGBUILD
+# for the same approach used for the Arch package. Because flutter pub get
+# fetches a git dependency (shared_storage) and Flathub requires offline,
+# network-less builds, this manifest is for self-distribution (a .flatpak
+# file on a GitHub release, or a self-hosted repo), not Flathub submission.
+app-id: io.github.bigwebstas.daily_you
+runtime: org.freedesktop.Platform
+runtime-version: "25.08"
+sdk: org.freedesktop.Sdk
+command: daily_you
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  - --device=dri
+  - --share=network
+  - --filesystem=xdg-documents
+  - --talk-name=org.freedesktop.Notifications
+
+modules:
+  - name: daily_you
+    buildsystem: simple
+    build-commands:
+      - install -d /app/lib/daily_you
+      - cp -r bundle/* /app/lib/daily_you/
+      - ln -sf "$(find /usr/lib -name 'libsqlite3.so.0' | head -n1)" /app/lib/daily_you/lib/libsqlite3.so
+      - install -Dm755 daily_you-launcher /app/bin/daily_you
+      - install -Dm644 io.github.bigwebstas.daily_you.desktop /app/share/applications/io.github.bigwebstas.daily_you.desktop
+      - install -Dm644 logo.svg /app/share/icons/hicolor/scalable/apps/io.github.bigwebstas.daily_you.svg
+      - install -Dm644 io.github.bigwebstas.daily_you.metainfo.xml /app/share/metainfo/io.github.bigwebstas.daily_you.metainfo.xml
+    sources:
+      - type: archive
+        url: https://github.com/BigWebstas/Daily_You/releases/download/v3.4.3/DailyYou-3.4.3-linux-x86_64-bundle.tar.gz
+        sha256: aa5ab01d1860d6cb8a6fc1d55c20252383d08791e52978911b8f9af7e9eb2c3c
+        dest: bundle
+      - type: file
+        path: daily_you-launcher
+      - type: file
+        path: io.github.bigwebstas.daily_you.desktop
+      - type: file
+        path: ../assets/logo.svg
+      - type: file
+        path: io.github.bigwebstas.daily_you.metainfo.xml

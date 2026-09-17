@@ -49,6 +49,11 @@ appimage-build
 *.AppImage*
 .tools/
 
+# Flatpak build output
+flatpak/.flatpak-builder/
+flatpak/build-dir/
+*.flatpak
+
 # FVM Version Cache
 .fvm/
 
@@ -59,3 +64,5 @@ android/app/.cxx/
 # Windows installer output
 /installer/output/
 CLAUDE.md
+# Widget Preview related
+.widget_preview/
