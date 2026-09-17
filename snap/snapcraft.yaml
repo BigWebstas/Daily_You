@@ -1,0 +1,41 @@
+# Packages the prebuilt `flutter build linux --release` bundle from a
+# GitHub release into a snap. Not source-built, same approach as
+# linux/arch/PKGBUILD and flatpak/io.github.bigwebstas.daily_you.yml. CI
+# rewrites version and the part's source/source-checksum below to match
+# the release tag (see .github/workflows/release.yml).
+name: daily-you
+base: core24
+version: '3.4.7'
+summary: Every day is worth remembering...
+description: |
+  A journaling app for tracking your mood, daily logs, photo memories,
+  and Markdown notes.
+grade: stable
+confinement: strict
+license: GPL-3.0-only
+icon: assets/logo.svg
+
+apps:
+  daily-you:
+    command: daily_you
+    extensions: [gnome]
+    plugs:
+      - home
+      - removable-media
+      - network
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - gsettings
+
+parts:
+  daily-you:
+    plugin: dump
+    source: https://github.com/BigWebstas/Daily_You/releases/download/v3.4.7/DailyYou-3.4.7-linux-x86_64-bundle.tar.gz
+    source-checksum: sha256/7d5b70ab540edab64a08184e47bd910e81db701bf7043916f55c4c4186ffa1c6
+    stage-packages:
+      - libsqlite3-0
+    override-build: |
+      craftctl default
+      ln -sf "$(find "$CRAFT_PART_INSTALL/usr/lib" -name 'libsqlite3.so.0*' | head -n1)" "$CRAFT_PART_INSTALL/lib/libsqlite3.so"
