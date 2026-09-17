@@ -241,6 +241,38 @@ jobs:
             --repo "${{ github.repository }}" \
             flatpak/*.flatpak
 
+  build-snap:
+    # Same reason as build-flatpak: snapcraft's dump plugin fetches the
+    # source URL over the network with no local-file fallback, so this
+    # has to run after the release (and its bundle asset) exists.
+    needs: [version, release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Point snapcraft.yaml at this release
+        run: |
+          cd snap
+          VERSION="${{ needs.version.outputs.version }}"
+          URL="https://github.com/${{ github.repository }}/releases/download/v$VERSION/DailyYou-$VERSION-linux-x86_64-bundle.tar.gz"
+          curl -sL -o bundle.tar.gz "$URL"
+          SHA256=$(sha256sum bundle.tar.gz | cut -d' ' -f1)
+          rm bundle.tar.gz
+          sed -i -E "s/^version: '.*'/version: '$VERSION'/" snapcraft.yaml
+          sed -i -E "s#source: https://github.com/[^[:space:]]+/releases/download/v[0-9.]+/DailyYou-[0-9.]+-linux-x86_64-bundle.tar.gz#source: $URL#" snapcraft.yaml
+          sed -i -E "s#source-checksum: sha256/.*#source-checksum: sha256/$SHA256#" snapcraft.yaml
+
+      - uses: snapcore/action-build@v1
+        id: build
+
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ needs.version.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            "${{ steps.build.outputs.snap }}"
+
   build-macos:
     needs: version
     runs-on: macos-latest
