@@ -97,6 +97,10 @@ jobs:
 
       - run: flutter build linux --release
 
+      - name: Set AppImage version
+        run: |
+          sed -i "s/^    version: .*/    version: ${{ needs.version.outputs.version }}/" AppImageBuilder.yml
+
       - name: Install appimage-builder
         run: |
           sudo apt-get install -y python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace
