@@ -190,7 +190,12 @@ jobs:
           path: linux/arch/*.pkg.tar.zst
 
   build-flatpak:
-    needs: [version, build-linux]
+    # The manifest downloads the Linux bundle from this release's own
+    # GitHub Releases URL, so this job has to run after that release
+    # (and asset) actually exists, unlike build-arch-pkg: makepkg looks
+    # for a same-named local file before fetching a source URL, but
+    # flatpak-builder's archive source type has no such local fallback.
+    needs: [version, release]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -202,16 +207,14 @@ jobs:
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           sudo flatpak install -y flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: DailyYou-${{ needs.version.outputs.version }}-linux-x86_64-bundle
-          path: flatpak
-
       - name: Point manifest at this release
         run: |
           cd flatpak
           VERSION="${{ needs.version.outputs.version }}"
-          SHA256=$(sha256sum "DailyYou-$VERSION-linux-x86_64-bundle.tar.gz" | cut -d' ' -f1)
+          URL="https://github.com/${{ github.repository }}/releases/download/v$VERSION/DailyYou-$VERSION-linux-x86_64-bundle.tar.gz"
+          curl -sL -o bundle.tar.gz "$URL"
+          SHA256=$(sha256sum bundle.tar.gz | cut -d' ' -f1)
+          rm bundle.tar.gz
           sed -i -E "s#releases/download/v[0-9.]+/DailyYou-[0-9.]+-linux-x86_64-bundle.tar.gz#releases/download/v$VERSION/DailyYou-$VERSION-linux-x86_64-bundle.tar.gz#" io.github.bigwebstas.daily_you.yml
           sed -i "s/sha256: .*/sha256: $SHA256/" io.github.bigwebstas.daily_you.yml
 
@@ -221,10 +224,13 @@ jobs:
           flatpak-builder --force-clean --repo=repo build-dir io.github.bigwebstas.daily_you.yml
           flatpak build-bundle repo "DailyYou-${{ needs.version.outputs.version }}-x86_64.flatpak" io.github.bigwebstas.daily_you
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: DailyYou-${{ needs.version.outputs.version }}-flatpak
-          path: flatpak/*.flatpak
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ needs.version.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            flatpak/*.flatpak
 
   build-macos:
     needs: version
@@ -251,7 +257,7 @@ jobs:
           path: build/macos/Build/Products/Release/DailyYou-${{ needs.version.outputs.version }}-macos.zip
 
   release:
-    needs: [version, build-windows, build-choco, build-linux, build-arch-pkg, build-flatpak, build-macos]
+    needs: [version, build-windows, build-choco, build-linux, build-arch-pkg, build-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4

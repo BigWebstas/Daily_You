@@ -12,7 +12,7 @@
     <title>Daily You</title>
     <authors>BigWebstas</authors>
     <projectUrl>https://github.com/BigWebstas/Daily_You</projectUrl>
-    <license type="expression">GPL-3.0-only</license>
+    <licenseUrl>https://github.com/BigWebstas/Daily_You/blob/master/LICENSE.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/BigWebstas/Daily_You</projectSourceUrl>
     <docsUrl>https://github.com/BigWebstas/Daily_You#readme</docsUrl>
