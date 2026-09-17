@@ -38,4 +38,7 @@ parts:
       - libsqlite3-0
     override-build: |
       craftctl default
-      ln -sf "$(find "$CRAFT_PART_INSTALL/usr/lib" -name 'libsqlite3.so.0*' | head -n1)" "$CRAFT_PART_INSTALL/lib/libsqlite3.so"
+      mkdir -p "$CRAFT_PART_INSTALL/lib"
+      SQLITE_LIB=$(find "$CRAFT_PART_INSTALL/usr/lib" -name 'libsqlite3.so.0*' | head -n1)
+      SQLITE_LIB_REL=$(realpath --relative-to="$CRAFT_PART_INSTALL/lib" "$SQLITE_LIB")
+      ln -sf "$SQLITE_LIB_REL" "$CRAFT_PART_INSTALL/lib/libsqlite3.so"
