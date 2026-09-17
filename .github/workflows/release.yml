@@ -81,7 +81,6 @@ jobs:
   build-choco:
     needs: [version, build-windows]
     runs-on: windows-latest
-    environment: Prod
     steps:
       - uses: actions/checkout@v4
 
@@ -114,14 +113,6 @@ jobs:
         with:
           name: DailyYou-${{ needs.version.outputs.version }}-choco
           path: windows/choco/*.nupkg
-
-      - name: Push to Chocolatey
-        shell: pwsh
-        env:
-          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
-        run: |
-          choco apikey --api-key $env:CHOCO_API_KEY --source https://push.chocolatey.org/
-          choco push (Get-Item windows/choco/*.nupkg).FullName --source https://push.chocolatey.org/
 
   build-linux:
     needs: version
@@ -315,3 +306,25 @@ jobs:
             --title "${{ needs.version.outputs.tag }}" \
             --generate-notes \
             artifacts/*/*
+
+  push-choco:
+    # A Chocolatey moderation/rate-limit rejection (e.g. a prior version
+    # still pending review) is common and out of our control, so this is
+    # split from build-choco: it can fail without blocking the GitHub
+    # release or the Flatpak/snap jobs that depend on it existing.
+    needs: [version, build-choco, release]
+    runs-on: windows-latest
+    environment: Prod
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-choco
+          path: windows/choco
+
+      - name: Push to Chocolatey
+        shell: pwsh
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+        run: |
+          choco apikey --api-key $env:CHOCO_API_KEY --source https://push.chocolatey.org/
+          choco push (Get-Item windows/choco/*.nupkg).FullName --source https://push.chocolatey.org/
