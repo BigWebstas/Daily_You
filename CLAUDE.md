@@ -7,9 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Flutter journaling app (mood tracking, daily logs, photo memories, Markdown notes).
 This repo is a **fork of Demizo/Daily_You** that adds desktop packaging the
 upstream project does not ship: Windows installer (Inno Setup), Linux AppImage,
-macOS package, plus Snap. Upstream is merged in periodically (`Merge branch
-'Demizo:master'`). Keep app-logic changes upstreamable; keep packaging changes
-local to this fork.
+macOS package, plus AUR, Flatpak, Chocolatey, and Snap distribution. Upstream
+is merged in periodically (`Merge branch 'Demizo:master'`). Keep app-logic
+changes upstreamable; keep packaging changes local to this fork.
 
 ## Commands
 
@@ -37,7 +37,11 @@ SDK/NDK; `nix develop` (or direnv via `.envrc`) provides the toolchain.
 release scripts and contain hardcoded paths (`/home/demizo/...`) — not for use
 here. Releases in this fork run through `.github/workflows/release.yml`
 (triggered by a `v*.*.*` tag or manual dispatch), which builds Windows, Linux
-AppImage, and macOS artifacts.
+AppImage, and macOS artifacts, then packages AUR, Flatpak, Chocolatey, and
+Snap from the published release. `build-flatpak`/`build-snap` run after
+`release` (they fetch the just-published GitHub Release), while
+`build-arch-pkg` runs alongside it. `push-choco` is split from `build-choco`
+so a Chocolatey moderation rejection can't block the rest.
 
 The `submodules/flutter` submodule pins a Flutter SDK checkout; it is empty
 unless initialized with `git submodule update --init`.

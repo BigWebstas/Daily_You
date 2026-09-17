@@ -264,6 +264,11 @@ jobs:
             --repo "${{ github.repository }}" \
             "${{ steps.build.outputs.snap }}"
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-snap
+          path: ${{ steps.build.outputs.snap }}
+
   build-macos:
     needs: version
     runs-on: macos-latest
@@ -328,3 +333,23 @@ jobs:
         run: |
           choco apikey --api-key $env:CHOCO_API_KEY --source https://push.chocolatey.org/
           choco push (Get-Item windows/choco/*.nupkg).FullName --source https://push.chocolatey.org/
+
+  push-snap:
+    # Same split rationale as push-choco: a Snap Store review delay on a
+    # new/unproven package shouldn't block the GitHub release from existing.
+    needs: [version, build-snap]
+    runs-on: ubuntu-latest
+    environment: Prod
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: DailyYou-${{ needs.version.outputs.version }}-snap
+          path: snap-build
+
+      - name: Install snapcraft
+        run: sudo snap install snapcraft --classic
+
+      - name: Push to Snap Store
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: snapcraft upload --release=stable snap-build/*.snap
