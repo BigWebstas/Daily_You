@@ -93,6 +93,12 @@ class _LaunchPageState extends State<LaunchPage> {
     if (!mounted) return;
     await prefs.setString('onThisDayNotificationDescription',
         AppLocalizations.of(context)!.settingsOnThisDayDescription);
+    if (!mounted) return;
+    await prefs.setString('autoBackupProgressTitle',
+        AppLocalizations.of(context)!.autoBackupProgressTitle);
+    if (!mounted) return;
+    await prefs.setString('autoBackupFailedTitle',
+        AppLocalizations.of(context)!.autoBackupFailedTitle);
   }
 
   Future _checkDatabaseConnection() async {
@@ -107,7 +113,7 @@ class _LaunchPageState extends State<LaunchPage> {
                 showBiometrics:
                     ConfigProvider.instance.get(Settings.biometricUnlock),
                 dismissable: false,
-                onSuccess: () {},
+                onSuccess: (_) {},
               ));
     }
     //Initialize Database

@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:daily_you/storage/file_store.dart';
-import 'package:daily_you/utils/saf_transfer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart';
+import 'package:saf_transfer/saf_transfer.dart';
 import 'package:saf_util/saf_util.dart';
 import 'package:shared_storage/shared_storage.dart' as saf;
 
@@ -54,6 +54,17 @@ class PickedDirectory {
 }
 
 class StoragePicker {
+  static String displayName(String uri) {
+    try {
+      final lastSegment = Uri.decodeFull(uri).split('/').last;
+      return lastSegment.contains(':')
+          ? lastSegment.split(':').last
+          : lastSegment;
+    } catch (e) {
+      return uri;
+    }
+  }
+
   static Future<PickedDirectory?> pickDirectory() async {
     if (Platform.isAndroid) {
       final pickedFolder = await SafUtil()

@@ -684,6 +684,61 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsRestorePromptDescription => 'これにより現在の設定が上書きされます！';
 
   @override
+  String get settingsBackupPasswordProtect => 'Password Protect Backups';
+
+  @override
+  String get backupEncryptedTitle => 'Encrypted Backup';
+
+  @override
+  String get backupEncryptedContent => 'This backup is password protected.';
+
+  @override
+  String get settingsAutoBackup => 'Automatic Backups';
+
+  @override
+  String get settingsAutoBackupLocation => 'Backup Location';
+
+  @override
+  String get settingsAutoBackupTime => 'Backup Time';
+
+  @override
+  String get settingsAutoBackupInterval => 'Backup Interval';
+
+  @override
+  String get settingsAutoBackupIntervalDaily => 'Daily';
+
+  @override
+  String get settingsAutoBackupIntervalWeekly => 'Weekly';
+
+  @override
+  String get settingsAutoBackupIntervalMonthly => 'Monthly';
+
+  @override
+  String get settingsAutoBackupMaxCount => 'Backups To Keep';
+
+  @override
+  String settingsBackupLast(Object time) {
+    return 'Last backup $time';
+  }
+
+  @override
+  String get settingsBackupNever => 'Never backed up';
+
+  @override
+  String settingsAutoBackupNext(Object time) {
+    return 'Next backup $time';
+  }
+
+  @override
+  String get settingsAutoBackupKeepAll => 'All';
+
+  @override
+  String get autoBackupProgressTitle => 'Backing Up…';
+
+  @override
+  String get autoBackupFailedTitle => 'Backup Failed';
+
+  @override
   String tranferStatus(Object percent) {
     return '転送中...$percent%';
   }
@@ -846,6 +901,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsSourceCode => 'ソースコード';
+
+  @override
+  String get settingsOpenSourceLicenses => 'Open Source Licenses';
 
   @override
   String get settingsMadeWithLove => '❤️ をこめて作りました';

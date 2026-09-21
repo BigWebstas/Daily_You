@@ -1,11 +1,25 @@
+import 'dart:io';
+
+import 'package:daily_you/config_provider.dart';
+import 'package:daily_you/device_info_service.dart';
+import 'package:daily_you/main.dart';
+import 'package:daily_you/notification_manager.dart';
+import 'package:daily_you/storage/storage_picker.dart';
+import 'package:daily_you/time_manager.dart';
+import 'package:daily_you/utils/auto_backup_schedule.dart';
 import 'package:daily_you/utils/backup_restore_utils.dart';
 import 'package:daily_you/utils/imports/import_registry.dart';
 import 'package:daily_you/utils/export_utils.dart';
 import 'package:daily_you/utils/operation_outcome.dart';
+import 'package:daily_you/utils/password_store.dart';
+import 'package:daily_you/widgets/auth_popup.dart';
+import 'package:daily_you/widgets/auto_backup_settings_dialog.dart';
 import 'package:daily_you/widgets/failure_dialog.dart';
 import 'package:daily_you/widgets/settings_icon_action.dart';
+import 'package:daily_you/widgets/settings_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:daily_you/l10n/generated/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class BackupRestoreSettings extends StatefulWidget {
   const BackupRestoreSettings({super.key});
@@ -190,8 +204,47 @@ class _BackupRestoreSettingsState extends State<BackupRestoreSettings> {
     }
   }
 
+  String _lastBackupText(String lastBackup) {
+    final time = DateTime.tryParse(lastBackup);
+    if (time == null) {
+      return AppLocalizations.of(context)!.settingsBackupNever;
+    }
+    return AppLocalizations.of(context)!
+        .settingsBackupLast(_dateTimeText(time));
+  }
+
+  String _nextAutoBackupText(ConfigProvider configProvider) {
+    final next = nextAutoBackupTimeFromConfig(configProvider);
+    return AppLocalizations.of(context)!
+        .settingsAutoBackupNext(_dateTimeText(next));
+  }
+
+  String _dateTimeText(DateTime time) =>
+      "${TimeManager.formatDate(time, context)} "
+      "${TimeManager.timeOfDayString(context, TimeOfDay.fromDateTime(time))}";
+
+  Future<void> _showBackupPasswordDialog(String title) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AuthPopup(
+              mode: AuthPopupMode.setPassword,
+              title: title,
+              showBiometrics: false,
+              dismissable: true,
+              store: const BackupPasswordStore(),
+            ));
+  }
+
+  Future<void> _showAutoBackupSettings() async {
+    await showDialog(
+        context: context, builder: (context) => AutoBackupSettingsDialog());
+    await setAutoBackupAlarm();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final configProvider = Provider.of<ConfigProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settingsBackupRestoreTitle),
@@ -200,17 +253,74 @@ class _BackupRestoreSettingsState extends State<BackupRestoreSettings> {
       body: ListView(
         children: [
           SettingsIconAction(
-              title: AppLocalizations.of(context)!.settingsBackup,
-              icon: Icon(Icons.backup_rounded),
-              onPressed: () async {
-                await _backupData(context);
-              }),
-          SettingsIconAction(
               title: AppLocalizations.of(context)!.settingsRestore,
               icon: Icon(Icons.restore_rounded),
               onPressed: () async {
                 await _showRestoreWarning();
               }),
+          SettingsIconAction(
+              title: AppLocalizations.of(context)!.settingsBackup,
+              hint: _lastBackupText(configProvider.get(Settings.lastBackup)),
+              icon: Icon(Icons.backup_rounded),
+              onPressed: () async {
+                await _backupData(context);
+              }),
+          if (Platform.isAndroid)
+            SettingsToggle(
+              title: AppLocalizations.of(context)!.settingsAutoBackup,
+              hint: configProvider.get(Settings.autoBackupEnabled)
+                  ? _nextAutoBackupText(configProvider)
+                  : null,
+              setting: Settings.autoBackupEnabled,
+              secondaryIcon: configProvider.get(Settings.autoBackupEnabled)
+                  ? Icon(Icons.edit_rounded)
+                  : null,
+              onSecondaryPressed: _showAutoBackupSettings,
+              onChanged: (value) async {
+                if (value) {
+                  if (!await NotificationManager.instance
+                      .hasNotificationPermission()) {
+                    return;
+                  }
+                  if (configProvider.get(Settings.autoBackupLocationUri) ==
+                      '') {
+                    final directory = await StoragePicker.pickDirectory();
+                    if (directory == null) return;
+                    await configProvider.set(
+                        Settings.autoBackupLocationUri, directory.uri);
+                  }
+                  await configProvider.set(Settings.autoBackupEnabled, true);
+                  await _showAutoBackupSettings();
+                  return;
+                }
+                await configProvider.set(Settings.autoBackupEnabled, false);
+                await setAutoBackupAlarm();
+              },
+            ),
+          SettingsToggle(
+            title: AppLocalizations.of(context)!.settingsBackupPasswordProtect,
+            setting: Settings.backupPasswordEnabled,
+            secondaryIcon: configProvider.get(Settings.backupPasswordEnabled)
+                ? Icon(Icons.edit_rounded)
+                : null,
+            onSecondaryPressed: () async => _showBackupPasswordDialog(
+                AppLocalizations.of(context)!.settingsSecurityChangePassword),
+            onChanged: (DeviceInfoService().supportsSecureStorage ?? false)
+                ? (value) async {
+                    if (value) {
+                      await _showBackupPasswordDialog(
+                          AppLocalizations.of(context)!
+                              .settingsSecuritySetPassword);
+                      await configProvider.set(Settings.backupPasswordEnabled,
+                          BackupPasswordStore.password.isNotEmpty);
+                    } else {
+                      await configProvider.set(Settings.backupPassword, "");
+                      await configProvider.set(
+                          Settings.backupPasswordEnabled, false);
+                    }
+                  }
+                : null,
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: Divider(),
