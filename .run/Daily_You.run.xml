@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Daily_You" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <envs>
+      <env name="CHOCO_API_KEY" value="febcbceb-47ad-478c-9b6f-a22fb4785166" />
+    </envs>
+    <module name="Daily_You" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -6,4 +6,5 @@
     "persistable"
   ],
   "java.compile.nullAnalysis.mode": "automatic",
+  "github-actions.workflows.pinned.workflows": [],
 }

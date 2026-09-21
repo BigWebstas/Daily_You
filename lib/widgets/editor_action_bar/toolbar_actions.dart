@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:daily_you/time_manager.dart';
 import 'package:daily_you/utils/text_editing.dart';
 import 'package:daily_you/widgets/icons/svg_icon.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,18 @@ List<ToolbarAction> markdownActions(
       icon: const Icon(Icons.link_rounded),
       onPressed: () => wrapSelection(controller, '[', ']()'),
     ),
+    ToolbarAction(
+      icon: const Icon(Icons.schedule_rounded),
+      onPressed: () => _insertTimestamp(context, controller),
+    ),
   ];
+}
+
+void _insertTimestamp(BuildContext context, TextEditingController controller) {
+  final time = TimeManager.localizedTimeFormat(
+          context, TimeManager.currentLocale(context))
+      .format(DateTime.now());
+  insertAtCursor(controller, '$time - ');
 }
 
 Future<void> _insertHeader(
