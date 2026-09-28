@@ -353,3 +353,53 @@ jobs:
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         run: snapcraft upload --release=stable snap-build/*.snap
+
+  push-aur:
+    # Same split rationale as push-choco/push-snap: an AUR outage or bad
+    # SSH key shouldn't block the GitHub release or the other packaging jobs.
+    # sha256sums in the PKGBUILD is intentionally SKIP for the release
+    # tarball (it changes every version), so this doesn't need the real
+    # asset hash, only the release to exist for the source URL to resolve.
+    needs: [version, build-arch-pkg, release]
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    environment: Prod
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install AUR push deps
+        run: pacman -Syu --noconfirm --needed base-devel git openssh
+
+      - name: Bump PKGBUILD version and regenerate .SRCINFO
+        run: |
+          cd linux/arch
+          cp ../../assets/logo.svg .
+          sed -i "s/^pkgver=.*/pkgver=${{ needs.version.outputs.version }}/" PKGBUILD
+          sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
+          useradd -m builder
+          chown -R builder:builder .
+          su builder -c "makepkg --printsrcinfo" > .SRCINFO
+
+      - name: Push to AUR
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p "$HOME/.ssh"
+          echo "$AUR_SSH_PRIVATE_KEY" > "$HOME/.ssh/aur"
+          chmod 600 "$HOME/.ssh/aur"
+          ssh-keyscan -H aur.archlinux.org >> "$HOME/.ssh/known_hosts" 2>/dev/null
+          export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/aur -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
+
+          git clone ssh://aur@aur.archlinux.org/daily-you-bin.git aur-repo
+          cp linux/arch/PKGBUILD linux/arch/.SRCINFO linux/arch/daily_you.desktop linux/arch/logo.svg aur-repo/
+
+          cd aur-repo
+          git config user.name "Daily You CI"
+          git config user.email "actions@github.com"
+          git add PKGBUILD .SRCINFO daily_you.desktop logo.svg
+          if git diff --cached --quiet; then
+            echo "No AUR changes, skipping push"
+            exit 0
+          fi
+          git commit -m "Update to ${{ needs.version.outputs.version }}"
+          git push
