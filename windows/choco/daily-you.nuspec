@@ -11,6 +11,7 @@
     <version>3.4.3</version>
     <title>Daily You</title>
     <authors>BigWebstas</authors>
+    <copyright>Copyright (c) 2026 BigWebstas</copyright>
     <projectUrl>https://github.com/BigWebstas/Daily_You</projectUrl>
     <licenseUrl>https://github.com/BigWebstas/Daily_You/blob/master/LICENSE.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
