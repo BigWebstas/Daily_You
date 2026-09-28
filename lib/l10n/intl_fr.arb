@@ -240,5 +240,21 @@
     "shareButtonLabel": "Partager",
     "importErrorDescription": "Échec de l'import du fichier !",
     "exportErrorDescription": "Échec de l'export du fichier !",
-    "deleteTemplateMessage": "Supprimer « {name} » ?"
+    "deleteTemplateMessage": "Supprimer « {name} » ?",
+    "settingsBackupPasswordProtect": "Sauvegardes protégées par mot de passe",
+    "backupEncryptedTitle": "Sauvegarde chiffrée",
+    "backupEncryptedContent": "Cette sauvegarde est protégée par mot de passe.",
+    "settingsAutoBackup": "Sauvegardes automatiques",
+    "settingsAutoBackupLocation": "Emplacement de sauvegarde",
+    "settingsAutoBackupInterval": "Intervalle de sauvegarde",
+    "settingsAutoBackupIntervalDaily": "Quotidienne",
+    "settingsAutoBackupIntervalWeekly": "Hebdomadaire",
+    "settingsAutoBackupIntervalMonthly": "Mensuelle",
+    "settingsAutoBackupMaxCount": "Sauvegardes à conserver",
+    "settingsBackupLast": "Dernière sauvegarde {time}",
+    "settingsBackupNever": "Jamais sauvegardé",
+    "settingsAutoBackupNext": "Prochaine sauvegarde {time}",
+    "settingsAutoBackupKeepAll": "Toutes",
+    "autoBackupFailedTitle": "Échec de la sauvegarde",
+    "settingsOpenSourceLicenses": "Licences Open Source"
 }

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'app_localizations_ar.dart';
 import 'app_localizations_be.dart';
 import 'app_localizations_bg.dart';
+import 'app_localizations_ca.dart';
 import 'app_localizations_cs.dart';
 import 'app_localizations_da.dart';
 import 'app_localizations_de.dart';
@@ -127,6 +128,7 @@ abstract class AppLocalizations {
     Locale('ar'),
     Locale('be'),
     Locale('bg'),
+    Locale('ca'),
     Locale('cs'),
     Locale('da'),
     Locale('de'),
@@ -1318,12 +1320,6 @@ abstract class AppLocalizations {
   /// **'Backup Location'**
   String get settingsAutoBackupLocation;
 
-  /// No description provided for @settingsAutoBackupTime.
-  ///
-  /// In en, this message translates to:
-  /// **'Backup Time'**
-  String get settingsAutoBackupTime;
-
   /// No description provided for @settingsAutoBackupInterval.
   ///
   /// In en, this message translates to:
@@ -1354,6 +1350,12 @@ abstract class AppLocalizations {
   /// **'Backups To Keep'**
   String get settingsAutoBackupMaxCount;
 
+  /// No description provided for @settingsAutoBackupRequireCharging.
+  ///
+  /// In en, this message translates to:
+  /// **'Only While Charging'**
+  String get settingsAutoBackupRequireCharging;
+
   /// No description provided for @settingsBackupLast.
   ///
   /// In en, this message translates to:
@@ -1378,12 +1380,6 @@ abstract class AppLocalizations {
   /// **'All'**
   String get settingsAutoBackupKeepAll;
 
-  /// No description provided for @autoBackupProgressTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Backing Up…'**
-  String get autoBackupProgressTitle;
-
   /// No description provided for @autoBackupFailedTitle.
   ///
   /// In en, this message translates to:
@@ -1407,6 +1403,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restoring Backup… {percent}%'**
   String restoringBackupStatus(Object percent);
+
+  /// No description provided for @encryptingBackupStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypting Backup… {percent}%'**
+  String encryptingBackupStatus(Object percent);
+
+  /// No description provided for @decryptingBackupStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypting Backup… {percent}%'**
+  String decryptingBackupStatus(Object percent);
 
   /// No description provided for @cleanUpStatus.
   ///
@@ -1777,6 +1785,7 @@ class _AppLocalizationsDelegate
         'ar',
         'be',
         'bg',
+        'ca',
         'cs',
         'da',
         'de',
@@ -1845,6 +1854,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsBe();
     case 'bg':
       return AppLocalizationsBg();
+    case 'ca':
+      return AppLocalizationsCa();
     case 'cs':
       return AppLocalizationsCs();
     case 'da':

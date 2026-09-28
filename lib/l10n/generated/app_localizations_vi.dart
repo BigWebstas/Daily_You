@@ -19,28 +19,28 @@ class AppLocalizationsVi extends AppLocalizations {
       'Hãy ghi chép nhật ký hàng ngày của bạn…';
 
   @override
-  String get actionTakePhoto => 'Take photo';
+  String get actionTakePhoto => 'Chụp ảnh';
 
   @override
-  String get actionToday => 'Today';
+  String get actionToday => 'Hôm nay';
 
   @override
-  String get actionOtherDay => 'Other day';
+  String get actionOtherDay => 'Hôm trước';
 
   @override
   String get pageHomeTitle => 'Trang chủ';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => 'Chuyển sang tháng';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'Chuyển sang bản ghi';
 
   @override
   String get flashbacksTitle => 'Hồi tưởng';
 
   @override
-  String get settingsFlashbacksExcludeBadDays => 'Exclude bad days';
+  String get settingsFlashbacksExcludeBadDays => 'Loại trừ những ngày tệ';
 
   @override
   String get flaskbacksEmpty => 'Chưa có cảnh hồi tưởng nào cả…';
@@ -705,9 +705,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get settingsAutoBackupLocation => 'Backup Location';
 
   @override
-  String get settingsAutoBackupTime => 'Backup Time';
-
-  @override
   String get settingsAutoBackupInterval => 'Backup Interval';
 
   @override
@@ -721,6 +718,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get settingsAutoBackupMaxCount => 'Backups To Keep';
+
+  @override
+  String get settingsAutoBackupRequireCharging => 'Only While Charging';
 
   @override
   String settingsBackupLast(Object time) {
@@ -739,9 +739,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get settingsAutoBackupKeepAll => 'All';
 
   @override
-  String get autoBackupProgressTitle => 'Backing Up…';
-
-  @override
   String get autoBackupFailedTitle => 'Backup Failed';
 
   @override
@@ -757,6 +754,16 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String restoringBackupStatus(Object percent) {
     return 'Restoring Backup… $percent%';
+  }
+
+  @override
+  String encryptingBackupStatus(Object percent) {
+    return 'Encrypting Backup… $percent%';
+  }
+
+  @override
+  String decryptingBackupStatus(Object percent) {
+    return 'Decrypting Backup… $percent%';
   }
 
   @override

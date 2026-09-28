@@ -116,9 +116,9 @@ class Settings {
   static const autoBackupLocationUri =
       Setting<String>("autoBackupLocationUri", "");
   static const autoBackupInterval =
-      Setting<String>("autoBackupInterval", "daily");
-  static const autoBackupHour = Setting<int>("autoBackupHour", 2);
-  static const autoBackupMinute = Setting<int>("autoBackupMinute", 0);
+      Setting<String>("autoBackupInterval", "weekly");
+  static const autoBackupRequireCharging =
+      Setting<bool>("autoBackupRequireCharging", false);
   static const autoBackupMaxCount = Setting<int>("autoBackupMaxCount", 3);
   static const lastBackup = Setting<String>("lastBackup", "", secure: true);
   static const lastAutoBackup =
@@ -185,8 +185,7 @@ class Settings {
     autoBackupEnabled,
     autoBackupLocationUri,
     autoBackupInterval,
-    autoBackupHour,
-    autoBackupMinute,
+    autoBackupRequireCharging,
     autoBackupMaxCount,
     lastBackup,
     lastAutoBackup,

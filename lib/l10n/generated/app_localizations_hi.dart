@@ -33,7 +33,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get jumpToMonthTitle => 'महीने पर जाएं';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'लॉग पर जाएं';
 
   @override
   String get flashbacksTitle => 'फ्लैशबैक्स';
@@ -704,9 +704,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsAutoBackupLocation => 'Backup Location';
 
   @override
-  String get settingsAutoBackupTime => 'Backup Time';
-
-  @override
   String get settingsAutoBackupInterval => 'Backup Interval';
 
   @override
@@ -720,6 +717,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsAutoBackupMaxCount => 'Backups To Keep';
+
+  @override
+  String get settingsAutoBackupRequireCharging => 'Only While Charging';
 
   @override
   String settingsBackupLast(Object time) {
@@ -738,9 +738,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsAutoBackupKeepAll => 'All';
 
   @override
-  String get autoBackupProgressTitle => 'Backing Up…';
-
-  @override
   String get autoBackupFailedTitle => 'Backup Failed';
 
   @override
@@ -756,6 +753,16 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String restoringBackupStatus(Object percent) {
     return 'बैकअप रीस्टोर किया जा रहा है $percent%';
+  }
+
+  @override
+  String encryptingBackupStatus(Object percent) {
+    return 'Encrypting Backup… $percent%';
+  }
+
+  @override
+  String decryptingBackupStatus(Object percent) {
+    return 'Decrypting Backup… $percent%';
   }
 
   @override

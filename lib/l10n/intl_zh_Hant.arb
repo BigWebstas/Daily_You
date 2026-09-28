@@ -241,5 +241,21 @@
     "shareButtonLabel": "分享",
     "importErrorDescription": "檔案匯入失敗！",
     "exportErrorDescription": "檔案匯出失敗！",
-    "deleteTemplateMessage": "刪除「{name}」？"
+    "deleteTemplateMessage": "刪除「{name}」？",
+    "settingsBackupPasswordProtect": "密碼保護備份",
+    "backupEncryptedTitle": "加密備份",
+    "backupEncryptedContent": "此備份受密碼保護。",
+    "settingsAutoBackup": "自動備份",
+    "settingsAutoBackupLocation": "備份位置",
+    "settingsAutoBackupInterval": "備份間隔",
+    "settingsAutoBackupIntervalDaily": "每日",
+    "settingsAutoBackupIntervalWeekly": "每週",
+    "settingsAutoBackupIntervalMonthly": "每月",
+    "settingsAutoBackupMaxCount": "要保留的備份",
+    "settingsBackupLast": "上次備份 {time}",
+    "settingsBackupNever": "從未備份過",
+    "settingsAutoBackupNext": "下次備份 {time}",
+    "settingsAutoBackupKeepAll": "全部",
+    "autoBackupFailedTitle": "備份失敗",
+    "settingsOpenSourceLicenses": "開源授權條款"
 }

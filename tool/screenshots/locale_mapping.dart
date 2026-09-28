@@ -3,6 +3,7 @@ const arbCodeToFastlaneLocale = <String, String>{
   'ar': 'ar',
   'be': 'be',
   'bg': 'bg',
+  'ca': 'ca',
   'cs': 'cs-CZ',
   'de': 'de',
   'en': 'en-US',

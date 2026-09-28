@@ -697,9 +697,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAutoBackupLocation => 'Backup Location';
 
   @override
-  String get settingsAutoBackupTime => 'Backup Time';
-
-  @override
   String get settingsAutoBackupInterval => 'Backup Interval';
 
   @override
@@ -713,6 +710,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAutoBackupMaxCount => 'Backups To Keep';
+
+  @override
+  String get settingsAutoBackupRequireCharging => 'Only While Charging';
 
   @override
   String settingsBackupLast(Object time) {
@@ -731,9 +731,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAutoBackupKeepAll => 'All';
 
   @override
-  String get autoBackupProgressTitle => 'Backing Up…';
-
-  @override
   String get autoBackupFailedTitle => 'Backup Failed';
 
   @override
@@ -749,6 +746,16 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String restoringBackupStatus(Object percent) {
     return '正在恢复备份…$percent%';
+  }
+
+  @override
+  String encryptingBackupStatus(Object percent) {
+    return 'Encrypting Backup… $percent%';
+  }
+
+  @override
+  String decryptingBackupStatus(Object percent) {
+    return 'Decrypting Backup… $percent%';
   }
 
   @override
@@ -1615,6 +1622,55 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsRestorePromptDescription => '還原備份將覆蓋您現有的資料！';
 
   @override
+  String get settingsBackupPasswordProtect => '密碼保護備份';
+
+  @override
+  String get backupEncryptedTitle => '加密備份';
+
+  @override
+  String get backupEncryptedContent => '此備份受密碼保護。';
+
+  @override
+  String get settingsAutoBackup => '自動備份';
+
+  @override
+  String get settingsAutoBackupLocation => '備份位置';
+
+  @override
+  String get settingsAutoBackupInterval => '備份間隔';
+
+  @override
+  String get settingsAutoBackupIntervalDaily => '每日';
+
+  @override
+  String get settingsAutoBackupIntervalWeekly => '每週';
+
+  @override
+  String get settingsAutoBackupIntervalMonthly => '每月';
+
+  @override
+  String get settingsAutoBackupMaxCount => '要保留的備份';
+
+  @override
+  String settingsBackupLast(Object time) {
+    return '上次備份 $time';
+  }
+
+  @override
+  String get settingsBackupNever => '從未備份過';
+
+  @override
+  String settingsAutoBackupNext(Object time) {
+    return '下次備份 $time';
+  }
+
+  @override
+  String get settingsAutoBackupKeepAll => '全部';
+
+  @override
+  String get autoBackupFailedTitle => '備份失敗';
+
+  @override
   String tranferStatus(Object percent) {
     return '正在轉移… $percent%';
   }
@@ -1759,6 +1815,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsSourceCode => '原始碼';
+
+  @override
+  String get settingsOpenSourceLicenses => '開源授權條款';
 
   @override
   String get settingsMadeWithLove => '用❤️製作';

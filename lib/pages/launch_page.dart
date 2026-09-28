@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:daily_you/config_provider.dart';
@@ -5,6 +6,8 @@ import 'package:daily_you/database/app_database.dart';
 import 'package:daily_you/database/image_storage.dart';
 import 'package:daily_you/device_info_service.dart';
 import 'package:daily_you/launch_intent.dart';
+import 'package:daily_you/main.dart';
+import 'package:daily_you/utils/auto_backup_schedule.dart';
 import 'package:daily_you/utils/backup_restore_utils.dart';
 import 'package:daily_you/widgets/auth_popup.dart';
 import 'package:flutter/material.dart';
@@ -94,11 +97,20 @@ class _LaunchPageState extends State<LaunchPage> {
     await prefs.setString('onThisDayNotificationDescription',
         AppLocalizations.of(context)!.settingsOnThisDayDescription);
     if (!mounted) return;
-    await prefs.setString('autoBackupProgressTitle',
-        AppLocalizations.of(context)!.autoBackupProgressTitle);
-    if (!mounted) return;
     await prefs.setString('autoBackupFailedTitle',
         AppLocalizations.of(context)!.autoBackupFailedTitle);
+    if (!mounted) return;
+    await prefs.setString('backupCancelActionLabel',
+        MaterialLocalizations.of(context).cancelButtonLabel);
+    if (!mounted) return;
+    await prefs.setString('creatingBackupStatusTemplate',
+        AppLocalizations.of(context)!.creatingBackupStatus('{percent}'));
+    if (!mounted) return;
+    await prefs.setString('encryptingBackupStatusTemplate',
+        AppLocalizations.of(context)!.encryptingBackupStatus('{percent}'));
+    if (!mounted) return;
+    await prefs.setString('tranferStatusTemplate',
+        AppLocalizations.of(context)!.tranferStatus('{percent}'));
   }
 
   Future _checkDatabaseConnection() async {
@@ -129,11 +141,13 @@ class _LaunchPageState extends State<LaunchPage> {
       await _migrateImagesFromExternalStorage();
       if (ImageStorage.instance.usingExternalLocation()) {
         if (await ImageStorage.instance.hasExternalLocationPermission()) {
+          unawaited(_catchUpMissedAutoBackup());
           await _nextPage();
           return;
         }
         _errorType = _LaunchErrorType.externalAccess;
       } else {
+        unawaited(_catchUpMissedAutoBackup());
         await _nextPage();
         return;
       }
@@ -147,6 +161,22 @@ class _LaunchPageState extends State<LaunchPage> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> _catchUpMissedAutoBackup() async {
+    if (!Platform.isAndroid) return;
+    final configProvider = ConfigProvider.instance;
+    if (!configProvider.get(Settings.autoBackupEnabled)) return;
+
+    final overdue = autoBackupIsOverdue(
+      now: DateTime.now(),
+      lastRun: DateTime.tryParse(configProvider.get(Settings.lastAutoBackup)),
+      interval: AutoBackupInterval.fromKey(
+          configProvider.get(Settings.autoBackupInterval)),
+    );
+    if (!overdue) return;
+
+    await enqueueAutoBackupCatchup();
   }
 
   Future<void> _retryDatabaseConnection() async {

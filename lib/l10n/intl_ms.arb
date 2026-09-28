@@ -149,5 +149,13 @@
     "settingsSourceCode": "Kod Sumber",
     "settingsMadeWithLove": "Dibuat dengan ❤️",
     "settingsConsiderSupporting": "pertimbangkan untuk menyokong",
-    "tagMoodTitle": "Suasana"
+    "tagMoodTitle": "Suasana",
+    "jumpToMonthTitle": "Langkau ke bulan",
+    "jumpToLogTitle": "Langkau ke log",
+    "noResults": "Tiada hasil…",
+    "chartGroupingLabel": "Kumpulkan dengan",
+    "chartGroupingDay": "Hari",
+    "chartGroupingWeek": "Minggu",
+    "chartGroupingMonth": "Bulan",
+    "chartGroupingYear": "Tahun"
 }

@@ -30,10 +30,10 @@ class AppLocalizationsMs extends AppLocalizations {
   String get pageHomeTitle => 'Utama';
 
   @override
-  String get jumpToMonthTitle => 'Jump to month';
+  String get jumpToMonthTitle => 'Langkau ke bulan';
 
   @override
-  String get jumpToLogTitle => 'Jump to log';
+  String get jumpToLogTitle => 'Langkau ke log';
 
   @override
   String get flashbacksTitle => 'Imbas kembali';
@@ -93,7 +93,7 @@ class AppLocalizationsMs extends AppLocalizations {
   String get noLogs => 'Tiada log…';
 
   @override
-  String get noResults => 'No Results…';
+  String get noResults => 'Tiada hasil…';
 
   @override
   String get sortDateTitle => 'Tarikh';
@@ -138,19 +138,19 @@ class AppLocalizationsMs extends AppLocalizations {
   }
 
   @override
-  String get chartGroupingLabel => 'Group by';
+  String get chartGroupingLabel => 'Kumpulkan dengan';
 
   @override
-  String get chartGroupingDay => 'Day';
+  String get chartGroupingDay => 'Hari';
 
   @override
-  String get chartGroupingWeek => 'Week';
+  String get chartGroupingWeek => 'Minggu';
 
   @override
-  String get chartGroupingMonth => 'Month';
+  String get chartGroupingMonth => 'Bulan';
 
   @override
-  String get chartGroupingYear => 'Year';
+  String get chartGroupingYear => 'Tahun';
 
   @override
   String get chartSmoothingLabel => 'Smoothing';
@@ -655,9 +655,6 @@ class AppLocalizationsMs extends AppLocalizations {
   String get settingsAutoBackupLocation => 'Backup Location';
 
   @override
-  String get settingsAutoBackupTime => 'Backup Time';
-
-  @override
   String get settingsAutoBackupInterval => 'Backup Interval';
 
   @override
@@ -671,6 +668,9 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get settingsAutoBackupMaxCount => 'Backups To Keep';
+
+  @override
+  String get settingsAutoBackupRequireCharging => 'Only While Charging';
 
   @override
   String settingsBackupLast(Object time) {
@@ -689,9 +689,6 @@ class AppLocalizationsMs extends AppLocalizations {
   String get settingsAutoBackupKeepAll => 'All';
 
   @override
-  String get autoBackupProgressTitle => 'Backing Up…';
-
-  @override
   String get autoBackupFailedTitle => 'Backup Failed';
 
   @override
@@ -707,6 +704,16 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String restoringBackupStatus(Object percent) {
     return 'Memulihkan Sandaran... $percent%';
+  }
+
+  @override
+  String encryptingBackupStatus(Object percent) {
+    return 'Encrypting Backup… $percent%';
+  }
+
+  @override
+  String decryptingBackupStatus(Object percent) {
+    return 'Decrypting Backup… $percent%';
   }
 
   @override

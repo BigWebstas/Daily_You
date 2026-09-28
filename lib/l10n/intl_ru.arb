@@ -162,5 +162,14 @@
     "chartGroupingMonth": "Месяц",
     "chartGroupingYear": "Год",
     "settingsOnThisDayDescription": "Вернитесь к прошлым воспоминаниям",
-    "imagesTitle": "Изображения"
+    "imagesTitle": "Изображения",
+    "chartSmoothingLabel": "Сглаживание",
+    "databaseMigrationErrorTitle": "Не смогли перенести ваши данные",
+    "databaseMigrationErrorRetry": "Повторить",
+    "errorReport": "Сообщить о проблеме",
+    "settingsCalendarSystem": "Тип календаря",
+    "calendarSystemGregorian": "Григорианский календарь",
+    "templateDefaultReflectionTitle": "Рефлексия",
+    "settingsTagsTitle": "Теги",
+    "manageTags": "Управлять тегами"
 }

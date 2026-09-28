@@ -17,6 +17,7 @@ class LanguageOption {
     LanguageOption(languageCode: "ar"): "العربية",
     LanguageOption(languageCode: "be"): "беларуская",
     LanguageOption(languageCode: "bg"): "български",
+    LanguageOption(languageCode: "ca"): "català",
     LanguageOption(languageCode: "cs"): "čeština",
     LanguageOption(languageCode: "da"): "dansk",
     LanguageOption(languageCode: "de"): "Deutsch",

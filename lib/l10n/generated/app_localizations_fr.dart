@@ -700,59 +700,58 @@ class AppLocalizationsFr extends AppLocalizations {
       'La restauration d’une sauvegarde remplacera vos données existantes !';
 
   @override
-  String get settingsBackupPasswordProtect => 'Password Protect Backups';
+  String get settingsBackupPasswordProtect =>
+      'Sauvegardes protégées par mot de passe';
 
   @override
-  String get backupEncryptedTitle => 'Encrypted Backup';
+  String get backupEncryptedTitle => 'Sauvegarde chiffrée';
 
   @override
-  String get backupEncryptedContent => 'This backup is password protected.';
+  String get backupEncryptedContent =>
+      'Cette sauvegarde est protégée par mot de passe.';
 
   @override
-  String get settingsAutoBackup => 'Automatic Backups';
+  String get settingsAutoBackup => 'Sauvegardes automatiques';
 
   @override
-  String get settingsAutoBackupLocation => 'Backup Location';
+  String get settingsAutoBackupLocation => 'Emplacement de sauvegarde';
 
   @override
-  String get settingsAutoBackupTime => 'Backup Time';
+  String get settingsAutoBackupInterval => 'Intervalle de sauvegarde';
 
   @override
-  String get settingsAutoBackupInterval => 'Backup Interval';
+  String get settingsAutoBackupIntervalDaily => 'Quotidienne';
 
   @override
-  String get settingsAutoBackupIntervalDaily => 'Daily';
+  String get settingsAutoBackupIntervalWeekly => 'Hebdomadaire';
 
   @override
-  String get settingsAutoBackupIntervalWeekly => 'Weekly';
+  String get settingsAutoBackupIntervalMonthly => 'Mensuelle';
 
   @override
-  String get settingsAutoBackupIntervalMonthly => 'Monthly';
+  String get settingsAutoBackupMaxCount => 'Sauvegardes à conserver';
 
   @override
-  String get settingsAutoBackupMaxCount => 'Backups To Keep';
+  String get settingsAutoBackupRequireCharging => 'Only While Charging';
 
   @override
   String settingsBackupLast(Object time) {
-    return 'Last backup $time';
+    return 'Dernière sauvegarde $time';
   }
 
   @override
-  String get settingsBackupNever => 'Never backed up';
+  String get settingsBackupNever => 'Jamais sauvegardé';
 
   @override
   String settingsAutoBackupNext(Object time) {
-    return 'Next backup $time';
+    return 'Prochaine sauvegarde $time';
   }
 
   @override
-  String get settingsAutoBackupKeepAll => 'All';
+  String get settingsAutoBackupKeepAll => 'Toutes';
 
   @override
-  String get autoBackupProgressTitle => 'Backing Up…';
-
-  @override
-  String get autoBackupFailedTitle => 'Backup Failed';
+  String get autoBackupFailedTitle => 'Échec de la sauvegarde';
 
   @override
   String tranferStatus(Object percent) {
@@ -767,6 +766,16 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String restoringBackupStatus(Object percent) {
     return 'Restauration de ka sauvegarde… $percent%';
+  }
+
+  @override
+  String encryptingBackupStatus(Object percent) {
+    return 'Encrypting Backup… $percent%';
+  }
+
+  @override
+  String decryptingBackupStatus(Object percent) {
+    return 'Decrypting Backup… $percent%';
   }
 
   @override
@@ -924,7 +933,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsSourceCode => 'Code source';
 
   @override
-  String get settingsOpenSourceLicenses => 'Open Source Licenses';
+  String get settingsOpenSourceLicenses => 'Licences Open Source';
 
   @override
   String get settingsMadeWithLove => 'Fait avec ❤️';

@@ -195,7 +195,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chartGroupingYear => 'Год';
 
   @override
-  String get chartSmoothingLabel => 'Smoothing';
+  String get chartSmoothingLabel => 'Сглаживание';
 
   @override
   String streakCurrent(num count) {
@@ -250,17 +250,17 @@ class AppLocalizationsRu extends AppLocalizations {
       'Продолжить с локальным хранением данных';
 
   @override
-  String get databaseMigrationErrorTitle => 'Couldn\'t Move Your Data';
+  String get databaseMigrationErrorTitle => 'Не смогли перенести ваши данные';
 
   @override
   String get databaseMigrationErrorDescription =>
       'Your entries are safe but couldn\'t be moved to the app\'s storage.\n\nTry again, and report the issue if it keeps happening.';
 
   @override
-  String get databaseMigrationErrorRetry => 'Retry';
+  String get databaseMigrationErrorRetry => 'Повторить';
 
   @override
-  String get errorReport => 'Report Issue';
+  String get errorReport => 'Сообщить о проблеме';
 
   @override
   String get lastModified => 'Изменено';
@@ -308,10 +308,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsFirstDayOfWeek => 'Первый день недели';
 
   @override
-  String get settingsCalendarSystem => 'Calendar System';
+  String get settingsCalendarSystem => 'Тип календаря';
 
   @override
-  String get calendarSystemGregorian => 'Gregorian';
+  String get calendarSystemGregorian => 'Григорианский календарь';
 
   @override
   String get calendarSystemJalali => 'Jalali';
@@ -439,17 +439,17 @@ class AppLocalizationsRu extends AppLocalizations {
   String get templateDefaultSummaryBody => '### Итог\n- \n\n### Цитата\n> ';
 
   @override
-  String get templateDefaultReflectionTitle => 'Reflection';
+  String get templateDefaultReflectionTitle => 'Рефлексия';
 
   @override
   String get templateDefaultReflectionBody =>
       '### What did you enjoy about today?\n- \n\n### What are you thankful for?\n- \n\n### What are you looking forward to?\n- ';
 
   @override
-  String get settingsTagsTitle => 'Tags';
+  String get settingsTagsTitle => 'Теги';
 
   @override
-  String get manageTags => 'Manage Tags';
+  String get manageTags => 'Управлять тегами';
 
   @override
   String get tagTypeLabelTitle => 'Label';
@@ -718,9 +718,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsAutoBackupLocation => 'Backup Location';
 
   @override
-  String get settingsAutoBackupTime => 'Backup Time';
-
-  @override
   String get settingsAutoBackupInterval => 'Backup Interval';
 
   @override
@@ -734,6 +731,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsAutoBackupMaxCount => 'Backups To Keep';
+
+  @override
+  String get settingsAutoBackupRequireCharging => 'Only While Charging';
 
   @override
   String settingsBackupLast(Object time) {
@@ -752,9 +752,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsAutoBackupKeepAll => 'All';
 
   @override
-  String get autoBackupProgressTitle => 'Backing Up…';
-
-  @override
   String get autoBackupFailedTitle => 'Backup Failed';
 
   @override
@@ -770,6 +767,16 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String restoringBackupStatus(Object percent) {
     return 'Откат из резервной копии... $percent%';
+  }
+
+  @override
+  String encryptingBackupStatus(Object percent) {
+    return 'Encrypting Backup… $percent%';
+  }
+
+  @override
+  String decryptingBackupStatus(Object percent) {
+    return 'Decrypting Backup… $percent%';
   }
 
   @override
