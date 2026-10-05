@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:daily_you/storage/file_store.dart';
+import 'package:logging/logging.dart';
 import 'package:saf_util/saf_util.dart';
 import 'package:shared_storage/shared_storage.dart' as saf;
 
@@ -9,7 +10,19 @@ class SafFileStore implements FileStore {
 
   final String treeUri;
 
+  final Logger _logger = Logger('SafFileStore');
+
   Uri get _tree => Uri.parse(treeUri);
+
+  /// Another app may rename files, so an entry is used only while it still
+  /// has the listed name.
+  Map<String, Uri> _listedDocuments = {};
+
+  Future<Uri?> _listedDocument(String name) async {
+    final listed = _listedDocuments[name];
+    if (listed == null) return null;
+    return (await saf.fromTreeUri(listed))?.name == name ? listed : null;
+  }
 
   Future<saf.DocumentFile?> _child(String name,
           {bool requiresWriteAccess = true}) =>
@@ -25,23 +38,35 @@ class SafFileStore implements FileStore {
       await (await _child(name, requiresWriteAccess: false))?.exists() ?? false;
 
   @override
-  Future<List<String>> list() async {
+  Future<List<String>> list() async =>
+      [for (final file in await listFiles()) file.name];
+
+  @override
+  Future<List<StoredFile>> listFiles() async {
     const columns = <saf.DocumentFileColumn>[
       saf.DocumentFileColumn.displayName,
       saf.DocumentFileColumn.mimeType,
+      saf.DocumentFileColumn.size,
+      saf.DocumentFileColumn.id,
     ];
 
-    final names = List<String>.empty(growable: true);
+    final files = List<StoredFile>.empty(growable: true);
+    final documents = <String, Uri>{};
     await for (final document in saf.listFiles(_tree, columns: columns)) {
-      if (document.isFile == true && document.name != null) {
-        names.add(document.name!);
+      final name = document.name;
+      if (document.isFile == true && name != null) {
+        files.add(StoredFile(name, document.size ?? 0));
+        documents[name] = document.uri;
       }
     }
-    return names;
+    _listedDocuments = documents;
+    return files;
   }
 
   @override
   Future<Uint8List?> read(String name) async {
+    final listed = await _listedDocument(name);
+    if (listed != null) return saf.getDocumentContent(listed);
     final document = await _child(name);
     return document != null ? await document.getContent() : null;
   }
@@ -67,7 +92,27 @@ class SafFileStore implements FileStore {
   }
 
   @override
+  Future<CreateResult> createNew(String name, Uint8List bytes) async {
+    final created = await saf.createFileAsBytes(_tree,
+        mimeType: "*/*", displayName: name, bytes: bytes);
+    if (created == null) return CreateResult.failed;
+    final createdName = created.name;
+    if (createdName == name) return CreateResult.created;
+    // Without a name the outcome is unknown, so nothing is deleted
+    if (createdName == null || createdName.isEmpty) return CreateResult.failed;
+
+    // A different name means a collision occurred
+    if (await saf.delete(created.uri) != true) {
+      _logger.warning('could not delete $createdName after $name collided');
+    }
+    return CreateResult.alreadyExists;
+  }
+
+  @override
   Future<bool> delete(String name) async {
+    final listed = await _listedDocument(name);
+    _listedDocuments.remove(name);
+    if (listed != null) return await saf.delete(listed) == true;
     final document = await _child(name, requiresWriteAccess: false);
     if (document == null) return true;
     return await document.delete() ?? false;

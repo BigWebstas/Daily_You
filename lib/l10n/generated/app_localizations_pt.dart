@@ -955,6 +955,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String chartDistributionTitle(Object tag) {
     return '$tag Distribution';
   }
+
+  @override
+  String get shareAddToLogPickerTitle => 'Choose a log';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -1248,6 +1251,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get settingsHideImages => 'Ocultar Imagens';
+
+  @override
+  String get pageCalendarTitle => 'Calendário';
 
   @override
   String get viewLayoutList => 'Lista';

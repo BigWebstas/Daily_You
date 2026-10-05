@@ -9,11 +9,31 @@ import 'package:path/path.dart' show join;
 
 void main() {
   group('InMemoryFileStore', () {
-    late FileStore store;
+    late InMemoryFileStore store;
 
     setUp(() => store = InMemoryFileStore());
 
-    fileStoreContract(() => store);
+    fileStoreContract(() => store,
+        breakWritesOf: (_) async => store.writesStopAfter = 0);
+
+    test('an interrupted createNew leaves the final name cut off', () async {
+      store.writesStopAfter = 2;
+
+      expect(
+          await orOnFailure(store.createNew('photo.jpg', bytesOf('photo')),
+              CreateResult.failed),
+          CreateResult.failed);
+      expect(await store.read('photo.jpg'), equals(bytesOf('ph')));
+    });
+  });
+
+  group('InMemoryFileStore with provider naming', () {
+    late InMemoryFileStore store;
+
+    setUp(() => store = InMemoryFileStore(uniqueNamesOnCollision: true));
+
+    fileStoreContract(() => store,
+        breakWritesOf: (_) async => store.writesStopAfter = 0);
   });
 
   group('LocalFileStore', () {
@@ -27,11 +47,19 @@ void main() {
 
     tearDown(() => directory.delete(recursive: true));
 
-    fileStoreContract(() => store);
+    fileStoreContract(() => store,
+        breakWritesOf: (name) =>
+            Directory(join(directory.path, name)).create());
 
     test('is unavailable when the directory is missing', () async {
       expect(await LocalFileStore(join(directory.path, 'gone')).isAvailable(),
           isFalse);
+    });
+
+    test('listFiles throws when the directory is missing', () async {
+      await expectLater(
+          LocalFileStore(join(directory.path, 'gone')).listFiles(),
+          throwsA(isA<FileSystemException>()));
     });
 
     test('write recreates a directory that disappeared', () async {
@@ -46,7 +74,12 @@ void main() {
 
 Uint8List bytesOf(String text) => Uint8List.fromList(text.codeUnits);
 
-void fileStoreContract(FileStore Function() storeOf) {
+/// A write that [breakWritesOf] broke may throw or report failure.
+Future<T> orOnFailure<T>(Future<T> operation, T failure) =>
+    operation.catchError((Object _) => failure);
+
+void fileStoreContract(FileStore Function() storeOf,
+    {required Future<void> Function(String name) breakWritesOf}) {
   test('is available', () async {
     expect(await storeOf().isAvailable(), isTrue);
   });
@@ -87,6 +120,52 @@ void fileStoreContract(FileStore Function() storeOf) {
     await store.write('two.txt', bytesOf('2'));
 
     expect(await store.list(), unorderedEquals(['one.txt', 'two.txt']));
+  });
+
+  test('listFiles reports every file with its size', () async {
+    final store = storeOf();
+    await store.write('one.txt', bytesOf('1'));
+    await store.write('two.txt', bytesOf('22'));
+
+    final files = await store.listFiles();
+
+    expect({for (final file in files) file.name: file.size},
+        equals({'one.txt': 1, 'two.txt': 2}));
+  });
+
+  test('listFiles of an empty store is empty', () async {
+    expect(await storeOf().listFiles(), isEmpty);
+  });
+
+  test('createNew writes the file under its final name', () async {
+    final store = storeOf();
+
+    expect(await store.createNew('photo.jpg', bytesOf('photo')),
+        CreateResult.created);
+
+    expect(await store.read('photo.jpg'), equals(bytesOf('photo')));
+    expect(await store.list(), equals(['photo.jpg']));
+  });
+
+  test('createNew never replaces an existing file', () async {
+    final store = storeOf();
+    await store.write('photo.jpg', bytesOf('original'));
+
+    expect(await store.createNew('photo.jpg', bytesOf('other')),
+        CreateResult.alreadyExists);
+
+    expect(await store.read('photo.jpg'), equals(bytesOf('original')));
+    expect(await store.list(), equals(['photo.jpg']));
+  });
+
+  test('a failed createNew reports failure', () async {
+    final store = storeOf();
+    await breakWritesOf('photo.jpg');
+
+    expect(
+        await orOnFailure(store.createNew('photo.jpg', bytesOf('photo')),
+            CreateResult.failed),
+        CreateResult.failed);
   });
 
   test('rename moves the bytes to the new name', () async {

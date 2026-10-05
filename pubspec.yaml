@@ -1,7 +1,7 @@
 name: daily_you
 description: Every day is worth remembering...
 publish_to: 'none'
-version: 3.5.0+3005000
+version: 3.6.0+3006000
 
 environment:
   sdk: '>=3.0.0'
@@ -32,6 +32,8 @@ dependencies:
     git:
       url: https://github.com/Demizo/shared-storage
       ref: release
+  share_receiver:
+    path: packages/share_receiver
   saf_transfer:
     path: packages/saf_transfer
   backup_crypto:
