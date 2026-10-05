@@ -8,11 +8,19 @@ on:
         required: false
         type: string
   push:
+    branches:
+      - master
     tags:
       - "v*.*.*"
 
 permissions:
   contents: write
+
+# Queue rather than overlap, so a master push and a tag push for the same
+# version can't both try to publish it.
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   version:
@@ -20,6 +28,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       tag: ${{ steps.version.outputs.tag }}
+      skip: ${{ steps.exists.outputs.skip }}
     steps:
       - uses: actions/checkout@v4
 
@@ -37,8 +46,23 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
+      # Master pushes release whatever version pubspec.yaml declares, so most
+      # pushes (no version bump) find that release already published and stop.
+      - name: Skip if already released
+        id: exists
+        if: github.ref_type == 'branch' && github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view "${{ steps.version.outputs.tag }}" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "${{ steps.version.outputs.tag }} already released; skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
   build-windows:
     needs: version
+    if: needs.version.outputs.skip != 'true'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -116,6 +140,7 @@ jobs:
 
   build-linux:
     needs: version
+    if: needs.version.outputs.skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -271,6 +296,7 @@ jobs:
 
   build-macos:
     needs: version
+    if: needs.version.outputs.skip != 'true'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
