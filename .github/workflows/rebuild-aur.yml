@@ -1,0 +1,68 @@
+name: Rebuild Linux bundle for AUR
+
+# Rebuilds the Linux bundle of an already-published release and swaps it into
+# that release, then re-pushes the AUR package with a bumped pkgrel. Used to
+# ship a packaging-only fix (e.g. bundled libs) without a new app version.
+# Overwrites the release's bundle asset; no other platform is touched.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Published release to rebuild (e.g. 3.6.1)"
+        required: true
+        type: string
+      pkgrel:
+        description: "AUR pkgrel for the rebuilt package"
+        required: true
+        default: "2"
+        type: string
+
+jobs:
+  rebuild-bundle:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Packaging scripts come from the dispatched ref; app source from the tag.
+      - uses: actions/checkout@v4
+        with:
+          path: packaging
+
+      - uses: actions/checkout@v4
+        with:
+          ref: v${{ inputs.version }}
+          path: src
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install Flutter Linux build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev patchelf
+
+      - name: Build bundle
+        working-directory: src
+        run: |
+          flutter pub get
+          flutter build linux --release
+          "$GITHUB_WORKSPACE/packaging/linux/bundle_ffmpeg_libs.sh" build/linux/x64/release/bundle
+
+      - name: Replace release bundle asset
+        working-directory: src
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ASSET="DailyYou-${{ inputs.version }}-linux-x86_64-bundle.tar.gz"
+          tar -czf "$ASSET" -C build/linux/x64/release bundle
+          gh release upload "v${{ inputs.version }}" "$ASSET" --clobber --repo "${{ github.repository }}"
+
+  push-aur:
+    needs: rebuild-bundle
+    uses: ./.github/workflows/push-aur.yml
+    with:
+      version: ${{ inputs.version }}
+      pkgrel: ${{ inputs.pkgrel }}
+    secrets: inherit
