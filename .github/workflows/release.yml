@@ -158,6 +158,11 @@ jobs:
 
       - run: flutter build linux --release
 
+      - name: Bundle FFmpeg libs
+        run: |
+          sudo apt-get install -y patchelf
+          linux/bundle_ffmpeg_libs.sh build/linux/x64/release/bundle
+
       - name: Set AppImage version
         run: |
           sed -i "s/^    version: .*/    version: ${{ needs.version.outputs.version }}/" AppImageBuilder.yml
