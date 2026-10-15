@@ -6,11 +6,21 @@ on:
       version:
         required: true
         type: string
+      pkgrel:
+        description: "AUR pkgrel"
+        required: false
+        default: "1"
+        type: string
   workflow_dispatch:
     inputs:
       version:
         description: "Version to push (e.g. 3.5.2)"
         required: true
+        type: string
+      pkgrel:
+        description: "AUR pkgrel"
+        required: false
+        default: "1"
         type: string
 
 jobs:
@@ -29,7 +39,7 @@ jobs:
           cd linux/arch
           cp ../../assets/logo.svg .
           sed -i "s/^pkgver=.*/pkgver=${{ inputs.version }}/" PKGBUILD
-          sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
+          sed -i "s/^pkgrel=.*/pkgrel=${{ inputs.pkgrel }}/" PKGBUILD
           useradd -m builder
           chown -R builder:builder .
           su builder -c "makepkg --printsrcinfo" > .SRCINFO
@@ -55,5 +65,5 @@ jobs:
             echo "No AUR changes, skipping push"
             exit 0
           fi
-          git commit -m "Update to ${{ inputs.version }}"
+          git commit -m "Update to ${{ inputs.version }}-${{ inputs.pkgrel }}"
           git push
