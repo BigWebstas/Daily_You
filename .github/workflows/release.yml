@@ -198,7 +198,7 @@ jobs:
 
       - name: Install makepkg deps
         run: |
-          pacman -Syu --noconfirm --needed base-devel gtk3 sqlite
+          pacman -Syu --noconfirm --needed base-devel gtk3 sqlite mpv
 
       - uses: actions/download-artifact@v4
         with:
