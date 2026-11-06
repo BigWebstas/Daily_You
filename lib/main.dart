@@ -16,17 +16,19 @@ import 'package:daily_you/notification_manager.dart';
 import 'package:daily_you/pages/launch_page.dart';
 import 'package:daily_you/providers/entries_provider.dart';
 import 'package:daily_you/providers/entry_attachments_provider.dart';
+import 'package:daily_you/providers/mood_scale_provider.dart';
 import 'package:daily_you/providers/tags_provider.dart';
 import 'package:daily_you/providers/templates_provider.dart';
+import 'package:daily_you/widgets/morphing_burst.dart';
 import 'package:daily_you/time_manager.dart';
 import 'package:daily_you/utils/auto_backup_schedule.dart';
 import 'package:daily_you/utils/backup_restore_utils.dart';
 import 'package:daily_you/utils/logging.dart';
+import 'package:performance_hint/performance_hint.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:daily_you/l10n/generated/app_localizations.dart';
 import 'package:daily_you/layouts/mobile_scaffold.dart';
-import 'package:daily_you/layouts/responsive_layout.dart';
 import 'package:daily_you/theme_mode_provider.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -242,12 +244,15 @@ void main() async {
   // Notification only supported on android
   if (Platform.isAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();
+    PerformanceHint.install();
     await NotificationManager.instance.init();
 
     await AndroidAlarmManager.initialize();
     await Workmanager().initialize(autoBackupCallbackDispatcher);
     await armAutoBackupWork();
   }
+
+  await BurstShader.load();
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<ThemeModeProvider>(
@@ -264,6 +269,9 @@ void main() async {
     ),
     ChangeNotifierProvider<TagsProvider>(
       create: (_) => TagsProvider.instance,
+    ),
+    ChangeNotifierProvider<MoodScaleProvider>(
+      create: (_) => MoodScaleProvider.instance,
     ),
     ChangeNotifierProvider<ConfigProvider>(
       create: (_) => ConfigProvider.instance,
@@ -414,6 +422,11 @@ ThemeData _buildTheme(ColorScheme colorScheme,
     colorScheme: colorScheme,
     iconTheme: IconThemeData(color: colorScheme.onSurfaceVariant),
     scaffoldBackgroundColor: scaffoldBackgroundColor,
+    listTileTheme: const ListTileThemeData(
+      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+      minVerticalPadding: 10,
+    ),
+    switchTheme: const SwitchThemeData(padding: EdgeInsets.zero),
   );
 }
 
@@ -528,12 +541,7 @@ class _MainAppState extends State<MainApp> {
                 },
                 theme: lightTheme,
                 darkTheme: darkTheme,
-                home: LaunchPage(
-                    nextPage: ResponsiveLayout(
-                  mobileScaffold: MobileScaffold(),
-                  tabletScaffold: MobileScaffold(),
-                  desktopScaffold: MobileScaffold(),
-                )))),
+                home: LaunchPage(nextPage: MobileScaffold()))),
       );
     });
   }

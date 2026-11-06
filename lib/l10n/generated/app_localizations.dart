@@ -22,6 +22,7 @@ import 'app_localizations_hi.dart';
 import 'app_localizations_id.dart';
 import 'app_localizations_it.dart';
 import 'app_localizations_ja.dart';
+import 'app_localizations_kmr.dart';
 import 'app_localizations_ko.dart';
 import 'app_localizations_lt.dart';
 import 'app_localizations_ms.dart';
@@ -142,6 +143,7 @@ abstract class AppLocalizations {
     Locale('id'),
     Locale('it'),
     Locale('ja'),
+    Locale('kmr'),
     Locale('ko'),
     Locale('lt'),
     Locale('ms'),
@@ -701,6 +703,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter an icon'**
   String get moodIconPrompt;
+
+  /// No description provided for @moodVeryUnpleasant.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Unpleasant'**
+  String get moodVeryUnpleasant;
+
+  /// No description provided for @moodUnpleasant.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpleasant'**
+  String get moodUnpleasant;
+
+  /// No description provided for @moodNeutral.
+  ///
+  /// In en, this message translates to:
+  /// **'Neutral'**
+  String get moodNeutral;
+
+  /// No description provided for @moodPleasant.
+  ///
+  /// In en, this message translates to:
+  /// **'Pleasant'**
+  String get moodPleasant;
+
+  /// No description provided for @moodVeryPleasant.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Pleasant'**
+  String get moodVeryPleasant;
 
   /// No description provided for @settingsFlashbacksViewLayout.
   ///
@@ -1668,6 +1700,18 @@ abstract class AppLocalizations {
   /// **'Markdown'**
   String get formatMarkdown;
 
+  /// No description provided for @formatCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV'**
+  String get formatCsv;
+
+  /// No description provided for @formatJson.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON'**
+  String get formatJson;
+
   /// No description provided for @settingsDeleteAllLogsTitle.
   ///
   /// In en, this message translates to:
@@ -1973,6 +2017,7 @@ class _AppLocalizationsDelegate
         'id',
         'it',
         'ja',
+        'kmr',
         'ko',
         'lt',
         'ms',
@@ -2056,6 +2101,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsIt();
     case 'ja':
       return AppLocalizationsJa();
+    case 'kmr':
+      return AppLocalizationsKmr();
     case 'ko':
       return AppLocalizationsKo();
     case 'lt':

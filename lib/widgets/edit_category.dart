@@ -7,8 +7,8 @@ import 'package:daily_you/models/tag_icon_type.dart';
 import 'package:daily_you/providers/tags_provider.dart';
 import 'package:daily_you/widgets/app_dialog.dart';
 import 'package:daily_you/widgets/color_picker_dialog.dart';
-import 'package:daily_you/widgets/color_swatch_row.dart';
 import 'package:daily_you/widgets/delete_confirm_dialog.dart';
+import 'package:daily_you/widgets/icon_color_label_row.dart';
 import 'package:daily_you/widgets/icon_picker_dialog.dart';
 import 'package:daily_you/widgets/tag_icon_glyph.dart';
 import 'package:daily_you/utils/tag_name_sanitizer.dart';
@@ -103,6 +103,7 @@ class _EditCategoryState extends State<EditCategory> {
       context: context,
       builder: (context) => IconPickerDialog(
         previewColor: _effectiveColor(context),
+        initial: (type: _iconType, value: _icon),
       ),
     );
     if (result != null) {
@@ -129,7 +130,6 @@ class _EditCategoryState extends State<EditCategory> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final hasIcon = _icon != null && _icon!.isNotEmpty;
 
     return AlertDialog(
       title: Row(
@@ -153,84 +153,23 @@ class _EditCategoryState extends State<EditCategory> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AspectRatio(
-                    aspectRatio: 1,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        GestureDetector(
-                          onTap: _showIconPicker,
-                          child: Card.filled(
-                            margin: EdgeInsets.zero,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHighest,
-                            child: Center(
-                              child: TagIconGlyph(
-                                icon: _icon,
-                                iconType: _iconType,
-                                fallbackIcon: Icons.folder_rounded,
-                                color: _effectiveColor(context),
-                                size: 28,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (hasIcon)
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: () => setState(() {
-                                _icon = null;
-                                _iconType = TagIconType.character;
-                              }),
-                              child: const Icon(Icons.close, size: 14),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Card.filled(
-                      margin: EdgeInsets.zero,
-                      color:
-                          Theme.of(context).colorScheme.surfaceContainerHighest,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: TextField(
-                          controller: _nameController,
-                          autofocus: widget.category == null,
-                          maxLines: 1,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            hintText: l10n.nameHint,
-                            border: InputBorder.none,
-                          ),
-                          onSubmitted: (_) =>
-                              sanitizeTagName(_nameController.text).isEmpty
-                                  ? null
-                                  : _save(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: ColorSwatchRow(
-                label: l10n.tagColorLabel,
+            IconColorLabelRow(
+              icon: TagIconGlyph(
+                icon: _icon,
+                iconType: _iconType,
+                fallbackIcon: Icons.folder_rounded,
                 color: _effectiveColor(context),
-                onTap: _showColorPicker,
+                size: 28,
               ),
+              color: _effectiveColor(context),
+              controller: _nameController,
+              hintText: l10n.nameHint,
+              autofocus: widget.category == null,
+              onPickIcon: _showIconPicker,
+              onPickColor: _showColorPicker,
+              onSubmitted: (_) => sanitizeTagName(_nameController.text).isEmpty
+                  ? null
+                  : _save(),
             ),
           ],
         ),

@@ -12,7 +12,7 @@ class AppLocalizationsNb extends AppLocalizations {
   String get appTitle => 'Daily You';
 
   @override
-  String get dailyReminderTitle => 'Log Today!';
+  String get dailyReminderTitle => 'Logg i dag!';
 
   @override
   String get dailyReminderDescription => 'Take your daily log…';
@@ -366,6 +366,21 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get moodIconPrompt => 'Enter an icon';
+
+  @override
+  String get moodVeryUnpleasant => 'Very Unpleasant';
+
+  @override
+  String get moodUnpleasant => 'Unpleasant';
+
+  @override
+  String get moodNeutral => 'Neutral';
+
+  @override
+  String get moodPleasant => 'Pleasant';
+
+  @override
+  String get moodVeryPleasant => 'Very Pleasant';
 
   @override
   String get settingsFlashbacksViewLayout => 'Flashbacks View Layout';
@@ -899,6 +914,12 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get formatMarkdown => 'Markdown';
+
+  @override
+  String get formatCsv => 'CSV';
+
+  @override
+  String get formatJson => 'JSON';
 
   @override
   String get settingsDeleteAllLogsTitle => 'Delete All Logs';

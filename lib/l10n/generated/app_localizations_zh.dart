@@ -364,6 +364,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get moodIconPrompt => '输入一个图标';
 
   @override
+  String get moodVeryUnpleasant => '非常不愉快';
+
+  @override
+  String get moodUnpleasant => '不愉快';
+
+  @override
+  String get moodNeutral => '一般';
+
+  @override
+  String get moodPleasant => '愉快';
+
+  @override
+  String get moodVeryPleasant => '非常愉快';
+
+  @override
   String get settingsFlashbacksViewLayout => '往昔重现的视图布局';
 
   @override
@@ -889,6 +904,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get formatMarkdown => 'Markdown';
 
   @override
+  String get formatCsv => 'CSV';
+
+  @override
+  String get formatJson => 'JSON';
+
+  @override
   String get settingsDeleteAllLogsTitle => '删除全部日迹';
 
   @override
@@ -1389,6 +1410,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get moodIconPrompt => '輸入圖示';
+
+  @override
+  String get moodVeryUnpleasant => '非常不愉快';
+
+  @override
+  String get moodUnpleasant => '不愉快';
+
+  @override
+  String get moodNeutral => '中性';
+
+  @override
+  String get moodPleasant => '愉快';
+
+  @override
+  String get moodVeryPleasant => '非常愉快';
 
   @override
   String get settingsFlashbacksViewLayout => '往日重現檢視佈局';

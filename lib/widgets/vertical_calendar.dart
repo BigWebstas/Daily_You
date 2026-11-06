@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Additional terms under GPLv3 section 7 apply; see ADDITIONAL_TERMS.md.
 
+import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:daily_you/config_provider.dart';
@@ -15,27 +17,14 @@ import 'package:daily_you/models/attachment.dart';
 import 'package:daily_you/providers/entry_attachments_provider.dart';
 import 'package:daily_you/providers/tags_provider.dart';
 import 'package:daily_you/time_manager.dart';
-import 'package:daily_you/widgets/app_dialog.dart';
+import 'package:daily_you/utils/calendar_month_table.dart';
 import 'package:daily_you/widgets/calendar_view_options_dialog.dart';
 import 'package:daily_you/widgets/entry_day_cell.dart';
+import 'package:daily_you/widgets/hide_semantics_while_dragging.dart';
+import 'package:daily_you/widgets/snapshot_while_scrolling.dart';
 import 'package:daily_you/widgets/year_month_picker.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:shamsi_date/shamsi_date.dart';
-
-sealed class _CalendarItem {
-  const _CalendarItem();
-}
-
-final class _MonthHeaderItem extends _CalendarItem {
-  final DateTime month;
-  const _MonthHeaderItem(this.month);
-}
-
-final class _WeekRowItem extends _CalendarItem {
-  final List<DateTime?> days;
-  const _WeekRowItem(this.days);
-}
 
 class VerticalCalendar extends StatefulWidget {
   final ScrollController scrollController;
@@ -54,22 +43,35 @@ class VerticalCalendar extends StatefulWidget {
 class _VerticalCalendarState extends State<VerticalCalendar>
     with AutomaticKeepAliveClientMixin {
   static const double _daysOfWeekRowHeight = 32.0;
+  static const double _panelGap = 16.0;
+  static const double _minPanelWidth = 360.0;
+
+  static const int _monthsPerBatch = 240;
+  static const int _growMarginRows = 600;
+  static const Duration _dayNumberRebakeDelay = Duration(milliseconds: 150);
 
   double _weekRowHeight = 57.0;
-  double _todayOffset = 0.0;
+  late CalendarMonthTable _table;
+  int _columns = 1;
+  double _panelWidth = 0;
+
+  double get _todayOffset => _table.rowsBelowToday <= 1
+      ? 0.0
+      : (_table.rowsBelowToday - 1) * _weekRowHeight;
 
   Map<int, ui.Image> _dayNumberCache = {};
   double? _lastDevicePixelRatio;
   double _lastWeekRowHeight = 0.0;
+  Timer? _dayNumberRebakeTimer;
   int _cacheGeneration = 0;
 
   bool _initialScrollDone = false;
   bool _isJalali = false;
 
-  List<_CalendarItem> _items = [];
-  List<(double, DateTime)> _monthOffsets = [];
+  bool _growScheduled = false;
 
   final _showTodayButton = ValueNotifier<bool>(false);
+  final _scrolling = ValueNotifier<bool>(false);
   DateTime _visibleMonth = DateTime.now();
   String _cachedLocale = '';
 
@@ -77,9 +79,6 @@ class _VerticalCalendarState extends State<VerticalCalendar>
   double _cellWidth = 0;
   List<String> _dayLabels = [];
 
-  final DateTime _firstDate = DateTime(2000, 1, 1);
-  late final DateTime _lastDate =
-      DateTime(DateTime.now().year, DateTime.now().month, 1);
   final DateTime _today =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
@@ -110,7 +109,7 @@ class _VerticalCalendarState extends State<VerticalCalendar>
 
     if (firstDayChanged || jalaliChanged) {
       _lastFirstDayIndex = firstDayIndex;
-      _buildCalendarItems(firstDayIndex);
+      _resetMonths(firstDayIndex);
       _visibleMonth = DateTime.now();
     }
 
@@ -125,7 +124,10 @@ class _VerticalCalendarState extends State<VerticalCalendar>
 
   @override
   void dispose() {
+    _dayNumberRebakeTimer?.cancel();
+    _disposeImages(_dayNumberCache);
     _showTodayButton.dispose();
+    _scrolling.dispose();
     widget.scrollController.removeListener(_onScroll);
     super.dispose();
   }
@@ -163,156 +165,73 @@ class _VerticalCalendarState extends State<VerticalCalendar>
     return recorder.endRecording().toImage(physicalSize, physicalSize);
   }
 
+  void _scheduleDayNumberCache(double devicePixelRatio) {
+    _dayNumberRebakeTimer?.cancel();
+    if (_dayNumberCache.isEmpty) {
+      _createDayNumberCache(devicePixelRatio);
+      return;
+    }
+    _dayNumberRebakeTimer = Timer(
+      _dayNumberRebakeDelay,
+      () => _createDayNumberCache(devicePixelRatio),
+    );
+  }
+
   Future<void> _createDayNumberCache(double devicePixelRatio) async {
     final generation = ++_cacheGeneration;
     final logicalSize = _weekRowHeight;
     final cache = <int, ui.Image>{};
     for (int day = 1; day <= 31; day++) {
-      cache[day] =
+      final image =
           await _bakeDayNumber(day.toString(), devicePixelRatio, logicalSize);
+      if (!mounted || generation != _cacheGeneration) {
+        image.dispose();
+        _disposeImages(cache);
+        return;
+      }
+      cache[day] = image;
     }
-    if (!mounted || generation != _cacheGeneration) return;
+    final previous = _dayNumberCache;
     setState(() => _dayNumberCache = cache);
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _disposeImages(previous));
   }
 
-  void _buildCalendarItems(int firstDayIndex) {
-    if (_isJalali) {
-      _buildCalendarItemsJalali(firstDayIndex);
-    } else {
-      _buildCalendarItemsGregorian(firstDayIndex);
+  void _disposeImages(Map<int, ui.Image> images) {
+    for (final image in images.values) {
+      image.dispose();
     }
   }
 
-  /// Builds the week rows for one calendar month. [isInMonth] decides which days
-  /// within a week belong to the month being built.
-  List<List<DateTime?>> _buildWeekRowsForMonth({
-    required DateTime firstDayOfMonth,
-    required DateTime lastDayOfMonth,
-    required int firstDayDart,
-    required bool Function(DateTime day) isInMonth,
-  }) {
-    final daysFromWeekStart = (lastDayOfMonth.weekday - firstDayDart + 7) % 7;
-    // Use the DateTime constructor to subtract days so the shift never
-    // drifts across a daylight-saving transition.
-    DateTime weekStart = DateTime(
-      lastDayOfMonth.year,
-      lastDayOfMonth.month,
-      lastDayOfMonth.day - daysFromWeekStart,
-    );
-
-    final daysBeforeFirst = (firstDayOfMonth.weekday - firstDayDart + 7) % 7;
-    final firstWeekStart = DateTime(
-      firstDayOfMonth.year,
-      firstDayOfMonth.month,
-      firstDayOfMonth.day - daysBeforeFirst,
-    );
-
-    final weeks = <List<DateTime?>>[];
-    while (!weekStart.isBefore(firstWeekStart)) {
-      weeks.add(List<DateTime?>.generate(7, (dayOffset) {
-        final day = DateTime(
-            weekStart.year, weekStart.month, weekStart.day + dayOffset);
-        return isInMonth(day) ? day : null;
-      }));
-      weekStart = DateTime(weekStart.year, weekStart.month, weekStart.day - 7);
-    }
-    return weeks;
+  void _resetMonths(int firstDayIndex) {
+    _table = CalendarMonthTable(
+      today: _today,
+      isJalali: _isJalali,
+      firstWeekday: firstDayIndex == 6 ? 7 : firstDayIndex + 1,
+      columns: _columns,
+    )..extend(_floorDate, _monthsPerBatch);
   }
 
-  void _buildCalendarItemsGregorian(int firstDayIndex) {
-    final firstDayDart = firstDayIndex == 6 ? 7 : firstDayIndex + 1;
-
-    final items = <_CalendarItem>[];
-    final monthOffsets = <(double, DateTime)>[];
-    double offset = 0;
-
-    DateTime current = DateTime(_lastDate.year, _lastDate.month, 1);
-    final end = DateTime(_firstDate.year, _firstDate.month, 1);
-
-    while (!current.isBefore(end)) {
-      monthOffsets.add((offset, current));
-
-      // Day 0 of the following month is the last day of this one.
-      final lastDayOfMonth = DateTime(current.year, current.month + 1, 0);
-      final weeks = _buildWeekRowsForMonth(
-        firstDayOfMonth: current,
-        lastDayOfMonth: lastDayOfMonth,
-        firstDayDart: firstDayDart,
-        isInMonth: (day) =>
-            day.month == current.month && day.year == current.year,
-      );
-
-      final isCurrentMonth =
-          current.year == _today.year && current.month == _today.month;
-      for (final week in weeks) {
-        if (isCurrentMonth &&
-            week.any((day) => day != null && day.day == _today.day)) {
-          _todayOffset = (offset - _weekRowHeight).clamp(0, double.infinity);
-        }
-        items.add(_WeekRowItem(week));
-        offset += _weekRowHeight;
-      }
-
-      items.add(_MonthHeaderItem(current));
-      offset += _weekRowHeight;
-
-      current = DateTime(current.year, current.month - 1, 1);
-    }
-
-    _items = items;
-    _monthOffsets = monthOffsets;
+  DateTime get _floorDate {
+    final entries = context.read<EntriesProvider>().entries;
+    if (entries.isEmpty) return TimeManager.minEntryDate;
+    final oldest = entries.last.timeCreate;
+    return oldest.isBefore(TimeManager.minEntryDate)
+        ? oldest
+        : TimeManager.minEntryDate;
   }
 
-  void _buildCalendarItemsJalali(int firstDayIndex) {
-    final firstDayDart = firstDayIndex == 6 ? 7 : firstDayIndex + 1;
+  void _extendMonths() => _table.extend(_floorDate, _monthsPerBatch);
 
-    final items = <_CalendarItem>[];
-    final monthOffsets = <(double, DateTime)>[];
-    double offset = 0;
-
-    final todayJalali = Jalali.fromDateTime(_today);
-    final firstDateJalali = Jalali.fromDateTime(_firstDate);
-
-    Jalali current = Jalali(todayJalali.year, todayJalali.month, 1);
-    final end = Jalali(firstDateJalali.year, firstDateJalali.month, 1);
-
-    while (current >= end) {
-      final monthStart = current.toDateTime();
-      monthOffsets.add((offset, monthStart));
-
-      final lastDayOfMonth =
-          Jalali(current.year, current.month, current.monthLength).toDateTime();
-      final weeks = _buildWeekRowsForMonth(
-        firstDayOfMonth: monthStart,
-        lastDayOfMonth: lastDayOfMonth,
-        firstDayDart: firstDayDart,
-        isInMonth: (day) {
-          final jalaliDay = Jalali.fromDateTime(day);
-          return jalaliDay.year == current.year &&
-              jalaliDay.month == current.month;
-        },
-      );
-
-      final isCurrentMonth = current.year == todayJalali.year &&
-          current.month == todayJalali.month;
-      for (final week in weeks) {
-        if (isCurrentMonth &&
-            week.any(
-                (day) => day != null && TimeManager.isSameDay(day, _today))) {
-          _todayOffset = (offset - _weekRowHeight).clamp(0, double.infinity);
-        }
-        items.add(_WeekRowItem(week));
-        offset += _weekRowHeight;
-      }
-
-      items.add(_MonthHeaderItem(monthStart));
-      offset += _weekRowHeight;
-
-      current = current.addMonths(-1);
-    }
-
-    _items = items;
-    _monthOffsets = monthOffsets;
+  void _growIfNeeded(int row) {
+    if (_table.reachedFloor(_floorDate) || _growScheduled) return;
+    if (row < _table.rowCount - _growMarginRows) return;
+    _growScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _growScheduled = false;
+      if (!mounted) return;
+      setState(_extendMonths);
+    });
   }
 
   void _scrollToToday({bool animate = true}) {
@@ -329,29 +248,31 @@ class _VerticalCalendarState extends State<VerticalCalendar>
     _updateVisibleMonthFromOffset(_todayOffset);
   }
 
-  void _jumpToMonth(DateTime month) {
-    if (!widget.scrollController.hasClients) return;
-    final monthOffset = _monthOffsets
-        .where((offset) =>
-            offset.$2.year == month.year && offset.$2.month == month.month)
-        .firstOrNull;
-    if (monthOffset == null) return;
-    _jumpToOffsetIteratively(monthOffset.$1);
+  void _jumpToMonth(DateTime date) {
+    if (!widget.scrollController.hasClients || date.isAfter(_today)) return;
+    int index = _table.indexOfMonthContaining(date);
+    while (index < 0 && !_table.reachedFloor(_floorDate)) {
+      _extendMonths();
+      index = _table.indexOfMonthContaining(date);
+    }
+    if (index < 0) return;
+
+    final target = _table.firstRowOfMonth(index) * _weekRowHeight;
+    setState(() {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.scrollController.hasClients) {
+        widget.scrollController.jumpTo(target);
+      }
+    });
   }
 
-  void _jumpToOffsetIteratively(double target, [double? previousMaxExtent]) {
-    if (!mounted || !widget.scrollController.hasClients) return;
-    final clamped =
-        target.clamp(0.0, widget.scrollController.position.maxScrollExtent);
-    widget.scrollController.jumpTo(clamped);
-
-    if (widget.scrollController.offset < target - 1.0) {
-      final currentMax = widget.scrollController.position.maxScrollExtent;
-      if (previousMaxExtent != null && currentMax <= previousMaxExtent) return;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _jumpToOffsetIteratively(target, currentMax);
-      });
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      _scrolling.value = true;
+    } else if (notification is ScrollEndNotification) {
+      _scrolling.value = false;
     }
+    return false;
   }
 
   void _onScroll() {
@@ -364,25 +285,16 @@ class _VerticalCalendarState extends State<VerticalCalendar>
   }
 
   void _updateVisibleMonthFromOffset(double offset) {
-    if (_monthOffsets.isEmpty) return;
-    // Binary search for current month
-    int lo = 0, hi = _monthOffsets.length - 1;
-    while (lo < hi) {
-      final mid = (lo + hi + 1) >> 1;
-      if (_monthOffsets[mid].$1 > offset) {
-        hi = mid - 1;
-      } else {
-        lo = mid;
-      }
-    }
-    _visibleMonth = _monthOffsets[lo].$2;
+    if (_table.months.isEmpty || _weekRowHeight <= 0) return;
+    final row = (offset / _weekRowHeight).floor();
+    _visibleMonth =
+        _table.bands[_table.bandIndexForRow(row)].months.first.firstDate;
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final configProvider = context.watch<ConfigProvider>();
-    final firstDayIndex = configProvider.getFirstDayOfWeekIndex(context);
     final showImages = !configProvider.get(Settings.hideImagesInCalendar);
     final showMood = configProvider.get(Settings.calendarShowMood);
     final entriesProvider = context.watch<EntriesProvider>();
@@ -414,11 +326,21 @@ class _VerticalCalendarState extends State<VerticalCalendar>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final newCellWidth = constraints.maxWidth / 7;
+        final columns = math.max(
+            1,
+            ((constraints.maxWidth + _panelGap) / (_minPanelWidth + _panelGap))
+                .floor());
+        if (columns != _columns) {
+          _columns = columns;
+          _resetMonths(_lastFirstDayIndex!);
+          _initialScrollDone = false;
+        }
+        _panelWidth =
+            (constraints.maxWidth - _panelGap * (columns - 1)) / columns;
+        final newCellWidth = _panelWidth / 7;
         if (newCellWidth != _cellWidth) {
           _cellWidth = newCellWidth;
           _weekRowHeight = newCellWidth;
-          _buildCalendarItems(firstDayIndex);
         }
 
         final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
@@ -426,7 +348,7 @@ class _VerticalCalendarState extends State<VerticalCalendar>
             _lastWeekRowHeight != _weekRowHeight) {
           _lastDevicePixelRatio = devicePixelRatio;
           _lastWeekRowHeight = _weekRowHeight;
-          _createDayNumberCache(devicePixelRatio);
+          _scheduleDayNumberCache(devicePixelRatio);
         }
 
         if (!_initialScrollDone) {
@@ -446,28 +368,37 @@ class _VerticalCalendarState extends State<VerticalCalendar>
                 children: [
                   _buildWeekdayHeader(context, _dayLabels),
                   Expanded(
-                    child: CustomScrollView(
-                      controller: widget.scrollController,
-                      reverse: true,
-                      slivers: [
-                        const SliverPadding(
-                            padding: EdgeInsets.only(bottom: 85)),
-                        SliverFixedExtentList(
-                          itemExtent: _weekRowHeight,
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) => _buildItem(
-                                context,
-                                index,
-                                entriesProvider,
-                                attachmentsProvider,
-                                showImages,
-                                showMood,
-                                calendarTagOverride,
-                                calendarTagEntryMap),
-                            childCount: _items.length,
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context)
+                          .copyWith(scrollbars: false),
+                      child: HideSemanticsWhileDragging(
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: _onScrollNotification,
+                          child: CustomScrollView(
+                            controller: widget.scrollController,
+                            reverse: true,
+                            slivers: [
+                              const SliverPadding(
+                                  padding: EdgeInsets.only(bottom: 85)),
+                              SliverFixedExtentList(
+                                itemExtent: _weekRowHeight,
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => _buildItem(
+                                      context,
+                                      index,
+                                      entriesProvider,
+                                      attachmentsProvider,
+                                      showImages,
+                                      showMood,
+                                      calendarTagOverride,
+                                      calendarTagEntryMap),
+                                  childCount: _table.rowCount,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
@@ -481,6 +412,24 @@ class _VerticalCalendarState extends State<VerticalCalendar>
 
   Widget _buildWeekdayHeader(BuildContext context, List<String> dayLabels) {
     final theme = Theme.of(context);
+    return _panelRow([
+      for (int column = 0; column < _columns; column++)
+        _buildWeekdayPanel(theme, dayLabels),
+    ]);
+  }
+
+  Widget _panelRow(List<Widget> panels) {
+    return Row(
+      children: [
+        for (int column = 0; column < panels.length; column++) ...[
+          if (column > 0) const SizedBox(width: _panelGap),
+          SizedBox(width: _panelWidth, child: panels[column]),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildWeekdayPanel(ThemeData theme, List<String> dayLabels) {
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainer,
@@ -566,10 +515,7 @@ class _VerticalCalendarState extends State<VerticalCalendar>
                   },
                 ),
                 IconButton(
-                  onPressed: () => showAppDialog(
-                    context: context,
-                    builder: (_) => const CalendarViewOptionsDialog(),
-                  ),
+                  onPressed: () => showCalendarViewOptionsDialog(context),
                   icon: const Icon(Icons.visibility_rounded),
                   color: theme.colorScheme.primary,
                   padding: const EdgeInsets.all(8),
@@ -637,7 +583,7 @@ class _VerticalCalendarState extends State<VerticalCalendar>
       initialDate: entriesProvider.entries.isNotEmpty
           ? entriesProvider.entries.first.timeCreate
           : DateTime.now(),
-      firstDate: _firstDate,
+      firstDate: _floorDate,
       lastDate: DateTime.now(),
     );
 
@@ -678,13 +624,55 @@ class _VerticalCalendarState extends State<VerticalCalendar>
       bool showMood,
       Tag? calendarTagOverride,
       Map<int, EntryTag> calendarTagEntryMap) {
-    final item = _items[index];
-    if (item is _MonthHeaderItem) return _buildMonthHeader(context, item.month);
-    if (item is _WeekRowItem) {
-      return _buildWeekRow(context, item, entriesProvider, attachmentsProvider,
-          showImages, showMood, calendarTagOverride, calendarTagEntryMap);
-    }
-    return const SizedBox.shrink();
+    _growIfNeeded(index);
+    final band = _table.bands[_table.bandIndexForRow(index)];
+    final rowFromTop = band.rowCount - 1 - (index - band.firstRow);
+    return RepaintBoundary(
+      child: _panelRow([
+        for (int column = 0; column < _columns; column++)
+          _buildPanelRow(
+              context,
+              band,
+              _columns - 1 - column,
+              rowFromTop,
+              entriesProvider,
+              attachmentsProvider,
+              showImages,
+              showMood,
+              calendarTagOverride,
+              calendarTagEntryMap),
+      ]),
+    );
+  }
+
+  Widget _buildPanelRow(
+      BuildContext context,
+      MonthBand band,
+      int monthIndexInBand,
+      int rowFromTop,
+      EntriesProvider entriesProvider,
+      EntryAttachmentsProvider attachmentsProvider,
+      bool showImages,
+      bool showMood,
+      Tag? calendarTagOverride,
+      Map<int, EntryTag> calendarTagEntryMap) {
+    if (monthIndexInBand >= band.months.length) return const SizedBox.shrink();
+    final layout = band.months[monthIndexInBand];
+    if (rowFromTop == 0) return _buildMonthHeader(context, layout.firstDate);
+    final weekIndex = layout.weekCount - rowFromTop;
+    if (weekIndex < 0) return const SizedBox.shrink();
+    return _buildWeekRow(
+        context,
+        _table.weekDays(layout, weekIndex,
+            isHidden: (day) =>
+                day.isBefore(TimeManager.minEntryDate) &&
+                entriesProvider.getEntriesForDate(day).isEmpty),
+        entriesProvider,
+        attachmentsProvider,
+        showImages,
+        showMood,
+        calendarTagOverride,
+        calendarTagEntryMap);
   }
 
   Widget _buildMonthHeader(BuildContext context, DateTime month) {
@@ -717,16 +705,17 @@ class _VerticalCalendarState extends State<VerticalCalendar>
 
   Widget _buildWeekRow(
       BuildContext context,
-      _WeekRowItem item,
+      List<DateTime?> days,
       EntriesProvider entriesProvider,
       EntryAttachmentsProvider attachmentsProvider,
       bool showImages,
       bool showMood,
       Tag? calendarTagOverride,
       Map<int, EntryTag> calendarTagEntryMap) {
-    return RepaintBoundary(
+    return SnapshotWhileScrolling(
+      scrolling: _scrolling,
       child: _WeekRow(
-        days: item.days,
+        days: days,
         today: _today,
         cellSize: _cellWidth,
         dayNumberCache: _dayNumberCache,

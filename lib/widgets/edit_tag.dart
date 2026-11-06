@@ -8,11 +8,13 @@ import 'package:daily_you/models/tag_icon_type.dart';
 import 'package:daily_you/providers/tags_provider.dart';
 import 'package:daily_you/widgets/app_dialog.dart';
 import 'package:daily_you/widgets/color_picker_dialog.dart';
-import 'package:daily_you/widgets/color_swatch_row.dart';
 import 'package:daily_you/widgets/connected_button_group.dart';
 import 'package:daily_you/widgets/delete_confirm_dialog.dart';
 import 'package:daily_you/widgets/edit_category.dart';
+import 'package:daily_you/widgets/icon_color_label_row.dart';
 import 'package:daily_you/widgets/icon_picker_dialog.dart';
+import 'package:daily_you/widgets/settings_dialog.dart';
+import 'package:daily_you/widgets/settings_rows.dart';
 import 'package:daily_you/widgets/tag_icon_glyph.dart';
 import 'package:daily_you/utils/tag_name_sanitizer.dart';
 import 'package:material_ui/material_ui.dart';
@@ -134,8 +136,10 @@ class _EditTagState extends State<EditTag> {
   Future<void> _showIconPicker() async {
     final result = await showAppDialog<IconPickerResult>(
       context: context,
-      builder: (context) =>
-          IconPickerDialog(previewColor: _effectiveColor(context)),
+      builder: (context) => IconPickerDialog(
+        previewColor: _effectiveColor(context),
+        initial: (type: _iconType, value: _icon),
+      ),
     );
     if (result != null) {
       setState(() {
@@ -158,6 +162,8 @@ class _EditTagState extends State<EditTag> {
               alignment: Alignment.centerLeft,
               child: Chip(
                 side: BorderSide.none,
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 label: Text(typeLabel),
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -182,82 +188,24 @@ class _EditTagState extends State<EditTag> {
   }
 
   Widget _buildTopRow(BuildContext context) {
-    final hasIcon = _icon != null && _icon!.isNotEmpty;
     final tagColor = _effectiveColor(context);
     final fallbackIcon = _tagType == TagType.tracker
         ? Icons.timeline_rounded
         : Icons.label_rounded;
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AspectRatio(
-            aspectRatio: 1,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                GestureDetector(
-                  onTap: _showIconPicker,
-                  child: Card.filled(
-                    margin: EdgeInsets.zero,
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: Center(
-                      child: TagIconGlyph(
-                        icon: _icon,
-                        iconType: _iconType,
-                        fallbackIcon: fallbackIcon,
-                        color: tagColor,
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                ),
-                if (hasIcon)
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () => setState(() {
-                        _icon = null;
-                        _iconType = TagIconType.character;
-                      }),
-                      child: const Icon(Icons.close, size: 14),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Card.filled(
-              margin: EdgeInsets.zero,
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: TextField(
-                  autofocus: widget.tag == null,
-                  controller: _nameController,
-                  maxLines: 1,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.nameHint,
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+    return IconColorLabelRow(
+      icon: TagIconGlyph(
+        icon: _icon,
+        iconType: _iconType,
+        fallbackIcon: fallbackIcon,
+        color: tagColor,
+        size: 28,
       ),
-    );
-  }
-
-  Widget _buildColorRow(BuildContext context) {
-    return ColorSwatchRow(
-      label: AppLocalizations.of(context)!.tagColorLabel,
-      color: _effectiveColor(context),
-      onTap: _showColorPicker,
+      color: tagColor,
+      controller: _nameController,
+      hintText: AppLocalizations.of(context)!.nameHint,
+      autofocus: widget.tag == null,
+      onPickIcon: _showIconPicker,
+      onPickColor: _showColorPicker,
     );
   }
 
@@ -278,65 +226,19 @@ class _EditTagState extends State<EditTag> {
 
   Widget _buildCategoryRow(BuildContext context, List<TagCategory> categories) {
     final l10n = AppLocalizations.of(context)!;
-    return Row(
-      children: [
-        Text(
-          l10n.tagCategoryLabel,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: DropdownButton<int?>(
-            value: _categoryId,
-            isDense: true,
-            isExpanded: true,
-            underline: const SizedBox.shrink(),
-            elevation: 1,
-            borderRadius: BorderRadius.circular(20),
-            alignment: AlignmentDirectional.centerEnd,
-            onChanged: (value) async {
-              if (value == -1) {
-                await _createCategory(context);
-              } else {
-                setState(() => _categoryId = value);
-              }
-            },
-            items: [
-              DropdownMenuItem<int?>(
-                value: null,
-                alignment: AlignmentDirectional.centerEnd,
-                child: Text(l10n.noTemplateTitle,
-                    overflow: TextOverflow.fade, softWrap: false, maxLines: 1),
-              ),
-              ...categories.map(
-                (c) => DropdownMenuItem<int?>(
-                  value: c.id,
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Text(c.name,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                      maxLines: 1),
-                ),
-              ),
-              DropdownMenuItem<int?>(
-                value: -1,
-                alignment: AlignmentDirectional.centerEnd,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.add, size: 16),
-                    const SizedBox(width: 6),
-                    Text(l10n.newCategoryTitle,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                        maxLines: 1),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+    return SettingsChoiceRow<int?>(
+      icon: Icons.folder_rounded,
+      title: l10n.tagCategoryLabel,
+      value: _categoryId,
+      options: {
+        null: l10n.noTemplateTitle,
+        for (final category in categories) category.id: category.name,
+      },
+      onChanged: (categoryId) => setState(() => _categoryId = categoryId),
+      action: (
+        label: l10n.newCategoryTitle,
+        onPressed: () => _createCategory(context),
+      ),
     );
   }
 
@@ -344,47 +246,54 @@ class _EditTagState extends State<EditTag> {
   Widget build(BuildContext context) {
     final categories = TagsProvider.instance.categories;
     final l10n = AppLocalizations.of(context)!;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final dialogWidth = (screenWidth - 80).clamp(280.0, 400.0);
+    const contentPadding = EdgeInsets.symmetric(horizontal: 24);
     return Dialog(
       child: SizedBox(
         width: dialogWidth,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+          padding: const EdgeInsets.only(top: 20, bottom: 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildTypeSection(context, l10n),
-              const SizedBox(height: 12),
-              _buildTopRow(context),
+              Padding(
+                padding: contentPadding,
+                child: _buildTypeSection(context, l10n),
+              ),
               const SizedBox(height: 12),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: _buildColorRow(context),
+                padding: contentPadding,
+                child: _buildTopRow(context),
               ),
               const SizedBox(height: 8),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: settingsDialogRowInset,
+                ),
                 child: _buildCategoryRow(context, categories),
               ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    child: Text(
-                        MaterialLocalizations.of(context).cancelButtonLabel),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  TextButton(
-                    onPressed: sanitizeTagName(_nameController.text).isEmpty
-                        ? null
-                        : _save,
-                    child:
-                        Text(MaterialLocalizations.of(context).okButtonLabel),
-                  ),
-                ],
+              const SizedBox(height: 16),
+              Padding(
+                padding: contentPadding,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      child: Text(
+                          MaterialLocalizations.of(context).cancelButtonLabel),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    TextButton(
+                      onPressed: sanitizeTagName(_nameController.text).isEmpty
+                          ? null
+                          : _save,
+                      child:
+                          Text(MaterialLocalizations.of(context).okButtonLabel),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

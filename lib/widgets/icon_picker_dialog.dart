@@ -5,19 +5,27 @@
 import 'package:daily_you/l10n/generated/app_localizations.dart';
 import 'package:daily_you/models/tag_icon_type.dart';
 import 'package:daily_you/utils/generated/tag_icon_registry.dart';
+import 'package:daily_you/widgets/cached_icon.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-/// Result of [IconPickerDialog]: either a curated material icon (identified
-/// by its stable registry key) or a free-typed character/emoji.
-typedef IconPickerResult = ({TagIconType type, String value});
+/// Result of [IconPickerDialog]: a curated material icon (identified by its
+/// stable registry key), a free-typed character/emoji, or a null value for no
+/// icon.
+typedef IconPickerResult = ({TagIconType type, String? value});
 
 /// Dialog letting the user pick either a curated Material icon or type a
 /// custom character/emoji, shared by the tag and category editors.
 class IconPickerDialog extends StatefulWidget {
   final Color previewColor;
+  final IconPickerResult initial;
 
-  const IconPickerDialog({super.key, required this.previewColor});
+  const IconPickerDialog({
+    super.key,
+    required this.previewColor,
+    required this.initial,
+  });
 
   @override
   State<IconPickerDialog> createState() => _IconPickerDialogState();
@@ -25,18 +33,48 @@ class IconPickerDialog extends StatefulWidget {
 
 class _IconPickerDialogState extends State<IconPickerDialog>
     with SingleTickerProviderStateMixin {
+  static const int _revealStep = 14;
+  static final int _totalIcons =
+      tagIconGroups.fold(0, (total, group) => total + group.keys.length);
+
+  int? _revealedIcons;
+
   late final TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _customController = TextEditingController();
   final FocusNode _customFocusNode = FocusNode();
 
+  bool get _hasNoInitialIcon =>
+      widget.initial.value == null || widget.initial.value!.isEmpty;
+
+  bool get _hasCustomInitialIcon =>
+      !_hasNoInitialIcon && widget.initial.type == TagIconType.character;
+
+  bool _isInitialMaterialIcon(String key) =>
+      widget.initial.type == TagIconType.materialIcon &&
+      widget.initial.value == key;
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this)
-      ..addListener(_onTabChanged);
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: _hasCustomInitialIcon ? 1 : 0,
+    )..addListener(_onTabChanged);
+    if (_hasCustomInitialIcon) _customController.text = widget.initial.value!;
     _searchController.addListener(() => setState(() {}));
     _customController.addListener(() => setState(() {}));
+    _revealMore();
+  }
+
+  void _revealMore() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final revealed = (_revealedIcons ?? -_revealStep) + _revealStep;
+      setState(() => _revealedIcons = revealed);
+      if (revealed < _totalIcons) _revealMore();
+    });
   }
 
   void _onTabChanged() {
@@ -59,6 +97,10 @@ class _IconPickerDialogState extends State<IconPickerDialog>
     Navigator.of(context).pop((type: TagIconType.materialIcon, value: key));
   }
 
+  void _selectNone() {
+    Navigator.of(context).pop((type: TagIconType.character, value: null));
+  }
+
   void _confirmCustom() {
     final value = _customController.text.trim();
     if (value.isEmpty) return;
@@ -71,7 +113,7 @@ class _IconPickerDialogState extends State<IconPickerDialog>
     final query = _searchController.text.trim().toLowerCase();
 
     final groups = tagIconGroups
-        .map((group) => (
+        .map((group) => TagIconGroup(
               id: group.id,
               keys: group.keys
                   .where((key) => query.isEmpty || key.contains(query))
@@ -99,13 +141,15 @@ class _IconPickerDialogState extends State<IconPickerDialog>
               ],
             ),
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildIconsTab(context, l10n, groups),
-                  _buildCustomTab(context, l10n),
-                ],
-              ),
+              child: _revealedIcons == null
+                  ? const SizedBox.expand()
+                  : TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _buildIconsTab(context, l10n, groups),
+                        _buildCustomTab(context, l10n),
+                      ],
+                    ),
             ),
           ],
         ),
@@ -123,13 +167,39 @@ class _IconPickerDialogState extends State<IconPickerDialog>
     );
   }
 
+  List<TagIconGroup> _revealedGroups(
+    List<TagIconGroup> groups,
+  ) {
+    var remaining = _revealedIcons ?? 0;
+    final revealed = <TagIconGroup>[];
+    for (final group in groups) {
+      if (remaining <= 0) break;
+      final keys = group.keys.length <= remaining
+          ? group.keys
+          : group.keys.sublist(0, remaining);
+      revealed.add(TagIconGroup(id: group.id, keys: keys));
+      remaining -= keys.length;
+    }
+    return revealed;
+  }
+
   Widget _buildIconsTab(
     BuildContext context,
     AppLocalizations l10n,
-    List<({TagIconGroupId id, List<String> keys})> groups,
+    List<TagIconGroup> groups,
   ) {
     return Column(
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+          child: OutlinedButton.icon(
+            onPressed: _selectNone,
+            icon: Icon(
+              _hasNoInitialIcon ? Icons.check_rounded : Icons.block_rounded,
+            ),
+            label: Text(l10n.noTemplateTitle),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: SearchBar(
@@ -162,7 +232,7 @@ class _IconPickerDialogState extends State<IconPickerDialog>
               : ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   children: [
-                    for (final group in groups) ...[
+                    for (final group in _revealedGroups(groups)) ...[
                       Padding(
                         padding: const EdgeInsets.only(top: 8, bottom: 4),
                         child: Text(
@@ -182,9 +252,27 @@ class _IconPickerDialogState extends State<IconPickerDialog>
                         itemCount: group.keys.length,
                         itemBuilder: (context, index) {
                           final key = group.keys[index];
+                          final isSelected = _isInitialMaterialIcon(key);
                           return IconButton(
-                            icon: Icon(tagIconRegistry[key],
-                                color: widget.previewColor),
+                            icon: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CachedIcon(
+                                  lookupTagIcon(key) ?? Icons.circle_rounded,
+                                  size: 24,
+                                  color: isSelected
+                                      ? widget.previewColor
+                                          .withValues(alpha: 0.3)
+                                      : widget.previewColor,
+                                ),
+                                if (isSelected)
+                                  CachedIcon(
+                                    Icons.check_rounded,
+                                    size: 24,
+                                    color: widget.previewColor,
+                                  ),
+                              ],
+                            ),
                             onPressed: () => _selectIcon(key),
                           );
                         },

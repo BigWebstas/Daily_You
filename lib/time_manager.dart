@@ -12,6 +12,9 @@ import 'package:intl/intl.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 class TimeManager {
+  // Gregorian calendar introduced; earlier dates would be proleptic
+  static final DateTime minEntryDate = DateTime(1583, 1, 1);
+
   static bool isToday(DateTime date) {
     return isSameDay(DateTime.now(), date);
   }
@@ -110,9 +113,8 @@ class TimeManager {
     final formatter = DateFormat.E(TimeManager.currentLocale(context));
 
     List<String> days = List.generate(7, (index) {
-      final day = now
-          .subtract(Duration(days: now.weekday - 1))
-          .add(Duration(days: index));
+      final day =
+          DateTime(now.year, now.month, now.day - (now.weekday - 1) + index);
       return formatter.format(day); // Gets localized short name
     });
 
@@ -172,7 +174,7 @@ class TimeManager {
       context: context,
       builder: (context, child) => AppDialogTransition(child: child!),
       initialDate: initialDate,
-      firstDate: firstDate,
+      firstDate: initialDate.isBefore(firstDate) ? initialDate : firstDate,
       lastDate: lastDate,
       selectableDayPredicate: selectableDayPredicate == null
           ? null

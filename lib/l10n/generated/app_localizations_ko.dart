@@ -366,6 +366,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get moodIconPrompt => '아이콘 입력';
 
   @override
+  String get moodVeryUnpleasant => 'Very Unpleasant';
+
+  @override
+  String get moodUnpleasant => 'Unpleasant';
+
+  @override
+  String get moodNeutral => 'Neutral';
+
+  @override
+  String get moodPleasant => 'Pleasant';
+
+  @override
+  String get moodVeryPleasant => 'Very Pleasant';
+
+  @override
   String get settingsFlashbacksViewLayout => '회상 뷰 레이아웃';
 
   @override
@@ -892,6 +907,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get formatMarkdown => '마크다운';
+
+  @override
+  String get formatCsv => 'CSV';
+
+  @override
+  String get formatJson => 'JSON';
 
   @override
   String get settingsDeleteAllLogsTitle => '모든 기록 삭제';

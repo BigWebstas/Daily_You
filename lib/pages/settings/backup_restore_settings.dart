@@ -13,15 +13,17 @@ import 'package:daily_you/time_manager.dart';
 import 'package:daily_you/utils/auto_backup_schedule.dart';
 import 'package:daily_you/utils/backup_restore_utils.dart';
 import 'package:daily_you/utils/imports/import_registry.dart';
-import 'package:daily_you/utils/export_utils.dart';
+import 'package:daily_you/utils/exports/export_registry.dart';
+import 'package:daily_you/utils/exports/export_runner.dart';
 import 'package:daily_you/utils/operation_outcome.dart';
 import 'package:daily_you/utils/password_store.dart';
 import 'package:daily_you/widgets/app_dialog.dart';
 import 'package:daily_you/widgets/auth_popup.dart';
-import 'package:daily_you/widgets/auto_backup_settings_dialog.dart';
 import 'package:daily_you/widgets/failure_dialog.dart';
-import 'package:daily_you/widgets/settings_icon_action.dart';
-import 'package:daily_you/widgets/settings_toggle.dart';
+import 'package:daily_you/widgets/segmented_group.dart';
+import 'package:daily_you/widgets/settings_dialog.dart';
+import 'package:daily_you/widgets/settings_rows.dart';
+import 'package:daily_you/widgets/settings_page_scaffold.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:daily_you/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -34,52 +36,34 @@ class BackupRestoreSettings extends StatefulWidget {
 }
 
 class _BackupRestoreSettingsState extends State<BackupRestoreSettings> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Future<void> _showImportSelectionPopup() async {
-    ImportFormat? chosenFormat;
-    await showAppDialog(
+    final l10n = AppLocalizations.of(context)!;
+    final format = await showSettingsDialog<ImportFormat>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.logFormatTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(AppLocalizations.of(context)!.logFormatDescription),
-              Divider(),
-              for (final option in ImportRegistry.instance.options)
-                ListTile(
-                    title: Text(option.name(AppLocalizations.of(context)!)),
-                    onTap: () {
-                      chosenFormat = option.format;
-                      Navigator.of(context).pop();
-                    }),
-            ],
+      title: l10n.logFormatTitle,
+      isSelection: true,
+      builder: (context) => [
+        SettingsInfoRow(
+            title: l10n.warningTitle,
+            subtitle: Text(l10n.logFormatDescription)),
+        for (final option in ImportRegistry.instance.options)
+          SettingsActionRow(
+            title: option.name(l10n),
+            onTap: () => Navigator.of(context).pop(option.format),
           ),
-        );
-      },
+      ],
     );
 
-    final format = chosenFormat;
     if (format == null) return;
     if (!mounted) return;
 
-    ValueNotifier<String> statusNotifier = ValueNotifier<String>("");
-
-    BackupRestoreUtils.showLoadingStatus(context, statusNotifier);
-
-    final outcome =
-        await ImportRegistry.instance.optionFor(format).run(context, (status) {
-      statusNotifier.value = status;
-    });
+    final outcome = await BackupRestoreUtils.runWithLoadingStatus(
+        context,
+        (updateStatus) => ImportRegistry.instance
+            .optionFor(format)
+            .run(context, updateStatus));
 
     if (!mounted) return;
-    Navigator.of(context).pop();
 
     if (outcome.failed) {
       await showFailureDialog(context,
@@ -89,47 +73,30 @@ class _BackupRestoreSettingsState extends State<BackupRestoreSettings> {
   }
 
   Future<void> _showExportSelectionPopup() async {
-    ExportFormat chosenFormat = ExportFormat.none;
-    await showAppDialog(
+    final l10n = AppLocalizations.of(context)!;
+    final option = await showSettingsDialog<ExportFormatOption>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.logFormatTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(AppLocalizations.of(context)!
-                  .settingsExportFormatDescription),
-              Divider(),
-              ListTile(
-                  title: Text(AppLocalizations.of(context)!.formatMarkdown),
-                  onTap: () {
-                    chosenFormat = ExportFormat.markdown;
-                    Navigator.of(context).pop();
-                  }),
-            ],
+      title: l10n.logFormatTitle,
+      isSelection: true,
+      builder: (context) => [
+        SettingsInfoRow(
+            title: l10n.warningTitle,
+            subtitle: Text(l10n.settingsExportFormatDescription)),
+        for (final option in ExportRegistry.instance.options)
+          SettingsActionRow(
+            title: option.name(l10n),
+            onTap: () => Navigator.of(context).pop(option),
           ),
-        );
-      },
+      ],
     );
 
-    if (chosenFormat == ExportFormat.none) return;
+    if (option == null) return;
     if (!mounted) return;
 
-    ValueNotifier<String> statusNotifier = ValueNotifier<String>("");
-
-    BackupRestoreUtils.showLoadingStatus(context, statusNotifier);
-
-    var outcome = const OperationOutcome.cancelled();
-    if (chosenFormat == ExportFormat.markdown) {
-      outcome = await ExportUtils.exportToMarkdown(context, (status) {
-        statusNotifier.value = status;
-      });
-    }
+    final outcome = await BackupRestoreUtils.runWithLoadingStatus(context,
+        (updateStatus) => runExport(context, updateStatus, option: option));
 
     if (!mounted) return;
-    Navigator.of(context).pop();
 
     if (outcome.failed) {
       await showFailureDialog(context,
@@ -139,16 +106,12 @@ class _BackupRestoreSettingsState extends State<BackupRestoreSettings> {
   }
 
   Future<void> _backupData(BuildContext context) async {
-    ValueNotifier<String> statusNotifier = ValueNotifier<String>("");
-
-    BackupRestoreUtils.showLoadingStatus(context, statusNotifier);
-
-    final outcome = await BackupRestoreUtils.backupToZip(context, (status) {
-      statusNotifier.value = status;
-    });
+    final outcome = await BackupRestoreUtils.runWithLoadingStatus(
+        context,
+        (updateStatus) =>
+            BackupRestoreUtils.backupToZip(context, updateStatus));
 
     if (!context.mounted) return;
-    Navigator.of(context).pop();
 
     if (outcome.failed) {
       await showFailureDialog(context,
@@ -158,16 +121,23 @@ class _BackupRestoreSettingsState extends State<BackupRestoreSettings> {
   }
 
   Future<void> _restoreData(BuildContext context) async {
-    ValueNotifier<String> statusNotifier = ValueNotifier<String>("");
+    final loadingStatus = LoadingStatusDialog(context);
 
-    BackupRestoreUtils.showLoadingStatus(context, statusNotifier);
-
-    final outcome = await BackupRestoreUtils.restoreFromZip(context, (status) {
-      statusNotifier.value = status;
-    });
+    final OperationOutcome outcome;
+    try {
+      outcome = await BackupRestoreUtils.restoreFromZip(
+          context, loadingStatus.update, onFilePicked: loadingStatus.show,
+          confirm: (fileName, entryCount) async {
+        if (!context.mounted) return false;
+        final confirmed = await loadingStatus
+            .whileHidden(() => _confirmRestore(fileName, entryCount));
+        return confirmed && context.mounted;
+      });
+    } finally {
+      loadingStatus.dispose();
+    }
 
     if (!context.mounted) return;
-    Navigator.of(context).pop();
 
     if (outcome.failed) {
       await showFailureDialog(context,
@@ -176,37 +146,32 @@ class _BackupRestoreSettingsState extends State<BackupRestoreSettings> {
     }
   }
 
-  Future<void> _showRestoreWarning() async {
-    bool confirmed = false;
-    await showAppDialog(
+  Future<bool> _confirmRestore(String fileName, int entryCount) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showSettingsDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.warningTitle),
-          content: Text(
-              AppLocalizations.of(context)!.settingsRestorePromptDescription),
-          actions: [
-            TextButton(
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-              onPressed: () async {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: Text(MaterialLocalizations.of(context).okButtonLabel),
-              onPressed: () async {
-                confirmed = true;
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
+      builder: (context) => [
+        SettingsInfoRow(
+          title: fileName,
+          subtitle: Text(l10n.logCount(entryCount)),
+        ),
+        SettingsInfoRow(
+          title: l10n.warningTitle,
+          subtitle: Text(l10n.settingsRestorePromptDescription),
+        ),
+      ],
+      actions: (context) => [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(l10n.settingsRestore),
+        ),
+      ],
     );
-    if (confirmed) {
-      if (!mounted) return;
-      await _restoreData(context);
-    }
+    return confirmed ?? false;
   }
 
   String _lastBackupText(String lastBackup) {
@@ -241,111 +206,141 @@ class _BackupRestoreSettingsState extends State<BackupRestoreSettings> {
             ));
   }
 
-  Future<void> _showAutoBackupSettings() async {
-    await showAppDialog(
-        context: context, builder: (context) => AutoBackupSettingsDialog());
+  Future<void> _setAutoBackup(bool enabled) async {
+    final configProvider = ConfigProvider.instance;
+    if (enabled) {
+      if (!await NotificationManager.instance.hasNotificationPermission()) {
+        return;
+      }
+      if (configProvider.get(Settings.autoBackupLocationUri) == '' &&
+          !await _pickAutoBackupLocation()) {
+        return;
+      }
+    }
+    await configProvider.set(Settings.autoBackupEnabled, enabled);
     await armAutoBackupWork();
+  }
+
+  Future<bool> _pickAutoBackupLocation() async {
+    final directory = await StoragePicker.pickDirectory();
+    if (directory == null) return false;
+    await ConfigProvider.instance
+        .set(Settings.autoBackupLocationUri, directory.uri);
+    return true;
+  }
+
+  List<Widget> _autoBackupOptions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final configProvider = ConfigProvider.instance;
+    return [
+      SettingsActionRow(
+        title: l10n.settingsAutoBackupLocation,
+        subtitle: StoragePicker.displayName(
+            configProvider.get(Settings.autoBackupLocationUri)),
+        onTap: _pickAutoBackupLocation,
+      ),
+      SettingsChoiceRow<String>(
+        title: l10n.settingsAutoBackupInterval,
+        value: configProvider.get(Settings.autoBackupInterval),
+        options: {
+          for (final interval in AutoBackupInterval.values)
+            interval.key: interval.label(context),
+        },
+        onChanged: (value) async {
+          await configProvider.set(Settings.autoBackupInterval, value);
+          await armAutoBackupWork();
+        },
+      ),
+      SettingsChoiceRow<int>(
+        title: l10n.settingsAutoBackupMaxCount,
+        value: configProvider.get(Settings.autoBackupMaxCount),
+        options: {
+          for (final count in const [1, 3, 5, 10]) count: '$count',
+          0: l10n.settingsAutoBackupKeepAll,
+        },
+        onChanged: (value) =>
+            configProvider.set(Settings.autoBackupMaxCount, value),
+      ),
+      SettingsToggleRow(
+        title: l10n.settingsAutoBackupRequireCharging,
+        value: configProvider.get(Settings.autoBackupRequireCharging),
+        onChanged: (value) async {
+          await configProvider.set(Settings.autoBackupRequireCharging, value);
+          await armAutoBackupWork();
+        },
+      ),
+    ];
+  }
+
+  Future<void> _setBackupPassword(bool enabled) async {
+    final configProvider = ConfigProvider.instance;
+    if (enabled) {
+      await _showBackupPasswordDialog(
+          AppLocalizations.of(context)!.settingsSecuritySetPassword);
+      await configProvider.set(Settings.backupPasswordEnabled,
+          BackupPasswordStore.password.isNotEmpty);
+    } else {
+      await configProvider.set(Settings.backupPassword, "");
+      await configProvider.set(Settings.backupPasswordEnabled, false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final configProvider = Provider.of<ConfigProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settingsBackupRestoreTitle),
-        centerTitle: true,
-      ),
-      body: ListView(
-        children: [
-          SettingsIconAction(
-              title: AppLocalizations.of(context)!.settingsRestore,
-              icon: Icon(Icons.restore_rounded),
-              onPressed: () async {
-                await _showRestoreWarning();
-              }),
-          SettingsIconAction(
-              title: AppLocalizations.of(context)!.settingsBackup,
-              hint: _lastBackupText(configProvider.get(Settings.lastBackup)),
-              icon: Icon(Icons.backup_rounded),
-              onPressed: () async {
-                await _backupData(context);
-              }),
+    return SettingsPageScaffold(
+      title: l10n.settingsBackupRestoreTitle,
+      children: [
+        SegmentedGroup(children: [
+          SettingsActionRow(
+            icon: Icons.backup_rounded,
+            title: l10n.settingsBackup,
+            subtitle: _lastBackupText(configProvider.get(Settings.lastBackup)),
+            onTap: () => _backupData(context),
+          ),
           if (Platform.isAndroid)
-            SettingsToggle(
-              title: AppLocalizations.of(context)!.settingsAutoBackup,
-              hint: configProvider.get(Settings.autoBackupEnabled)
+            SettingsToggleRow(
+              icon: Icons.schedule_rounded,
+              title: l10n.settingsAutoBackup,
+              subtitle: configProvider.get(Settings.autoBackupEnabled)
                   ? _nextAutoBackupText(configProvider)
                   : null,
-              setting: Settings.autoBackupEnabled,
-              secondaryIcon: configProvider.get(Settings.autoBackupEnabled)
-                  ? Icon(Icons.edit_rounded)
-                  : null,
-              onSecondaryPressed: _showAutoBackupSettings,
-              onChanged: (value) async {
-                if (value) {
-                  if (!await NotificationManager.instance
-                      .hasNotificationPermission()) {
-                    return;
-                  }
-                  if (configProvider.get(Settings.autoBackupLocationUri) ==
-                      '') {
-                    final directory = await StoragePicker.pickDirectory();
-                    if (directory == null) return;
-                    await configProvider.set(
-                        Settings.autoBackupLocationUri, directory.uri);
-                  }
-                  await configProvider.set(Settings.autoBackupEnabled, true);
-                  await _showAutoBackupSettings();
-                  return;
-                }
-                await configProvider.set(Settings.autoBackupEnabled, false);
-                await armAutoBackupWork();
-              },
+              value: configProvider.get(Settings.autoBackupEnabled),
+              onChanged: _setAutoBackup,
+              onOpenOptions: () => showSettingsDialog(
+                  context: context, builder: _autoBackupOptions),
             ),
-          SettingsToggle(
-            title: AppLocalizations.of(context)!.settingsBackupPasswordProtect,
-            setting: Settings.backupPasswordEnabled,
-            secondaryIcon: configProvider.get(Settings.backupPasswordEnabled)
-                ? Icon(Icons.edit_rounded)
-                : null,
-            onSecondaryPressed: () async => _showBackupPasswordDialog(
-                AppLocalizations.of(context)!.settingsSecurityChangePassword),
+          SettingsToggleRow(
+            icon: Icons.lock_rounded,
+            title: l10n.settingsBackupPasswordProtect,
+            value: configProvider.get(Settings.backupPasswordEnabled),
             onChanged: (DeviceInfoService().supportsSecureStorage ?? false)
-                ? (value) async {
-                    if (value) {
-                      await _showBackupPasswordDialog(
-                          AppLocalizations.of(context)!
-                              .settingsSecuritySetPassword);
-                      await configProvider.set(Settings.backupPasswordEnabled,
-                          BackupPasswordStore.password.isNotEmpty);
-                    } else {
-                      await configProvider.set(Settings.backupPassword, "");
-                      await configProvider.set(
-                          Settings.backupPasswordEnabled, false);
-                    }
-                  }
+                ? _setBackupPassword
                 : null,
+            onOpenOptions: () =>
+                _showBackupPasswordDialog(l10n.settingsSecurityChangePassword),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            child: Divider(),
+          SettingsActionRow(
+            icon: Icons.restore_rounded,
+            title: l10n.settingsRestore,
+            onTap: () => _restoreData(context),
           ),
-          SettingsIconAction(
-              title: AppLocalizations.of(context)!.settingsImportFromAnotherApp,
-              icon: Icon(Icons.download_rounded),
-              onPressed: () async {
-                await _showImportSelectionPopup();
-              }),
-          SettingsIconAction(
-              title:
-                  AppLocalizations.of(context)!.settingsExportToAnotherFormat,
-              icon: Icon(Icons.upload_rounded),
-              onPressed: () async {
-                await _showExportSelectionPopup();
-              }),
-        ],
-      ),
+        ]),
+        SegmentedGroup(children: [
+          SettingsActionRow(
+            icon: Icons.download_rounded,
+            title: l10n.settingsImportFromAnotherApp,
+            onTap: _showImportSelectionPopup,
+          ),
+          SettingsActionRow(
+            icon: Icons.upload_rounded,
+            title: l10n.settingsExportToAnotherFormat,
+            onTap: _showExportSelectionPopup,
+          ),
+        ]),
+      ],
     );
   }
 }

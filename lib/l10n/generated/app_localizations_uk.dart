@@ -375,6 +375,21 @@ class AppLocalizationsUk extends AppLocalizations {
   String get moodIconPrompt => 'Введіть іконку (емоджи)';
 
   @override
+  String get moodVeryUnpleasant => 'Very Unpleasant';
+
+  @override
+  String get moodUnpleasant => 'Unpleasant';
+
+  @override
+  String get moodNeutral => 'Neutral';
+
+  @override
+  String get moodPleasant => 'Pleasant';
+
+  @override
+  String get moodVeryPleasant => 'Very Pleasant';
+
+  @override
   String get settingsFlashbacksViewLayout => 'Макет перегляду флешбеків';
 
   @override
@@ -908,6 +923,12 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get formatMarkdown => 'Markdown';
+
+  @override
+  String get formatCsv => 'CSV';
+
+  @override
+  String get formatJson => 'JSON';
 
   @override
   String get settingsDeleteAllLogsTitle => 'Видалити всі записи';

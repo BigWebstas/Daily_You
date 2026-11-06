@@ -4,6 +4,7 @@
 
 import 'package:daily_you/l10n/generated/app_localizations.dart';
 import 'package:daily_you/models/entry.dart';
+import 'package:daily_you/providers/mood_scale_provider.dart';
 import 'package:daily_you/providers/tags_provider.dart';
 import 'package:daily_you/widgets/large_entry_card_widget.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,8 +25,11 @@ void main() {
 
   Future<void> pumpCard(WidgetTester tester, {String searchQuery = ''}) {
     return tester.pumpWidget(
-      ChangeNotifierProvider.value(
-        value: TagsProvider.instance,
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: TagsProvider.instance),
+          ChangeNotifierProvider.value(value: MoodScaleProvider.instance),
+        ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -54,6 +58,17 @@ void main() {
     expect(
         find.textContaining('first line', findRichText: true), findsOneWidget);
     expect(highlightedTexts(tester), isEmpty);
+  });
+
+  testWidgets('announces the date and text as one node', (tester) async {
+    final handle = tester.ensureSemantics();
+    await pumpCard(tester);
+
+    final node = tester.getSemantics(find.byType(LargeEntryCardWidget));
+    expect(node.label, contains('first line'));
+    expect(node.label, contains('2025'));
+    expect(find.semantics.byLabel(RegExp('needle')), findsOneWidget);
+    handle.dispose();
   });
 
   testWidgets('starts at the matching line and highlights the match',
