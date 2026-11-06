@@ -327,7 +327,10 @@ jobs:
           path: build/macos/Build/Products/Release/DailyYou-${{ needs.version.outputs.version }}-macos.zip
 
   release:
-    needs: [version, build-windows, build-choco, build-linux, build-arch-pkg, build-macos]
+    # macOS is deliberately not in needs: GitHub's macOS arm64 pool is
+    # capacity-constrained and a runner that never arrives would otherwise
+    # block every other platform. attach-macos adds the zip when it's ready.
+    needs: [version, build-windows, build-choco, build-linux, build-arch-pkg]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -343,6 +346,27 @@ jobs:
             --repo "${{ github.repository }}" \
             --title "${{ needs.version.outputs.tag }}" \
             --generate-notes \
+            artifacts/*/*
+
+  attach-macos:
+    # Re-running just this job (and build-macos) after a runner-capacity
+    # cancellation adds the macOS zip to the existing release.
+    needs: [version, release, build-macos]
+    if: ${{ !cancelled() && needs.release.result == 'success' && needs.build-macos.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: DailyYou-*-macos
+
+      - name: Upload macOS asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ needs.version.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            --clobber \
             artifacts/*/*
 
   push-choco:
