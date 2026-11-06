@@ -141,7 +141,9 @@ jobs:
   build-linux:
     needs: version
     if: needs.version.outputs.skip != 'true'
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moved to 26.04, which dropped libgdk-pixbuf2.0-dev.
+    # Older glibc also keeps the AppImage portable.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
