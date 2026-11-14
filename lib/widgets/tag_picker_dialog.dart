@@ -3,28 +3,33 @@
 // Additional terms under GPLv3 section 7 apply; see ADDITIONAL_TERMS.md.
 
 import 'package:daily_you/config_provider.dart';
+import 'package:daily_you/models/gallery_filter.dart';
 import 'package:daily_you/models/tag.dart';
 import 'package:daily_you/pages/settings/tags_settings.dart';
 import 'package:daily_you/providers/tags_provider.dart';
 import 'package:daily_you/widgets/app_dialog.dart';
+import 'package:daily_you/widgets/confirm_dialog.dart';
 import 'package:daily_you/widgets/edit_tag.dart';
+import 'package:daily_you/widgets/none_filter_toggle.dart';
+import 'package:daily_you/widgets/show_logs_button.dart';
 import 'package:daily_you/widgets/tag_attachment_source.dart';
 import 'package:daily_you/widgets/tag_chip.dart';
 import 'package:daily_you/widgets/tag_grouped_chip_list.dart';
+import 'package:daily_you/widgets/tracker_value_dialog.dart';
+import 'package:daily_you/utils/bulk_tag_editor.dart';
 import 'package:daily_you/utils/tag_name_sanitizer.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:daily_you/l10n/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-enum TagPickerMode { attach, selectSingle, filter }
-
-enum TagFilterMode { all, any }
+enum TagPickerMode { attach, selectSingle, filter, bulkEdit }
 
 class TagPickerDialog extends StatefulWidget {
   final TagPickerMode mode;
 
   // attach
   final TagAttachmentSource? source;
+  final BulkTagEditor? editor;
 
   // filter
   final List<int> initialSelectedTagIds;
@@ -40,6 +45,7 @@ class TagPickerDialog extends StatefulWidget {
     super.key,
     required this.mode,
     this.source,
+    this.editor,
     this.initialSelectedTagIds = const [],
     this.initialFilterMode = TagFilterMode.any,
     this.initialNoTagsOnly = false,
@@ -86,6 +92,12 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
     ConfigProvider.instance.set(Settings.tagPickerSortMode, newMode);
   }
 
+  bool get _canCreateTags => switch (widget.mode) {
+        TagPickerMode.attach => true,
+        TagPickerMode.bulkEdit => widget.editor!.change == TagChange.add,
+        TagPickerMode.selectSingle || TagPickerMode.filter => false,
+      };
+
   // attach mode helpers
 
   Future<void> _createAndAddTagWithName(
@@ -107,6 +119,8 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
       final source = widget.source!;
       if (source.contains(newTag.id!)) return;
       if (mounted) await source.attach(context, newTag);
+    } else if (widget.mode == TagPickerMode.bulkEdit) {
+      if (mounted) await _toggleBulkEditTag(newTag);
     }
   }
 
@@ -147,7 +161,60 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
     Navigator.of(context).pop();
   }
 
+  Future<void> _toggleBulkEditTag(Tag tag) async {
+    final editor = widget.editor!;
+    String? value;
+    if (!editor.isChosen(tag.id!) &&
+        editor.change == TagChange.add &&
+        tag.tagType == TagType.tracker) {
+      value = await showTrackerValueDialog(context, tag);
+      if (value == null) return;
+    }
+    editor.toggle(tag.id!, value: value);
+  }
+
+  Future<void> _confirmBulkEdit(
+    BuildContext context,
+    TagsProvider provider,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final editor = widget.editor!;
+    final isAdd = editor.change == TagChange.add;
+    final confirmed = await showConfirmDialog(
+      context,
+      title: isAdd ? l10n.addTagsTitle : l10n.removeTagsTitle,
+      message: isAdd
+          ? l10n.addTagsConfirmMessage(editor.entryCount)
+          : l10n.removeTagsConfirmMessage(editor.entryCount),
+      confirmLabel: l10n.applyButtonLabel,
+      details: _buildBulkEditChosenChips(provider, removable: false),
+    );
+    if (confirmed && context.mounted) Navigator.of(context).pop(true);
+  }
+
   // builders
+
+  Widget _buildBulkEditChosenChips(
+    TagsProvider provider, {
+    bool removable = true,
+  }) {
+    final editor = widget.editor!;
+    final chosenIds = editor.chosenTagIds.toSet();
+    if (chosenIds.isEmpty) return const SizedBox.shrink();
+    final chosenTags =
+        provider.tags.where((tag) => chosenIds.contains(tag.id)).toList();
+    return Padding(
+      padding: EdgeInsets.only(bottom: removable ? 8 : 0),
+      child: TagGroupedChipList(
+        sections: provider.buildSections('', tagPool: chosenTags),
+        chipBuilder: (tag) => TagChip(
+          tag: tag,
+          value: editor.valueOf(tag.id!),
+          onRemove: removable ? () => editor.toggle(tag.id!) : null,
+        ),
+      ),
+    );
+  }
 
   Widget _buildAttachedChips(TagsProvider provider) {
     final source = widget.source!;
@@ -217,29 +284,16 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
   }
 
   Widget _buildNoTagsToggle(AppLocalizations l10n) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          l10n.noTagsFilterLabel,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(width: 4),
-        Transform.scale(
-          scale: 0.8,
-          child: Switch(
-            value: _noTagsOnly,
-            onChanged: _setNoTagsOnly,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-        ),
-      ],
+    return NoneFilterToggle(
+      label: l10n.noTagsFilterLabel,
+      value: _noTagsOnly,
+      onChanged: _setNoTagsOnly,
     );
   }
 
   Widget _buildSearchField(AppLocalizations l10n, TagsProvider provider) {
     final showAdd = _searchText.isNotEmpty &&
-        widget.mode == TagPickerMode.attach &&
+        _canCreateTags &&
         !provider.tags
             .any((tag) => tag.name.toLowerCase() == _searchText.toLowerCase());
 
@@ -332,11 +386,10 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final source = widget.source;
-    if (source != null) {
-      // Rebuild when source mutates
+    final listenable = widget.source ?? widget.editor;
+    if (listenable != null) {
       return ListenableBuilder(
-        listenable: source,
+        listenable: listenable,
         builder: (context, _) => _buildDialog(context),
       );
     }
@@ -350,6 +403,12 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
         final excludedIds = switch (widget.mode) {
           TagPickerMode.attach => widget.source!.attachedTagIds,
           TagPickerMode.filter => _selectedTagIds,
+          TagPickerMode.bulkEdit => [
+              for (final tag in provider.tags)
+                if (!widget.editor!.isApplicable(tag.id!) ||
+                    widget.editor!.isChosen(tag.id!))
+                  tag.id!
+            ],
           TagPickerMode.selectSingle => widget.excludedTagIds,
         };
 
@@ -385,7 +444,11 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
           case TagPickerMode.selectSingle:
             title = l10n.selectTagTitle;
           case TagPickerMode.filter:
-            title = l10n.filterTagsTitle;
+            title = l10n.settingsTagsTitle;
+          case TagPickerMode.bulkEdit:
+            title = widget.editor!.change == TagChange.add
+                ? l10n.addTagsTitle
+                : l10n.removeTagsTitle;
         }
 
         final titleWidget = widget.mode == TagPickerMode.filter
@@ -459,6 +522,8 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
             children: [
               if (widget.mode == TagPickerMode.attach)
                 _buildAttachedChips(provider),
+              if (widget.mode == TagPickerMode.bulkEdit)
+                _buildBulkEditChosenChips(provider),
               if (widget.mode == TagPickerMode.filter) ...[
                 _buildFilterSelectedChips(provider),
                 _buildFilterModeToggle(context),
@@ -470,10 +535,13 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
                 chipBuilder: (tag) => TagChip(
                   tag: tag,
                   onTap: () async {
-                    if (widget.mode == TagPickerMode.attach) {
-                      await widget.source!.attach(context, tag);
-                    } else {
-                      _addFilterTag(tag.id!);
+                    switch (widget.mode) {
+                      case TagPickerMode.attach:
+                        await widget.source!.attach(context, tag);
+                      case TagPickerMode.bulkEdit:
+                        await _toggleBulkEditTag(tag);
+                      case TagPickerMode.filter || TagPickerMode.selectSingle:
+                        _addFilterTag(tag.id!);
                     }
                   },
                 ),
@@ -504,15 +572,28 @@ class _TagPickerDialogState extends State<TagPickerDialog> {
         return [manageTags, close];
       case TagPickerMode.selectSingle:
         return [close];
+      case TagPickerMode.bulkEdit:
+        return [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          ),
+          TextButton(
+            onPressed: widget.editor!.hasChanges
+                ? () => _confirmBulkEdit(context, provider)
+                : null,
+            child: Text(l10n.applyButtonLabel),
+          ),
+        ];
       case TagPickerMode.filter:
         return [
           TextButton(
             onPressed: _selectedTagIds.isEmpty && !_noTagsOnly
                 ? null
                 : _clearAllFilters,
-            child: Text(l10n.clearAllFilters),
+            child: Text(l10n.clearFilter),
           ),
-          close,
+          const ShowLogsButton(),
         ];
     }
   }

@@ -6,7 +6,9 @@ import 'package:daily_you/models/attachment.dart';
 import 'package:daily_you/time_manager.dart';
 import 'package:daily_you/utils/entry_semantics_label.dart';
 import 'package:daily_you/utils/search_text_window.dart';
+import 'package:daily_you/utils/text_highlight.dart';
 import 'package:daily_you/widgets/bottom_fade.dart';
+import 'package:daily_you/widgets/entry_card_widget.dart';
 import 'package:daily_you/widgets/entry_card_header_row.dart';
 import 'package:daily_you/widgets/attachment_grid.dart';
 import 'package:daily_you/widgets/scaled_markdown.dart';
@@ -24,6 +26,7 @@ class LargeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card.filled(
+      margin: const EdgeInsets.all(entryCardMargin),
       color: Theme.of(context).colorScheme.surfaceContainer,
       clipBehavior: Clip.antiAlias,
       child: Row(
@@ -34,7 +37,7 @@ class LargeCard extends StatelessWidget {
           if (media != null)
             Expanded(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(entryCardCornerRadius),
                 child: media,
               ),
             ),
@@ -68,7 +71,10 @@ class LargeCard extends StatelessWidget {
     );
   }
 
-  static Widget markdownBody(String text, {String highlightQuery = ''}) =>
+  static Widget markdownBody(
+    String text, {
+    TextHighlight highlight = TextHighlight.none,
+  }) =>
       OverflowBox(
         alignment: AlignmentDirectional.topStart,
         maxHeight: double.infinity,
@@ -76,7 +82,7 @@ class LargeCard extends StatelessWidget {
           data: text,
           maxCharacters: 500,
           scaleFactor: 0.95,
-          highlightQuery: highlightQuery,
+          highlight: highlight,
         ),
       );
 }
@@ -88,14 +94,14 @@ class LargeEntryCardWidget extends StatelessWidget {
     required this.entry,
     required this.attachments,
     this.hideImage = false,
-    this.searchQuery = '',
+    this.highlight = TextHighlight.none,
   });
 
   final Entry entry;
   final List<EntryAttachment> attachments;
   final String? title;
   final bool hideImage;
-  final String searchQuery;
+  final TextHighlight highlight;
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +125,8 @@ class LargeEntryCardWidget extends StatelessWidget {
           ),
           body: entry.text.isNotEmpty
               ? LargeCard.markdownBody(
-                  searchTextWindow(entry.text, searchQuery),
-                  highlightQuery: searchQuery,
+                  searchTextWindow(entry.text, highlight),
+                  highlight: highlight,
                 )
               : Text(
                   AppLocalizations.of(context)!.writeSomethingHint,

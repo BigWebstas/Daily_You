@@ -2,21 +2,38 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Additional terms under GPLv3 section 7 apply; see ADDITIONAL_TERMS.md.
 
+import 'dart:math' as math;
+
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+
 import 'package:daily_you/config_provider.dart';
 import 'package:daily_you/models/attachment.dart';
 import 'package:daily_you/models/entry.dart';
+import 'package:daily_you/models/entry_sort.dart';
+import 'package:daily_you/models/gallery_filter.dart';
 import 'package:daily_you/models/tag.dart';
 import 'package:daily_you/providers/entries_provider.dart';
 import 'package:daily_you/providers/entry_attachments_provider.dart';
+import 'package:daily_you/providers/gallery_selection.dart';
 import 'package:daily_you/providers/tags_provider.dart';
-import 'package:daily_you/widgets/hide_semantics_while_dragging.dart';
+import 'package:daily_you/utils/gallery_entry_actions.dart';
+import 'package:daily_you/utils/text_highlight.dart';
+import 'package:daily_you/widgets/gallery_action_menu.dart';
 import 'package:daily_you/widgets/app_dialog.dart';
-import 'package:daily_you/widgets/tag_picker_dialog.dart';
+import 'package:daily_you/widgets/drag_select_region.dart';
+import 'package:daily_you/widgets/entry_card_widget.dart';
+import 'package:daily_you/widgets/crossfade_on_change.dart';
+import 'package:daily_you/widgets/gallery_header.dart';
+import 'package:daily_you/widgets/gallery_invite.dart';
+import 'package:daily_you/pages/edit_entry_page.dart';
+import 'package:daily_you/widgets/hide_semantics_while_dragging.dart';
 import 'package:daily_you/widgets/hiding_widget.dart';
 import 'package:daily_you/widgets/large_entry_card_widget.dart';
+import 'package:daily_you/widgets/selectable_entry_card.dart';
+import 'package:daily_you/widgets/tag_picker_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:daily_you/l10n/generated/app_localizations.dart';
-import 'package:daily_you/widgets/entry_card_widget.dart';
 import 'package:daily_you/pages/entries_list_page.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:provider/provider.dart';
@@ -30,16 +47,15 @@ class GalleryPage extends StatefulWidget {
 
 class _GalleryPageState extends State<GalleryPage>
     with AutomaticKeepAliveClientMixin {
+  static const String _searchDebounceTag = 'search-debounce';
+  static const double _endSpacing = 70;
+  static const double _inviteMinimumFraction = 0.3;
+
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  late final FocusNode _focusNode = FocusNode();
-  final ValueNotifier<double> _searchElevation = ValueNotifier(0.0);
-
-  List<int> _filterTagIds = [];
-  TagFilterMode _filterTagMode = TagFilterMode.any;
-  bool _filterNoTags = false;
-
-  bool get _hasTagFilter => _filterTagIds.isNotEmpty || _filterNoTags;
+  final GlobalKey _partialMatchesKey = GlobalKey();
+  final FocusNode _focusNode = FocusNode();
+  bool _isScrolledUnder = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -48,109 +64,165 @@ class _GalleryPageState extends State<GalleryPage>
   void initState() {
     super.initState();
     _searchController.text = EntriesProvider.instance.searchText;
-    _scrollController.addListener(() {
-      _searchElevation.value =
-          _scrollController.position.pixels > 0 ? 1.0 : 0.0;
-    });
+    _scrollController.addListener(_onScrolled);
+    GallerySelection.instance.addListener(_focusWhileSelecting);
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
-    _searchElevation.dispose();
-    _scrollController.dispose();
+    GallerySelection.instance.removeListener(_focusWhileSelecting);
     _focusNode.dispose();
+    EasyDebounce.cancel(_searchDebounceTag);
+    _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  List<Entry> _getVisibleEntries(
-      EntriesProvider entriesProvider, TagsProvider tagsProvider) {
-    final filtered =
-        _applyTagFilter(entriesProvider.getFilteredEntries(), tagsProvider);
-    return _applyTrackerSort(filtered, entriesProvider, tagsProvider);
+  void _onScrolled() {
+    final isScrolledUnder = _scrollController.position.pixels > 0;
+    if (isScrolledUnder == _isScrolledUnder) return;
+    setState(() => _isScrolledUnder = isScrolledUnder);
   }
 
-  List<Entry> _applyTagFilter(List<Entry> entries, TagsProvider tagsProvider) {
-    if (_filterNoTags) {
-      return entries
-          .where((entry) =>
-              tagsProvider.getEntryTagsForEntry(entry.id ?? -1).isEmpty)
-          .toList();
-    }
-    if (_filterTagIds.isEmpty) return entries;
-    return entries.where((entry) {
-      final entryTagIds = tagsProvider
-          .getEntryTagsForEntry(entry.id ?? -1)
-          .map((entryTag) => entryTag.tagId)
-          .toSet();
-      return _filterTagMode == TagFilterMode.all
-          ? _filterTagIds.every((tagId) => entryTagIds.contains(tagId))
-          : _filterTagIds.any((tagId) => entryTagIds.contains(tagId));
-    }).toList();
+  void _onSearchChanged(String queryText) => EasyDebounce.debounce(
+        _searchDebounceTag,
+        const Duration(milliseconds: 300),
+        () => EntriesProvider.instance.searchText = queryText,
+      );
+
+  void _clearSearchText() {
+    EasyDebounce.cancel(_searchDebounceTag);
+    _searchController.clear();
+    EntriesProvider.instance.searchText = '';
   }
 
-  List<Entry> _applyTrackerSort(List<Entry> entries,
-      EntriesProvider entriesProvider, TagsProvider tagsProvider) {
-    final trackerTagId = entriesProvider.trackerSortTagId;
-    if (entriesProvider.orderBy != OrderBy.tracker || trackerTagId == null) {
-      return entries;
-    }
-    final ascending = entriesProvider.sortOrder == SortOrder.ascending;
-
-    double? trackerValue(Entry entry) {
-      final rawValue = tagsProvider
-          .getEntryTagsForEntry(entry.id ?? -1)
-          .where((entryTag) => entryTag.tagId == trackerTagId)
-          .firstOrNull
-          ?.value;
-      return double.tryParse(rawValue ?? '');
-    }
-
-    final valuesByEntryId = {
-      for (final entry in entries) entry.id: trackerValue(entry)
-    };
-
-    final withValue =
-        entries.where((entry) => valuesByEntryId[entry.id] != null).toList();
-    final withoutValue =
-        entries.where((entry) => valuesByEntryId[entry.id] == null).toList();
-
-    withValue.sort((a, b) {
-      final comparison = ascending
-          ? valuesByEntryId[a.id]!.compareTo(valuesByEntryId[b.id]!)
-          : valuesByEntryId[b.id]!.compareTo(valuesByEntryId[a.id]!);
-      if (comparison != 0) return comparison;
-      return ascending
-          ? a.timeCreate.compareTo(b.timeCreate)
-          : b.timeCreate.compareTo(a.timeCreate);
-    });
-
-    withoutValue.sort((a, b) => ascending
-        ? a.timeCreate.compareTo(b.timeCreate)
-        : b.timeCreate.compareTo(a.timeCreate));
-
-    // Entries without a numeric tracker value are always listed after those
-    // with one, regardless of sort direction.
-    return [...withValue, ...withoutValue];
+  void _clearAll() {
+    EasyDebounce.cancel(_searchDebounceTag);
+    _searchController.clear();
+    EntriesProvider.instance.filter = const GalleryFilter();
   }
 
-  void _showTagFilterDialog(BuildContext context) {
-    showAppDialog(
-      context: context,
-      builder: (_) => TagPickerDialog(
-        mode: TagPickerMode.filter,
-        initialSelectedTagIds: List.from(_filterTagIds),
-        initialFilterMode: _filterTagMode,
-        initialNoTagsOnly: _filterNoTags,
-        onFilterChanged: (tagIds, mode, noTagsOnly) {
-          setState(() {
-            _filterTagIds = tagIds;
-            _filterTagMode = mode;
-            _filterNoTags = noTagsOnly;
-          });
-        },
-      ),
+  void _scrollToPartialMatches() {
+    final sliver = _partialMatchesKey.currentContext?.findRenderObject();
+    if (sliver is! RenderSliver || !_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    position.animateTo(
+      math.min(
+          sliver.constraints.precedingScrollExtent, position.maxScrollExtent),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
     );
+  }
+
+  void _focusWhileSelecting() {
+    if (!GallerySelection.instance.active || _isEditingText()) return;
+    _focusNode.requestFocus();
+  }
+
+  bool _isEditingText() =>
+      FocusManager.instance.primaryFocus?.context
+          ?.findAncestorWidgetOfExactType<EditableText>() !=
+      null;
+
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    final selection = GallerySelection.instance;
+    if (!selection.active || event is! KeyDownEvent) {
+      return KeyEventResult.ignored;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      selection.clear();
+      return KeyEventResult.handled;
+    }
+    if (_isEditingText()) return KeyEventResult.ignored;
+    final keyboard = HardwareKeyboard.instance;
+    if (event.logicalKey == LogicalKeyboardKey.keyA &&
+        (keyboard.isControlPressed || keyboard.isMetaPressed)) {
+      selectAllEntries(context, selection);
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.delete) {
+      deleteSelectedEntries(context, selection);
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  Future<void> _writeNewLog() {
+    return Navigator.of(context).push(MaterialPageRoute(
+        allowSnapshotting: false,
+        builder: (context) => const AddEditEntryPage(
+              entry: null,
+              openCamera: false,
+              attachments: [],
+            )));
+  }
+
+  Future<void> _openEntry(int index) async {
+    GallerySelection.instance.clear();
+    await Navigator.of(context).push(MaterialPageRoute(
+        allowSnapshotting: false,
+        builder: (context) => EntriesListPage(
+              index: index,
+              getEntries: () => EntriesProvider.instance.getFilteredEntries(),
+            )));
+  }
+
+  void _onEntryTapped(Entry entry, int index) {
+    final selection = GallerySelection.instance;
+    if (!selection.active) {
+      _openEntry(index);
+    } else if (HardwareKeyboard.instance.isShiftPressed) {
+      selection.selectRange(entry.id!);
+    } else {
+      selection.toggle(entry.id!);
+    }
+  }
+
+  void _onDragSelectStarted(int entryId) {
+    HapticFeedback.mediumImpact();
+    GallerySelection.instance.beginDrag(entryId);
+  }
+
+  Future<void> _showEntryMenu(Entry entry, int index, Offset position) async {
+    final l10n = AppLocalizations.of(context)!;
+    final selection = GallerySelection.instance;
+    final shareAction = shareSelectionAction(context, selection);
+    final actions = selection.isSelected(entry.id!)
+        ? [
+            if (shareAction != null) shareAction,
+            ...selectionActions(context, selection)
+          ]
+        : [
+            GalleryAction(
+              label: l10n.gallerySelectAction,
+              icon: const Icon(Icons.check_circle_outline_rounded),
+              onPressed: () => selection.toggle(entry.id!),
+            ),
+            GalleryAction(
+              label: l10n.galleryOpenAction,
+              icon: const Icon(Icons.open_in_new_rounded),
+              onPressed: () => _openEntry(index),
+            ),
+            GalleryAction(
+              label: l10n.settingsExport,
+              icon: const Icon(Icons.file_download_outlined),
+              onPressed: () => exportEntries(context, [entry]),
+            ),
+            GalleryAction(
+              label: l10n.deleteTitle,
+              icon: const Icon(Icons.delete_outline_rounded),
+              onPressed: () => deleteEntries(context, [entry]),
+            ),
+          ];
+    final overlaySize = Overlay.of(context).context.size!;
+    final chosen = await showMenu<GalleryAction>(
+      context: context,
+      position: RelativeRect.fromRect(
+          position & Size.zero, Offset.zero & overlaySize),
+      shape: galleryMenuShape,
+      items: galleryMenuItems(actions),
+    );
+    chosen?.onPressed();
   }
 
   void _showSortSelectionPopup(BuildContext context) {
@@ -270,154 +342,134 @@ class _GalleryPageState extends State<GalleryPage>
   Widget build(BuildContext context) {
     super.build(context);
     final entriesProvider = Provider.of<EntriesProvider>(context);
-    final tagsProvider = Provider.of<TagsProvider>(context);
     final configProvider = Provider.of<ConfigProvider>(context);
-    String viewMode = configProvider.get(Settings.galleryPageViewMode);
-    bool listView = viewMode == 'list';
-    var entries = _getVisibleEntries(entriesProvider, tagsProvider);
-    final bool showClear = _searchController.text.isNotEmpty || _hasTagFilter;
-    return Center(
-      child: Stack(alignment: Alignment.topCenter, children: [
-        buildEntries(context, listView, entries, tagsProvider),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: 4, bottom: 8, left: 8, right: 8),
-              child: ValueListenableBuilder<double>(
-                  valueListenable: _searchElevation,
-                  builder: (context, searchElevation, _) => SearchBar(
-                        focusNode: _focusNode,
-                        controller: _searchController,
-                        elevation: WidgetStatePropertyAll(searchElevation),
-                        leading: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.search_rounded,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                        trailing: [
-                          AnimatedSwitcher(
-                            duration: Duration(milliseconds: 300),
-                            transitionBuilder:
-                                (Widget child, Animation<double> animation) {
-                              final rotationAnimation =
-                                  Tween<double>(begin: 0.0, end: 0.5).animate(
-                                CurvedAnimation(
-                                    parent: animation, curve: Curves.easeOut),
-                              );
-
-                              final scaleAnimation = TweenSequence([
-                                TweenSequenceItem(
-                                  tween: Tween<double>(begin: 0.0, end: 1.1)
-                                      .chain(CurveTween(curve: Curves.easeOut)),
-                                  weight: 50,
-                                ),
-                                TweenSequenceItem(
-                                  tween: Tween<double>(begin: 1.1, end: 1.0)
-                                      .chain(CurveTween(curve: Curves.easeIn)),
-                                  weight: 50,
-                                ),
-                              ]).animate(animation);
-
-                              return RotationTransition(
-                                turns: rotationAnimation,
-                                child: ScaleTransition(
-                                  scale: scaleAnimation,
-                                  child: child,
-                                ),
-                              );
-                            },
-                            child: showClear
-                                ? IconButton(
-                                    visualDensity: VisualDensity(
-                                        horizontal:
-                                            VisualDensity.minimumDensity),
-                                    key: ValueKey('clearButton'),
-                                    icon: Icon(Icons.clear),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                      entriesProvider.searchText = "";
-                                      setState(() {
-                                        _filterTagIds = [];
-                                        _filterTagMode = TagFilterMode.any;
-                                        _filterNoTags = false;
-                                      });
-                                    },
-                                  )
-                                : SizedBox.shrink(key: ValueKey('empty')),
-                          ),
-                          if (entriesProvider.searchText.isNotEmpty ||
-                              _hasTagFilter)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Text(AppLocalizations.of(context)!
-                                  .logCount(entries.length)),
-                            ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.filter_list_rounded,
-                              color: _hasTagFilter
-                                  ? Theme.of(context).colorScheme.primary
-                                  : null,
-                            ),
-                            onPressed: () => _showTagFilterDialog(context),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.sort_rounded),
-                            onPressed: () => _showSortSelectionPopup(context),
-                          ),
-                        ],
-                        hintText: AppLocalizations.of(context)!.searchLogsHint,
-                        padding: WidgetStateProperty.all(
-                            const EdgeInsets.only(left: 4, right: 4)),
-                        backgroundColor: WidgetStatePropertyAll(
-                            Theme.of(context).colorScheme.secondaryContainer),
-                        onChanged: (queryText) => EasyDebounce.debounce(
-                            'search-debounce',
-                            const Duration(milliseconds: 300), () {
-                          entriesProvider.searchText = queryText;
-                        }),
-                      )),
-            ),
-            if (entries.isNotEmpty)
-              HidingWidget(
-                scrollController: _scrollController,
-                duration: Duration(milliseconds: 200),
-                hideDirection: HideDirection.down,
-                shouldShow: () {
-                  return _scrollController.position.pixels >= 500;
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+    final listView = configProvider.get(Settings.galleryPageViewMode) == 'list';
+    final entries = entriesProvider.getFilteredEntries();
+    final isFiltering = entriesProvider.filter.isActive;
+    if (entries.isEmpty) _isScrolledUnder = false;
+    final partialMatchCount = entriesProvider.partialMatchCount;
+    return SafeArea(
+        top: false,
+        bottom: false,
+        child: Focus(
+            focusNode: _focusNode,
+            skipTraversal: true,
+            onKeyEvent: _onKeyEvent,
+            child: Stack(
+              children: [
+                Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FloatingActionButton(
-                        heroTag: "gallery-jump-to-top-button",
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer,
-                        elevation: 1,
-                        child: Icon(
-                          Icons.arrow_upward_rounded,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 28,
-                        ),
-                        onPressed: () async {
-                          _scrollController.position.animateTo(0,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeOut);
-                        },
+                    GalleryHeader(
+                      searchController: _searchController,
+                      onSearchChanged: _onSearchChanged,
+                      onSearchCleared: _clearSearchText,
+                      onClearAll: _clearAll,
+                      onSortPressed: () => _showSortSelectionPopup(context),
+                      resultCount: isFiltering
+                          ? entries.length - partialMatchCount
+                          : null,
+                      partialMatchCount: partialMatchCount,
+                      onPartialMatchesPressed: _scrollToPartialMatches,
+                    ),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: CrossfadeOnChange(
+                              changeKey: (
+                                entriesProvider.filter,
+                                entriesProvider.orderBy,
+                                entriesProvider.sortOrder,
+                                entriesProvider.trackerSortTagId,
+                              ),
+                              child: entries.isEmpty
+                                  ? _buildEmptyState(context, isFiltering)
+                                  : _buildEntries(
+                                      context,
+                                      listView,
+                                      entries,
+                                      entriesProvider,
+                                    ),
+                            ),
+                          ),
+                          GalleryHeaderEdge(isElevated: _isScrolledUnder),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-          ],
-        ),
-      ]),
+                if (entries.isNotEmpty)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: HidingWidget(
+                      scrollController: _scrollController,
+                      duration: const Duration(milliseconds: 200),
+                      hideDirection: HideDirection.down,
+                      shouldShow: () {
+                        return _scrollController.position.pixels >= 500;
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FloatingActionButton(
+                              heroTag: "gallery-jump-to-top-button",
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
+                              elevation: 1,
+                              child: Icon(
+                                Icons.arrow_upward_rounded,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 28,
+                              ),
+                              onPressed: () async {
+                                _scrollController.position.animateTo(0,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeOut);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            )));
+  }
+
+  Widget _buildEmptyState(BuildContext context, bool isFiltering) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    if (!isFiltering) {
+      return GalleryInvite(onPressed: _writeNewLog);
+    }
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.image_search_rounded,
+            size: 96,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            l10n.noResults,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+          ),
+          const SizedBox(height: 16),
+          FilledButton(
+            onPressed: _clearAll,
+            child: Text(l10n.clearAllFilters),
+          ),
+        ],
+      ),
     );
   }
 
@@ -429,64 +481,129 @@ class _GalleryPageState extends State<GalleryPage>
         .toList();
   }
 
-  Widget buildEntries(BuildContext context, bool listView, List<Entry> entries,
-      TagsProvider tagsProvider) {
+  Widget _buildPartialMatchesHeader(BuildContext context, int count) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return SliverToBoxAdapter(
+      key: _partialMatchesKey,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 8),
+        child: Row(
+          children: [
+            const Expanded(child: Divider()),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                AppLocalizations.of(context)!.partialMatchCount(count),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ),
+            const Expanded(child: Divider()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInvite() => SliverLayoutBuilder(
+        builder: (context, constraints) {
+          final viewport = constraints.viewportMainAxisExtent;
+          final available =
+              viewport - constraints.precedingScrollExtent - _endSpacing;
+          if (available < viewport * _inviteMinimumFraction) {
+            return const SliverToBoxAdapter(child: SizedBox.shrink());
+          }
+          return SliverToBoxAdapter(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: available),
+              child: GalleryInvite(onPressed: _writeNewLog),
+            ),
+          );
+        },
+      );
+
+  Widget _buildEntries(
+    BuildContext context,
+    bool listView,
+    List<Entry> entries,
+    EntriesProvider entriesProvider,
+  ) {
     final entryAttachmentsProvider =
         Provider.of<EntryAttachmentsProvider>(context);
     final configProvider = Provider.of<ConfigProvider>(context);
-    final searchText = EntriesProvider.instance.searchText;
-    final largeCards = listView || searchText.isNotEmpty;
-    return entries.isEmpty
-        ? Center(
-            child: Text(
-              _searchController.text.isNotEmpty || _hasTagFilter
-                  ? AppLocalizations.of(context)!.noResults
-                  : AppLocalizations.of(context)!.noLogs,
+    final highlight = TextHighlight.fromFilter(entriesProvider.filter);
+    final largeCards = listView || highlight.isNotEmpty;
+    final partialMatchCount = entriesProvider.partialMatchCount;
+    final firstTierEnd = entries.length - partialMatchCount;
+
+    Widget buildEntry(BuildContext context, int index) {
+      final entry = entries[index];
+      return SelectableEntryCard(
+        entryId: entry.id!,
+        onTap: () => _onEntryTapped(entry, index),
+        onSecondaryTapUp: (details) =>
+            _showEntryMenu(entry, index, details.globalPosition),
+        child: largeCards
+            ? LargeEntryCardWidget(
+                entry: entry,
+                attachments:
+                    _visualAttachmentsOf(entryAttachmentsProvider, entry),
+                hideImage: configProvider.get(Settings.hideImagesInGallery),
+                highlight: highlight,
+              )
+            : EntryCardWidget(
+                entry: entry,
+                attachments:
+                    _visualAttachmentsOf(entryAttachmentsProvider, entry),
+                hideImage: configProvider.get(Settings.hideImagesInGallery),
+              ),
+      );
+    }
+
+    Widget buildTier(int start, int end) => SliverGrid.builder(
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: largeCards ? 500 : 300,
+              crossAxisSpacing: 1.0,
+              mainAxisSpacing: 1.0,
+              childAspectRatio: largeCards ? 2.0 : 1.0),
+          itemCount: end - start,
+          itemBuilder: (context, index) => buildEntry(context, start + index),
+        );
+
+    return DragSelectRegion(
+      scrollController: _scrollController,
+      onStart: _onDragSelectStarted,
+      onUpdate: GallerySelection.instance.dragTo,
+      child: HideSemanticsWhileDragging(
+        child: CustomScrollView(
+          controller: _scrollController,
+          physics: const ScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: galleryHorizontalPadding,
+              ),
+              sliver: buildTier(0, firstTierEnd),
             ),
-          )
-        : HideSemanticsWhileDragging(
-            child: GridView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.only(top: 70, bottom: 70),
-            physics: const ScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: largeCards ? 500 : 300,
-                crossAxisSpacing: 1.0,
-                mainAxisSpacing: 1.0,
-                childAspectRatio: largeCards ? 2.0 : 1.0),
-            itemCount: entries.length,
-            itemBuilder: (context, index) {
-              final entry = entries[index];
-              return GestureDetector(
-                onTap: () async {
-                  await Navigator.of(context).push(MaterialPageRoute(
-                      allowSnapshotting: false,
-                      builder: (context) => EntriesListPage(
-                            index: index,
-                            getEntries: () => _getVisibleEntries(
-                              EntriesProvider.instance,
-                              TagsProvider.instance,
-                            ),
-                          )));
-                },
-                child: largeCards
-                    ? LargeEntryCardWidget(
-                        entry: entry,
-                        attachments: _visualAttachmentsOf(
-                            entryAttachmentsProvider, entry),
-                        hideImage:
-                            configProvider.get(Settings.hideImagesInGallery),
-                        searchQuery: searchText,
-                      )
-                    : EntryCardWidget(
-                        entry: entry,
-                        attachments: _visualAttachmentsOf(
-                            entryAttachmentsProvider, entry),
-                        hideImage:
-                            configProvider.get(Settings.hideImagesInGallery),
-                      ),
-              );
-            },
-          ));
+            if (partialMatchCount > 0) ...[
+              _buildPartialMatchesHeader(context, partialMatchCount),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: galleryHorizontalPadding,
+                ),
+                sliver: buildTier(firstTierEnd, entries.length),
+              ),
+            ],
+            if (!entriesProvider.filter.isActive) _buildInvite(),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: _endSpacing + MediaQuery.viewInsetsOf(context).bottom,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

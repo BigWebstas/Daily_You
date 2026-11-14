@@ -1256,6 +1256,108 @@ abstract class AppLocalizations {
   /// **'No Tags'**
   String get noTagsFilterLabel;
 
+  /// Label of the button that resets a single filter
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearFilter;
+
+  /// Label of the button that applies the filters and shows the matching logs
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Show {count} log} other{Show {count} logs}}'**
+  String showLogsCount(num count);
+
+  /// Label of the filter button for choosing attachment types
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get filterPillAttachments;
+
+  /// Label of the filter button for searching logs by keywords
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get filterPillKeywords;
+
+  /// Filter option for logs that have no mood
+  ///
+  /// In en, this message translates to:
+  /// **'No Mood'**
+  String get noMoodFilterLabel;
+
+  /// Filter option for logs that have no attachments
+  ///
+  /// In en, this message translates to:
+  /// **'No Attachments'**
+  String get noAttachmentsFilterLabel;
+
+  /// Filter option for logs that have no text
+  ///
+  /// In en, this message translates to:
+  /// **'No Text'**
+  String get noTextFilterLabel;
+
+  /// Number of logs that match only some of the active filters
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} partial match} other{{count} partial matches}}'**
+  String partialMatchCount(num count);
+
+  /// Number of tags selected in the tag filter
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} tag} other{{count} tags}}'**
+  String tagCount(num count);
+
+  /// Date filter option covering the most recent months
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Last month} other{Last {count} months}}'**
+  String dateFilterLastMonths(num count);
+
+  /// Date filter option for choosing a custom start and end date
+  ///
+  /// In en, this message translates to:
+  /// **'Custom range'**
+  String get dateFilterCustomRange;
+
+  /// Hint text of the field for adding a keyword to the filter
+  ///
+  /// In en, this message translates to:
+  /// **'Add a keyword…'**
+  String get keywordFilterHint;
+
+  /// Option to only match logs containing every keyword
+  ///
+  /// In en, this message translates to:
+  /// **'All keywords'**
+  String get keywordFilterMatchAll;
+
+  /// Option to match logs containing at least one keyword
+  ///
+  /// In en, this message translates to:
+  /// **'Any keyword'**
+  String get keywordFilterMatchAny;
+
+  /// Option to make keyword matching case sensitive
+  ///
+  /// In en, this message translates to:
+  /// **'Match case'**
+  String get keywordFilterMatchCase;
+
+  /// Number of keywords in the keyword filter
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} keyword} other{{count} keywords}}'**
+  String keywordCount(num count);
+
+  /// Selected date range shown on the date filter
+  ///
+  /// In en, this message translates to:
+  /// **'{start} – {end}'**
+  String dateFilterRange(String start, String end);
+
   /// No description provided for @addTagsTitle.
   ///
   /// In en, this message translates to:
@@ -2095,6 +2197,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to record audio!'**
   String get recorderErrorDescription;
+
+  /// Label of the action that selects every log in the gallery
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get gallerySelectAll;
+
+  /// Label of the action that starts selecting logs in the gallery
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get gallerySelectAction;
+
+  /// Label of the action that opens a log from the gallery
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get galleryOpenAction;
+
+  /// Confirmation message shown before deleting the selected logs
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Delete {count} log? Its attachments are removed with it.} other{Delete {count} logs? Their attachments are removed with them.}}'**
+  String deleteLogsMessage(num count);
+
+  /// Label of the action that creates a new log
+  ///
+  /// In en, this message translates to:
+  /// **'New Log'**
+  String get newLogAction;
+
+  /// Title of the dialog for removing tags from the selected logs
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Tags'**
+  String get removeTagsTitle;
+
+  /// Label of the button that applies the chosen changes
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get applyButtonLabel;
+
+  /// Confirmation message shown before adding tags to the selected logs
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Add the chosen tags to {count} log?} other{Add the chosen tags to {count} logs?}}'**
+  String addTagsConfirmMessage(num count);
+
+  /// Confirmation message shown before removing tags from the selected logs
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Remove the chosen tags from {count} log?} other{Remove the chosen tags from {count} logs?}}'**
+  String removeTagsConfirmMessage(num count);
+
+  /// Question asking whether logs that only partially match the search text should also be selected
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{Also select {count} partial match?} other{Also select {count} partial matches?}}'**
+  String selectPartialMatchesMessage(num count);
+
+  /// Button choosing to select only logs that match the exact text
+  ///
+  /// In en, this message translates to:
+  /// **'Exact only'**
+  String get selectExactMatchesOnly;
+
+  /// Button choosing to also select logs that partially match the text
+  ///
+  /// In en, this message translates to:
+  /// **'Include'**
+  String get selectIncludingPartialMatches;
 }
 
 class _AppLocalizationsDelegate

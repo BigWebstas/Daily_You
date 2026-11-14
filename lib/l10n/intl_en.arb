@@ -408,6 +408,78 @@
   "@clearAllFilters": {},
   "noTagsFilterLabel": "No Tags",
   "@noTagsFilterLabel": {},
+  "clearFilter": "Clear",
+  "@clearFilter": {
+    "description": "Label of the button that resets a single filter"
+  },
+  "showLogsCount": "{count, plural, one{Show {count} log} other{Show {count} logs}}",
+  "@showLogsCount": {
+    "description": "Label of the button that applies the filters and shows the matching logs"
+  },
+  "filterPillAttachments": "Attachments",
+  "@filterPillAttachments": {
+    "description": "Label of the filter button for choosing attachment types"
+  },
+  "filterPillKeywords": "Keywords",
+  "@filterPillKeywords": {
+    "description": "Label of the filter button for searching logs by keywords"
+  },
+  "noMoodFilterLabel": "No Mood",
+  "@noMoodFilterLabel": {
+    "description": "Filter option for logs that have no mood"
+  },
+  "noAttachmentsFilterLabel": "No Attachments",
+  "@noAttachmentsFilterLabel": {
+    "description": "Filter option for logs that have no attachments"
+  },
+  "noTextFilterLabel": "No Text",
+  "@noTextFilterLabel": {
+    "description": "Filter option for logs that have no text"
+  },
+  "partialMatchCount": "{count, plural, one{{count} partial match} other{{count} partial matches}}",
+  "@partialMatchCount": {
+    "description": "Number of logs that match only some of the active filters"
+  },
+  "tagCount": "{count, plural, one{{count} tag} other{{count} tags}}",
+  "@tagCount": {
+    "description": "Number of tags selected in the tag filter"
+  },
+  "dateFilterLastMonths": "{count, plural, one{Last month} other{Last {count} months}}",
+  "@dateFilterLastMonths": {
+    "description": "Date filter option covering the most recent months"
+  },
+  "dateFilterCustomRange": "Custom range",
+  "@dateFilterCustomRange": {
+    "description": "Date filter option for choosing a custom start and end date"
+  },
+  "keywordFilterHint": "Add a keyword…",
+  "@keywordFilterHint": {
+    "description": "Hint text of the field for adding a keyword to the filter"
+  },
+  "keywordFilterMatchAll": "All keywords",
+  "@keywordFilterMatchAll": {
+    "description": "Option to only match logs containing every keyword"
+  },
+  "keywordFilterMatchAny": "Any keyword",
+  "@keywordFilterMatchAny": {
+    "description": "Option to match logs containing at least one keyword"
+  },
+  "keywordFilterMatchCase": "Match case",
+  "@keywordFilterMatchCase": {
+    "description": "Option to make keyword matching case sensitive"
+  },
+  "keywordCount": "{count, plural, one{{count} keyword} other{{count} keywords}}",
+  "@keywordCount": {
+    "description": "Number of keywords in the keyword filter"
+  },
+  "dateFilterRange": "{start} – {end}",
+  "@dateFilterRange": {
+    "description": "Selected date range shown on the date filter",
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
   "addTagsTitle": "Add Tags",
   "@addTagsTitle": {},
   "addTagsSearchHint": "Search tags…",
@@ -687,5 +759,53 @@
   "recorderPermissionDenied": "Microphone permission is required to record audio",
   "@recorderPermissionDenied": {},
   "recorderErrorDescription": "Failed to record audio!",
-  "@recorderErrorDescription": {}
+  "@recorderErrorDescription": {},
+  "gallerySelectAll": "Select all",
+  "@gallerySelectAll": {
+    "description": "Label of the action that selects every log in the gallery"
+  },
+  "gallerySelectAction": "Select",
+  "@gallerySelectAction": {
+    "description": "Label of the action that starts selecting logs in the gallery"
+  },
+  "galleryOpenAction": "Open",
+  "@galleryOpenAction": {
+    "description": "Label of the action that opens a log from the gallery"
+  },
+  "deleteLogsMessage": "{count, plural, one{Delete {count} log? Its attachments are removed with it.} other{Delete {count} logs? Their attachments are removed with them.}}",
+  "@deleteLogsMessage": {
+    "description": "Confirmation message shown before deleting the selected logs"
+  },
+  "newLogAction": "New Log",
+  "@newLogAction": {
+    "description": "Label of the action that creates a new log"
+  },
+  "removeTagsTitle": "Remove Tags",
+  "@removeTagsTitle": {
+    "description": "Title of the dialog for removing tags from the selected logs"
+  },
+  "applyButtonLabel": "Apply",
+  "@applyButtonLabel": {
+    "description": "Label of the button that applies the chosen changes"
+  },
+  "addTagsConfirmMessage": "{count, plural, one{Add the chosen tags to {count} log?} other{Add the chosen tags to {count} logs?}}",
+  "@addTagsConfirmMessage": {
+    "description": "Confirmation message shown before adding tags to the selected logs"
+  },
+  "removeTagsConfirmMessage": "{count, plural, one{Remove the chosen tags from {count} log?} other{Remove the chosen tags from {count} logs?}}",
+  "@removeTagsConfirmMessage": {
+    "description": "Confirmation message shown before removing tags from the selected logs"
+  },
+  "selectPartialMatchesMessage": "{count, plural, one{Also select {count} partial match?} other{Also select {count} partial matches?}}",
+  "@selectPartialMatchesMessage": {
+    "description": "Question asking whether logs that only partially match the search text should also be selected"
+  },
+  "selectExactMatchesOnly": "Exact only",
+  "@selectExactMatchesOnly": {
+    "description": "Button choosing to select only logs that match the exact text"
+  },
+  "selectIncludingPartialMatches": "Include",
+  "@selectIncludingPartialMatches": {
+    "description": "Button choosing to also select logs that partially match the text"
+  }
 }

@@ -729,6 +729,99 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noTagsFilterLabel => 'Sin etiquetas';
 
   @override
+  String get clearFilter => 'Clear';
+
+  @override
+  String showLogsCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Show $count logs',
+      one: 'Show $count log',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get filterPillAttachments => 'Attachments';
+
+  @override
+  String get filterPillKeywords => 'Keywords';
+
+  @override
+  String get noMoodFilterLabel => 'No Mood';
+
+  @override
+  String get noAttachmentsFilterLabel => 'No Attachments';
+
+  @override
+  String get noTextFilterLabel => 'No Text';
+
+  @override
+  String partialMatchCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count partial matches',
+      one: '$count partial match',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tagCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tags',
+      one: '$count tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateFilterLastMonths(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Last $count months',
+      one: 'Last month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dateFilterCustomRange => 'Custom range';
+
+  @override
+  String get keywordFilterHint => 'Add a keyword…';
+
+  @override
+  String get keywordFilterMatchAll => 'All keywords';
+
+  @override
+  String get keywordFilterMatchAny => 'Any keyword';
+
+  @override
+  String get keywordFilterMatchCase => 'Match case';
+
+  @override
+  String keywordCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count keywords',
+      one: '$count keyword',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateFilterRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
   String get addTagsTitle => 'Añadir etiquetas';
 
   @override
@@ -1182,4 +1275,72 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get recorderErrorDescription => 'Failed to record audio!';
+
+  @override
+  String get gallerySelectAll => 'Select all';
+
+  @override
+  String get gallerySelectAction => 'Select';
+
+  @override
+  String get galleryOpenAction => 'Open';
+
+  @override
+  String deleteLogsMessage(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Delete $count logs? Their attachments are removed with them.',
+      one: 'Delete $count log? Its attachments are removed with it.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get newLogAction => 'New Log';
+
+  @override
+  String get removeTagsTitle => 'Remove Tags';
+
+  @override
+  String get applyButtonLabel => 'Apply';
+
+  @override
+  String addTagsConfirmMessage(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add the chosen tags to $count logs?',
+      one: 'Add the chosen tags to $count log?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String removeTagsConfirmMessage(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Remove the chosen tags from $count logs?',
+      one: 'Remove the chosen tags from $count log?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String selectPartialMatchesMessage(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Also select $count partial matches?',
+      one: 'Also select $count partial match?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get selectExactMatchesOnly => 'Exact only';
+
+  @override
+  String get selectIncludingPartialMatches => 'Include';
 }

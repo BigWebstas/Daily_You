@@ -8,6 +8,8 @@ import 'package:daily_you/config_provider.dart';
 import 'package:daily_you/layouts/fast_page_view_scroll_physics.dart';
 import 'package:daily_you/layouts/window_size_class.dart';
 import 'package:daily_you/pages/settings/notification_settings.dart';
+import 'package:daily_you/providers/gallery_selection.dart';
+import 'package:daily_you/widgets/gallery_selection_bar.dart';
 import 'package:daily_you/widgets/settings_dialog.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/rendering.dart' show ScrollCacheExtent;
@@ -29,6 +31,8 @@ class MobileScaffold extends StatefulWidget {
 }
 
 class _MobileScaffoldState extends State<MobileScaffold> {
+  static const int _galleryPageIndex = 1;
+
   int currentIndex = 0;
   final _swipePagesKey = GlobalKey<_SwipePagesState>();
   final List<bool> _isScrolled = [false, false, false];
@@ -98,6 +102,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
   }
 
   void _updateScrolled(int pageIndex, bool scrolled) {
+    if (pageIndex == _galleryPageIndex) return;
     if (_isScrolled[pageIndex] == scrolled) return;
     if (pageIndex == currentIndex) {
       setState(() {
@@ -109,9 +114,12 @@ class _MobileScaffoldState extends State<MobileScaffold> {
   }
 
   void _switchPage(int newIndex) {
-    final c = _scrollControllers[newIndex];
-    if (c.hasClients && c.positions.length == 1) {
-      _isScrolled[newIndex] = c.position.pixels > 0;
+    GallerySelection.instance.clear();
+    final scrollController = _scrollControllers[newIndex];
+    if (newIndex != _galleryPageIndex &&
+        scrollController.hasClients &&
+        scrollController.positions.length == 1) {
+      _isScrolled[newIndex] = scrollController.position.pixels > 0;
     }
     setState(() {
       currentIndex = newIndex;
@@ -356,33 +364,39 @@ class _MobileScaffoldState extends State<MobileScaffold> {
     ConfigProvider configProvider,
     List<String> pageTitles,
     AppLocalizations l10n,
+    bool selecting,
   ) {
     final theme = Theme.of(context);
     return NotificationListener<ScrollNotification>(
       onNotification: _handleMobileScrollNotification,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          title: Text(pageTitles[currentIndex]),
-          elevation: _isScrolled[currentIndex] ? 1 : 0,
-          scrolledUnderElevation: 1,
-          actions: [
-            if (_shouldShowNotificationButton(configProvider))
+        appBar: SelectionAppBarSwitcher(
+          selecting: selecting,
+          defaultBar: AppBar(
+            title: Text(pageTitles[currentIndex]),
+            elevation: _isScrolled[currentIndex] ? 1 : 0,
+            scrolledUnderElevation: currentIndex == _galleryPageIndex ? 0 : 1,
+            actions: [
+              if (_shouldShowNotificationButton(configProvider))
+                IconButton(
+                  icon: const Icon(Icons.notifications_off_rounded),
+                  onPressed: _showNotificationOnboardingPopup,
+                ),
               IconButton(
-                icon: const Icon(Icons.notifications_off_rounded),
-                onPressed: _showNotificationOnboardingPopup,
+                icon: const Icon(Icons.settings_rounded),
+                onPressed: _navigateToSettings,
               ),
-            IconButton(
-              icon: const Icon(Icons.settings_rounded),
-              onPressed: _navigateToSettings,
-            ),
-          ],
+            ],
+          ),
         ),
         body: _SwipePages(
           key: _swipePagesKey,
           initialIndex: currentIndex,
           currentIndex: currentIndex,
           prebuildViewports: _prebuildViewports,
+          swipeLocked: selecting,
           onPageChanged: (index) {
             FocusManager.instance.primaryFocus?.unfocus();
             EasyDebounce.debounce(
@@ -401,6 +415,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
           selectedIndex: currentIndex,
           onDestinationSelected: (index) {
             EasyDebounce.cancel("page-change");
+            GallerySelection.instance.clear();
             setState(() {
               currentIndex = index;
             });
@@ -430,24 +445,29 @@ class _MobileScaffoldState extends State<MobileScaffold> {
     ConfigProvider configProvider,
     List<String> pageTitles,
     AppLocalizations l10n,
+    bool selecting,
   ) {
     final theme = Theme.of(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(pageTitles[currentIndex]),
-        backgroundColor: _isScrolled[currentIndex]
-            ? theme.colorScheme.surfaceContainer
-            : theme.colorScheme.surface,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        actions: [
-          if (_shouldShowNotificationButton(configProvider))
-            IconButton(
-              icon: const Icon(Icons.notifications_off_rounded),
-              onPressed: _showNotificationOnboardingPopup,
-            ),
-        ],
+      appBar: SelectionAppBarSwitcher(
+        selecting: selecting,
+        defaultBar: AppBar(
+          title: Text(pageTitles[currentIndex]),
+          backgroundColor: _isScrolled[currentIndex]
+              ? theme.colorScheme.surfaceContainer
+              : theme.colorScheme.surface,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          actions: [
+            if (_shouldShowNotificationButton(configProvider))
+              IconButton(
+                icon: const Icon(Icons.notifications_off_rounded),
+                onPressed: _showNotificationOnboardingPopup,
+              ),
+          ],
+        ),
       ),
       drawer: Drawer(
         child: _buildSidebarContent(context, theme, l10n, closeDrawer: true),
@@ -461,6 +481,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
     ConfigProvider configProvider,
     List<String> pageTitles,
     AppLocalizations l10n,
+    bool selecting,
   ) {
     final theme = Theme.of(context);
     return Scaffold(
@@ -485,21 +506,24 @@ class _MobileScaffoldState extends State<MobileScaffold> {
               onNotification: (n) => n.metrics.axis == Axis.vertical,
               child: Column(
                 children: [
-                  AppBar(
-                    title: Text(pageTitles[currentIndex]),
-                    automaticallyImplyLeading: false,
-                    backgroundColor: _isScrolled[currentIndex]
-                        ? theme.colorScheme.surfaceContainer
-                        : theme.colorScheme.surface,
-                    elevation: 0,
-                    scrolledUnderElevation: 0,
-                    actions: [
-                      if (_shouldShowNotificationButton(configProvider))
-                        IconButton(
-                          icon: const Icon(Icons.notifications_off_rounded),
-                          onPressed: _showNotificationOnboardingPopup,
-                        ),
-                    ],
+                  SelectionAppBarSwitcher(
+                    selecting: selecting,
+                    defaultBar: AppBar(
+                      title: Text(pageTitles[currentIndex]),
+                      automaticallyImplyLeading: false,
+                      backgroundColor: _isScrolled[currentIndex]
+                          ? theme.colorScheme.surfaceContainer
+                          : theme.colorScheme.surface,
+                      elevation: 0,
+                      scrolledUnderElevation: 0,
+                      actions: [
+                        if (_shouldShowNotificationButton(configProvider))
+                          IconButton(
+                            icon: const Icon(Icons.notifications_off_rounded),
+                            onPressed: _showNotificationOnboardingPopup,
+                          ),
+                      ],
+                    ),
                   ),
                   Expanded(child: _buildPageStack()),
                 ],
@@ -521,14 +545,23 @@ class _MobileScaffoldState extends State<MobileScaffold> {
       l10n.pageStatisticsTitle,
     ];
 
-    return switch (WindowSizeClass.of(context)) {
-      WindowSizeClass.expanded =>
-        _buildDesktopLayout(context, configProvider, pageTitles, l10n),
-      WindowSizeClass.medium =>
-        _buildTabletLayout(context, configProvider, pageTitles, l10n),
-      WindowSizeClass.compact =>
-        _buildMobileLayout(context, configProvider, pageTitles, l10n),
-    };
+    final selecting =
+        context.select((GallerySelection selection) => selection.active);
+
+    return PopScope(
+      canPop: !selecting,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) GallerySelection.instance.clear();
+      },
+      child: switch (WindowSizeClass.of(context)) {
+        WindowSizeClass.expanded => _buildDesktopLayout(
+            context, configProvider, pageTitles, l10n, selecting),
+        WindowSizeClass.medium => _buildTabletLayout(
+            context, configProvider, pageTitles, l10n, selecting),
+        WindowSizeClass.compact => _buildMobileLayout(
+            context, configProvider, pageTitles, l10n, selecting),
+      },
+    );
   }
 }
 
@@ -536,6 +569,7 @@ class _SwipePages extends StatefulWidget {
   final int initialIndex;
   final int currentIndex;
   final int prebuildViewports;
+  final bool swipeLocked;
   final ValueChanged<int> onPageChanged;
   final List<Widget> children;
 
@@ -544,6 +578,7 @@ class _SwipePages extends StatefulWidget {
     required this.initialIndex,
     required this.currentIndex,
     required this.prebuildViewports,
+    required this.swipeLocked,
     required this.onPageChanged,
     required this.children,
   });
@@ -574,7 +609,9 @@ class _SwipePagesState extends State<_SwipePages> {
   Widget build(BuildContext context) {
     return PageView(
       controller: _pageController,
-      physics: const FastPageViewScrollPhysics(),
+      physics: widget.swipeLocked
+          ? const NeverScrollableScrollPhysics()
+          : const FastPageViewScrollPhysics(),
       allowImplicitScrolling: widget.prebuildViewports > 0,
       scrollCacheExtent:
           ScrollCacheExtent.viewport(widget.prebuildViewports.toDouble()),
