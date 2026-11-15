@@ -91,7 +91,17 @@
           "value": null
         }
       ],
-      "attachments": []
+      "attachments": [
+        {
+          "type": "audio",
+          "rank": 0,
+          "timeCreate": "2026-01-02T21:30:00.000",
+          "media": {
+            "fileName": "recording.mp3",
+            "bytes": "MEFC"
+          }
+        }
+      ]
     },
     {
       "text": "# Title only",
@@ -105,6 +115,7 @@
           "rank": 2,
           "timeCreate": "2026-01-03T08:00:00.000",
           "media": {
+            "fileName": "second.jpg",
             "bytes": "IQ=="
           }
         },
@@ -113,6 +124,7 @@
           "rank": 1,
           "timeCreate": "2026-01-03T08:00:00.000",
           "media": {
+            "fileName": "third.jpg",
             "bytes": "Ig=="
           }
         },
@@ -121,6 +133,7 @@
           "rank": 0,
           "timeCreate": "2026-01-03T08:00:00.000",
           "media": {
+            "fileName": "first.jpg",
             "bytes": "IA=="
           }
         }
@@ -154,6 +167,7 @@
           "rank": 1,
           "timeCreate": "2026-01-04T10:00:00.000",
           "media": {
+            "fileName": "photo.jpg",
             "bytes": "Cgs="
           }
         },
@@ -162,6 +176,7 @@
           "rank": 0,
           "timeCreate": "2026-01-04T10:00:00.000",
           "media": {
+            "fileName": "scan.png",
             "bytes": "DA0="
           }
         }
