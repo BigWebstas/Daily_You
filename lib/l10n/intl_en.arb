@@ -300,6 +300,14 @@
   "@settingsFixedReminderTimeTitle": {},
   "settingsFixedReminderTimeDescription": "Pick a fixed time for the reminder",
   "@settingsFixedReminderTimeDescription": {},
+  "settingsExactAlarmsTitle": "Allow exact alarms?",
+  "@settingsExactAlarmsTitle": {
+    "description": "Title of the dialog asking whether to allow exact alarms for reminders"
+  },
+  "settingsExactAlarmsDescription": "Alarms may be delayed by several minutes unless you allow exact alarms.",
+  "@settingsExactAlarmsDescription": {
+    "description": "Body of the exact alarms dialog explaining that reminders may be delayed without the permission"
+  },
   "settingsAlwaysSendReminderTitle": "Always Send Reminder",
   "@settingsAlwaysSendReminderTitle": {},
   "settingsAlwaysSendReminderDescription": "Send reminder even if a log was already started",
@@ -700,6 +708,10 @@
   "@settingsSecurityIncorrectPassword": {},
   "settingsSecurityPasswordsDoNotMatch": "Passwords do not match",
   "@settingsSecurityPasswordsDoNotMatch": {},
+  "settingsSecurityPasswordWarning": "If you forget it, you won't be able to open Daily You.",
+  "@settingsSecurityPasswordWarning": {
+    "description": "Warning shown above the password fields when setting a password, explaining that a forgotten password locks the user out"
+  },
   "requiredPrompt": "Required",
   "@requiredPrompt": {},
   "settingsSecurityBiometricUnlock": "Biometric Unlock",
@@ -784,6 +796,14 @@
   "@removeTagsTitle": {
     "description": "Title of the dialog for removing tags from the selected logs"
   },
+  "discardChangesTitle": "Discard changes?",
+  "@discardChangesTitle": {
+    "description": "Title of the dialog confirming whether to discard unsaved changes"
+  },
+  "discardChangesDescription": "Your changes will be lost.",
+  "@discardChangesDescription": {
+    "description": "Body of the discard changes dialog"
+  },
   "applyButtonLabel": "Apply",
   "@applyButtonLabel": {
     "description": "Label of the button that applies the chosen changes"
@@ -807,5 +827,57 @@
   "selectIncludingPartialMatches": "Include",
   "@selectIncludingPartialMatches": {
     "description": "Button choosing to also select logs that partially match the text"
+  },
+  "onboardingSkip": "Skip",
+  "@onboardingSkip": {
+    "description": "Label of the button that skips the rest of the onboarding flow"
+  },
+  "onboardingContinue": "Continue",
+  "@onboardingContinue": {
+    "description": "Label of the button that moves to the next onboarding step"
+  },
+  "onboardingFinish": "Start journaling",
+  "@onboardingFinish": {
+    "description": "Label of the button on the last onboarding step that finishes onboarding and opens the app"
+  },
+  "onboardingImportTitle": "Coming from another app?",
+  "@onboardingImportTitle": {
+    "description": "Title of the onboarding step offering to import logs from another app"
+  },
+  "onboardingImportDescription": "Bring your existing logs, or start fresh.",
+  "@onboardingImportDescription": {
+    "description": "Description under the title of the onboarding import step"
+  },
+  "onboardingStorageNote": "You can change these later in Settings.",
+  "@onboardingStorageNote": {
+    "description": "Description under the title of the onboarding storage step, noting the choices can be changed later in settings"
+  },
+  "onboardingWelcomeTitle": "Welcome to Daily You",
+  "@onboardingWelcomeTitle": {
+    "description": "Title of the first onboarding step"
+  },
+  "onboardingWelcomeDescription": "Every day is worth remembering.",
+  "@onboardingWelcomeDescription": {
+    "description": "Description under the title of the first onboarding step"
+  },
+  "onboardingRemindersTitle": "Make it a habit",
+  "@onboardingRemindersTitle": {
+    "description": "Title of the onboarding step for turning on daily reminders"
+  },
+  "onboardingStorageTitle": "Keep your logs safe",
+  "@onboardingStorageTitle": {
+    "description": "Title of the onboarding step for password, sync, and backup options"
+  },
+  "onboardingRestore": "Restore from a backup",
+  "@onboardingRestore": {
+    "description": "Label of the button that restores logs from a backup during onboarding"
+  },
+  "onboardingMoodsCustomize": "Customize moods",
+  "@onboardingMoodsCustomize": {
+    "description": "Label of the button that opens the mood editor"
+  },
+  "onboardingRemindersDescription": "Set random or scheduled reminders to capture your day.",
+  "@onboardingRemindersDescription": {
+    "description": "Description under the title of the onboarding reminders step"
   }
 }

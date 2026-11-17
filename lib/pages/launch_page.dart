@@ -11,8 +11,10 @@ import 'package:daily_you/database/attachment_storage.dart';
 import 'package:daily_you/device_info_service.dart';
 import 'package:daily_you/launch_intent.dart';
 import 'package:daily_you/main.dart';
+import 'package:daily_you/pages/onboarding/onboarding_page.dart';
 import 'package:daily_you/utils/auto_backup_schedule.dart';
 import 'package:daily_you/utils/backup_restore_utils.dart';
+import 'package:daily_you/utils/onboarding_status.dart';
 import 'package:daily_you/widgets/app_dialog.dart';
 import 'package:daily_you/widgets/auth_popup.dart';
 import 'package:material_ui/material_ui.dart';
@@ -36,6 +38,7 @@ class _LaunchPageState extends State<LaunchPage> {
   final Logger _logger = Logger('LaunchPage');
   bool isLoading = true;
   bool _initialized = false;
+  bool _onboardingPending = false;
   _LaunchErrorType _errorType = _LaunchErrorType.externalAccess;
 
   @override
@@ -68,6 +71,8 @@ class _LaunchPageState extends State<LaunchPage> {
         DeviceInfoService().launchIntent = LaunchIntent.logToday();
       } else if (shortcutType == 'action_take_photo') {
         DeviceInfoService().launchIntent = LaunchIntent.takePhoto();
+      } else if (shortcutType == 'action_take_video') {
+        DeviceInfoService().launchIntent = LaunchIntent.takeVideo();
       }
     });
 
@@ -83,7 +88,12 @@ class _LaunchPageState extends State<LaunchPage> {
         type: 'action_take_photo',
         localizedTitle: AppLocalizations.of(context)!.actionTakePhoto,
         icon: '@drawable/ic_shortcut_camera_alt',
-      )
+      ),
+      ShortcutItem(
+        type: 'action_take_video',
+        localizedTitle: AppLocalizations.of(context)!.actionTakeVideo,
+        icon: '@drawable/ic_shortcut_videocam',
+      ),
     ]);
   }
 
@@ -133,6 +143,8 @@ class _LaunchPageState extends State<LaunchPage> {
                 onSuccess: (_) {},
               ));
     }
+    _onboardingPending = await OnboardingStatus.isPending(
+        databaseExisted: await AppDatabase.instance.hasLocalDatabase());
     //Initialize Database
     bool initialized;
     try {
@@ -249,8 +261,11 @@ class _LaunchPageState extends State<LaunchPage> {
   }
 
   Future<void> _nextPage() async {
+    final page = _onboardingPending
+        ? OnboardingPage(nextPage: widget.nextPage)
+        : widget.nextPage;
     await Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => widget.nextPage, allowSnapshotting: false));
+        builder: (context) => page, allowSnapshotting: false));
   }
 
   Widget _buildErrorScaffold({

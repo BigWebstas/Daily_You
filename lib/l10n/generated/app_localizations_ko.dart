@@ -537,6 +537,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsFixedReminderTimeDescription => '리마인더를 보낼 고정 시간 선택';
 
   @override
+  String get settingsExactAlarmsTitle => 'Allow exact alarms?';
+
+  @override
+  String get settingsExactAlarmsDescription =>
+      'Alarms may be delayed by several minutes unless you allow exact alarms.';
+
+  @override
   String get settingsAlwaysSendReminderTitle => '항상 리마인더 전송';
 
   @override
@@ -1168,6 +1175,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsSecurityPasswordsDoNotMatch => '비밀번호가 일치하지 않음';
 
   @override
+  String get settingsSecurityPasswordWarning =>
+      'If you forget it, you won\'t be able to open Daily You.';
+
+  @override
   String get requiredPrompt => '필요';
 
   @override
@@ -1287,6 +1298,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get removeTagsTitle => 'Remove Tags';
 
   @override
+  String get discardChangesTitle => 'Discard changes?';
+
+  @override
+  String get discardChangesDescription => 'Your changes will be lost.';
+
+  @override
   String get applyButtonLabel => 'Apply';
 
   @override
@@ -1327,4 +1344,45 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get selectIncludingPartialMatches => 'Include';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingContinue => 'Continue';
+
+  @override
+  String get onboardingFinish => 'Start journaling';
+
+  @override
+  String get onboardingImportTitle => 'Coming from another app?';
+
+  @override
+  String get onboardingImportDescription =>
+      'Bring your existing logs, or start fresh.';
+
+  @override
+  String get onboardingStorageNote => 'You can change these later in Settings.';
+
+  @override
+  String get onboardingWelcomeTitle => 'Welcome to Daily You';
+
+  @override
+  String get onboardingWelcomeDescription => 'Every day is worth remembering.';
+
+  @override
+  String get onboardingRemindersTitle => 'Make it a habit';
+
+  @override
+  String get onboardingStorageTitle => 'Keep your logs safe';
+
+  @override
+  String get onboardingRestore => 'Restore from a backup';
+
+  @override
+  String get onboardingMoodsCustomize => 'Customize moods';
+
+  @override
+  String get onboardingRemindersDescription =>
+      'Set random or scheduled reminders to capture your day.';
 }

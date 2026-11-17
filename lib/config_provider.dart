@@ -68,8 +68,8 @@ class Settings {
       Setting<int>("onThisDayNotificationHour", 12);
   static const onThisDayNotificationMinute =
       Setting<int>("onThisDayNotificationMinute", 0);
-  static const dismissedNotificationOnboarding =
-      Setting<bool>("dismissedNotificationOnboarding", false);
+  static const onboardingCompleted =
+      Setting<bool?>("onboardingCompleted", null);
   static const defaultTemplate = Setting<int>("defaultTemplate", -1);
   static const imageQualityLevel =
       Setting<String>("imageQualityLevel", ImageQuality.medium);
@@ -174,7 +174,7 @@ class Settings {
     onThisDayNotifications,
     onThisDayNotificationHour,
     onThisDayNotificationMinute,
-    dismissedNotificationOnboarding,
+    onboardingCompleted,
     defaultTemplate,
     imageQualityLevel,
     audioQualityLevel,
