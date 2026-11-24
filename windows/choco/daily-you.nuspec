@@ -10,9 +10,10 @@
     <id>daily-you</id>
     <version>3.4.3</version>
     <title>Daily You</title>
-    <authors>BigWebstas</authors>
-    <copyright>Copyright (c) 2026 BigWebstas</copyright>
-    <projectUrl>https://github.com/BigWebstas/Daily_You</projectUrl>
+    <authors>Demizo, BigWebstas</authors>
+    <copyright>Copyright (c) Demizo; Windows packaging Copyright (c) 2026 BigWebstas</copyright>
+    <projectUrl>https://github.com/Demizo/Daily_You</projectUrl>
+    <packageSourceUrl>https://github.com/BigWebstas/Daily_You/tree/master/windows/choco</packageSourceUrl>
     <licenseUrl>https://github.com/BigWebstas/Daily_You/blob/master/LICENSE.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/BigWebstas/Daily_You</projectSourceUrl>
@@ -23,7 +24,13 @@
     <description>
       A journaling app for tracking your mood, daily logs, photo memories,
       and Markdown notes.
+
+      This is a community fork of [Demizo/Daily_You](https://github.com/Demizo/Daily_You)
+      that adds a Windows installer. It is a modified version, not the
+      official app. Original application by Demizo; see ADDITIONAL_TERMS.md
+      in the source repository.
     </description>
+    <releaseNotes>https://github.com/BigWebstas/Daily_You/releases</releaseNotes>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
