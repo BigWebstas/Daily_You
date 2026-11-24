@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -68,3 +70,8 @@ CLAUDE.md
 .widget_preview/
 GEMINI.md
 .claude/
+# Gradle caches for local Flutter packages
+/packages/*/android/.gradle/
+
+# Current changelog
+changelog.txt

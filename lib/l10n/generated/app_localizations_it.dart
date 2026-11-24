@@ -21,7 +21,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get actionTakePhoto => 'Scatta una foto';
 
   @override
-  String get actionTakeVideo => 'Take video';
+  String get actionTakeVideo => 'Registra video';
 
   @override
   String get actionRecordAudio => 'Record audio';
@@ -1119,6 +1119,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get formatDaylio => 'Daylio';
 
   @override
+  String get formatDayOne => 'Day One';
+
+  @override
   String get formatDiarium => 'Diarium';
 
   @override
@@ -1233,6 +1236,12 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get settingsConsiderSupporting =>
       'considera la possibilità di sostenere il progetto';
+
+  @override
+  String get supportBannerOpenSourceTitle => 'Daily You is open-source';
+
+  @override
+  String get supportBannerFeedbackPrompt => 'Share your feedback';
 
   @override
   String get imagesTitle => 'Foto';

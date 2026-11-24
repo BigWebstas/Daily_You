@@ -306,10 +306,11 @@ class _EditorActionBarState extends State<EditorActionBar> {
                 ? AlignmentDirectional.centerStart
                 : AlignmentDirectional.center;
 
+            final entries = showingMainActions
+                ? _mainActionEntries(metrics)
+                : _markdownEntries(context, metrics);
             final split = ToolbarEntrySplit.fit(
-              showingMainActions
-                  ? _mainActionEntries(metrics)
-                  : _markdownEntries(context, metrics),
+              entries,
               maxWidth: maxPillWidth,
               overflowButtonWidth: metrics.buttonSize,
               padding: metrics.pillPadding,
@@ -338,6 +339,8 @@ class _EditorActionBarState extends State<EditorActionBar> {
                           child: ActionBarPill(
                             metrics: metrics,
                             split: split,
+                            entries: entries,
+                            maxWidth: maxPillWidth,
                             showingMainActions: showingMainActions,
                             onShowOverflow: (buttonContext) => _overflowPopup
                                 .show(buttonContext, split.overflow),

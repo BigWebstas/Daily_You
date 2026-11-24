@@ -5,6 +5,7 @@
 import 'dart:ui' show lerpDouble;
 
 import 'package:daily_you/widgets/editor_action_bar/dock_metrics.dart';
+import 'package:daily_you/widgets/editor_action_bar/scrollable_toolbar_actions.dart';
 import 'package:daily_you/widgets/editor_action_bar/toolbar_entry.dart';
 import 'package:daily_you/widgets/editor_action_bar/toolbar_morph.dart';
 import 'package:material_ui/material_ui.dart';
@@ -14,6 +15,8 @@ class ActionBarPill extends StatelessWidget {
 
   final DockMetrics metrics;
   final ToolbarEntrySplit split;
+  final List<ToolbarEntry> entries;
+  final double maxWidth;
   final bool showingMainActions;
   final void Function(BuildContext buttonContext) onShowOverflow;
 
@@ -21,6 +24,8 @@ class ActionBarPill extends StatelessWidget {
     super.key,
     required this.metrics,
     required this.split,
+    required this.entries,
+    required this.maxWidth,
     required this.showingMainActions,
     required this.onShowOverflow,
   });
@@ -45,30 +50,41 @@ class ActionBarPill extends StatelessWidget {
         curve: toolbarMorphCurve,
         alignment: AlignmentDirectional.centerStart,
         child: Padding(
-          padding: EdgeInsets.all(metrics.pillPadding),
+          padding: EdgeInsets.symmetric(
+            horizontal: metrics.pillPadding,
+            vertical: metrics.isDocked ? 0 : metrics.pillPadding,
+          ),
           child: IconTheme.merge(
             data: IconThemeData(color: iconTint),
             child: MorphContent(
               child: KeyedSubtree(
-                key: ValueKey(showingMainActions),
-                child: IntrinsicHeight(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final entry in split.visible)
-                        entry.build(context, null),
-                      if (split.hasOverflow)
-                        Builder(
-                          builder: (buttonContext) => ToolbarIconButton(
-                            size: metrics.buttonSize,
-                            icon: const Icon(Icons.more_horiz_rounded),
-                            onPressed: () => onShowOverflow(buttonContext),
-                          ),
+                key: ValueKey((showingMainActions, metrics.isDocked)),
+                child: metrics.isDocked
+                    ? ScrollableToolbarActions(
+                        entries: entries,
+                        maxWidth: maxWidth - metrics.pillPadding * 2,
+                        height: metrics.buttonSize,
+                        verticalInset: metrics.pillPadding,
+                      )
+                    : IntrinsicHeight(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (final entry in split.visible)
+                              entry.build(context, null),
+                            if (split.hasOverflow)
+                              Builder(
+                                builder: (buttonContext) => ToolbarIconButton(
+                                  size: metrics.buttonSize,
+                                  icon: const Icon(Icons.more_horiz_rounded),
+                                  onPressed: () =>
+                                      onShowOverflow(buttonContext),
+                                ),
+                              ),
+                          ],
                         ),
-                    ],
-                  ),
-                ),
+                      ),
               ),
             ),
           ),

@@ -1117,6 +1117,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get formatDaylio => 'Daylio';
 
   @override
+  String get formatDayOne => 'Day One';
+
+  @override
   String get formatDiarium => 'Diarium';
 
   @override
@@ -1227,6 +1230,12 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settingsConsiderSupporting => 'розглянути можливість підтримки';
+
+  @override
+  String get supportBannerOpenSourceTitle => 'Daily You is open-source';
+
+  @override
+  String get supportBannerFeedbackPrompt => 'Share your feedback';
 
   @override
   String get imagesTitle => 'Images';

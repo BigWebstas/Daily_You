@@ -1106,6 +1106,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get formatDaylio => 'Daylio';
 
   @override
+  String get formatDayOne => 'Day One';
+
+  @override
   String get formatDiarium => 'Diarium';
 
   @override
@@ -1216,6 +1219,12 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get settingsConsiderSupporting => 'zvažte podporu';
+
+  @override
+  String get supportBannerOpenSourceTitle => 'Daily You is open-source';
+
+  @override
+  String get supportBannerFeedbackPrompt => 'Share your feedback';
 
   @override
   String get imagesTitle => 'Obrázky';
