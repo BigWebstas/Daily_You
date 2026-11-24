@@ -1118,6 +1118,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get formatDaylio => 'Daylio';
 
   @override
+  String get formatDayOne => 'Day One';
+
+  @override
   String get formatDiarium => 'Diarium';
 
   @override
@@ -1231,6 +1234,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get settingsConsiderSupporting => 'ஆதரிப்பதை கருத்தில் கொள்ளுங்கள்';
+
+  @override
+  String get supportBannerOpenSourceTitle => 'Daily You is open-source';
+
+  @override
+  String get supportBannerFeedbackPrompt => 'Share your feedback';
 
   @override
   String get imagesTitle => 'படங்கள்';

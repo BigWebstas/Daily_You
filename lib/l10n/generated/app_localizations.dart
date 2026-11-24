@@ -1886,6 +1886,12 @@ abstract class AppLocalizations {
   /// **'Daylio'**
   String get formatDaylio;
 
+  /// No description provided for @formatDayOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Day One'**
+  String get formatDayOne;
+
   /// No description provided for @formatDiarium.
   ///
   /// In en, this message translates to:
@@ -2101,6 +2107,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'consider supporting'**
   String get settingsConsiderSupporting;
+
+  /// No description provided for @supportBannerOpenSourceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily You is open-source'**
+  String get supportBannerOpenSourceTitle;
+
+  /// No description provided for @supportBannerFeedbackPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your feedback'**
+  String get supportBannerFeedbackPrompt;
 
   /// No description provided for @imagesTitle.
   ///
